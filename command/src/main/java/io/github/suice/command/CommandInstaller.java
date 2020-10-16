@@ -36,9 +36,17 @@ public class CommandInstaller {
 
 		installedObjects.add(object);
 
+		installCommandsOnFields(object);
+
+		if (object instanceof ParameterizedCommandInstaller) {
+			((ParameterizedCommandInstaller) object).installCommands(executor);
+		}
+
+	}
+
+	private void installCommandsOnFields(Object object) {
 		Class<?> objectType = object.getClass();
-		Set<Field> fields = ReflectionSupport.getDeclaredAndInheritedFields(objectType,
-				InstallCommands.class);
+		Set<Field> fields = ReflectionSupport.getDeclaredAndInheritedFields(objectType, InstallCommands.class);
 
 		for (Field field : fields) {
 			if (!isComponentField(field))
@@ -63,13 +71,12 @@ public class CommandInstaller {
 				throw new CommandInstallationException("Cannot get acccess to field " + field + ".");
 			}
 		}
-
 	}
 
 	private void ensureNotNull(Component component, Field field) {
 		if (component == null) {
-			throw new CommandInstallationException(field.getType().getSimpleName() + " field `" + field.getName()
-					+ "` of class " + field.getDeclaringClass().getSimpleName() + " is null.", new NullPointerException());
+			throw new CommandInstallationException(field.getType().getSimpleName() + " field `" + field.getName() + "` of class "
+					+ field.getDeclaringClass().getSimpleName() + " is null.", new NullPointerException());
 		}
 	}
 

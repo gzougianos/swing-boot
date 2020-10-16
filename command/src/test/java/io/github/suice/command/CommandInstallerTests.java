@@ -34,6 +34,16 @@ class CommandInstallerTests {
 	}
 
 	@Test
+	void parameterizedCommandsInstall() {
+		ParameterizedCommandInstaller installer = mock(ParameterizedCommandInstaller.class);
+
+		commandInstaller.installCommands(installer);
+
+		verify(installer).installCommands(isA(CommandExecutor.class));
+		verifyNoMoreInteractions(installer);
+	}
+
+	@Test
 	void inheritedInstallation() {
 		ChildClass child = new ChildClass();
 
