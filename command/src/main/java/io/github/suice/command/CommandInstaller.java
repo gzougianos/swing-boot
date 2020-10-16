@@ -8,37 +8,37 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.github.suice.command.annotation.installer.CommandAnnotationInstaller;
-import io.github.suice.command.annotation.installer.OnActionPerformedInstaller;
+import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
+import io.github.suice.command.annotation.installer.OnActionPerformedResolver;
 
-public class CommandInitializer {
-	private final Set<Object> initializedObjects = new HashSet<>();
-	private final Set<CommandAnnotationInstaller> installers = new HashSet<>();
+public class CommandInstaller {
+	private final Set<Object> installedObjects = new HashSet<>();
+	private final Set<ComponentAnnotationResolver> annotationResolvers = new HashSet<>();
 	private CommandExecutor executor;
 
 	@Inject
-	public CommandInitializer(CommandExecutor executor) {
+	public CommandInstaller(CommandExecutor executor) {
 		this.executor = executor;
 		createDefaultInstallers();
 	}
 
 	private void createDefaultInstallers() {
-		installers.add(new OnActionPerformedInstaller(executor));
+		annotationResolvers.add(new OnActionPerformedResolver(executor));
 	}
 
-	public void addAnnotationInstaller(CommandAnnotationInstaller installer) {
-		installers.add(installer);
+	public void addAnnotationResolver(ComponentAnnotationResolver resolver) {
+		annotationResolvers.add(resolver);
 	}
 
-	public void initializeCommands(Object object) throws CommandInitializationException {
-		if (alreadyInitialized(object))
-			throw new CommandInitializationException(object + " is already initialized.");
+	public void installCommands(Object object) throws CommandInstallationException {
+		if (alreadyInstalled(object))
+			throw new CommandInstallationException(object + " is already initialized.");
 
-		initializedObjects.add(object);
+		installedObjects.add(object);
 
 		Class<?> objectType = object.getClass();
 		Set<Field> fields = ReflectionSupport.getDeclaredAndInheritedFields(objectType,
-				InitializeCommands.class);
+				InstallCommands.class);
 
 		for (Field field : fields) {
 			if (!isComponentField(field))
@@ -55,12 +55,12 @@ public class CommandInitializer {
 				ensureNotNull(component, field);
 
 				for (Annotation annotation : annotations) {
-					installers.stream().filter(i -> i.supportsAnnotation(annotation))
-							.forEach(i -> i.installAnnotation(component, annotation));
+					annotationResolvers.stream().filter(i -> i.supports(annotation))
+							.forEach(i -> i.install(component, annotation));
 				}
 
 			} catch (IllegalAccessException e) {
-				throw new CommandInitializationException("Cannot get acccess to field " + field + ".");
+				throw new CommandInstallationException("Cannot get acccess to field " + field + ".");
 			}
 		}
 
@@ -68,7 +68,7 @@ public class CommandInitializer {
 
 	private void ensureNotNull(Component component, Field field) {
 		if (component == null) {
-			throw new CommandInitializationException(field.getType().getSimpleName() + " field `" + field.getName()
+			throw new CommandInstallationException(field.getType().getSimpleName() + " field `" + field.getName()
 					+ "` of class " + field.getDeclaringClass().getSimpleName() + " is null.", new NullPointerException());
 		}
 	}
@@ -82,8 +82,8 @@ public class CommandInitializer {
 		return Component.class.isAssignableFrom(field.getType());
 	}
 
-	private boolean alreadyInitialized(Object object) {
-		return initializedObjects.contains(object);
+	private boolean alreadyInstalled(Object object) {
+		return installedObjects.contains(object);
 	}
 
 }

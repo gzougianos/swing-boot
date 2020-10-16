@@ -7,12 +7,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.github.suice.command.InitializeCommands;
+import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.OnActionPerformed;
 
-@InitializeCommands
+@InstallCommands
 @Singleton
 public class ClickCounterView extends JPanel {
+	private static final long serialVersionUID = 4816090097824292469L;
 	private int clickCount;
 	private JLabel clickCountLabel;
 

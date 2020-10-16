@@ -14,15 +14,15 @@ import io.github.suice.command.Command;
 import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.ReflectionSupport;
 
-abstract class AbstractListenerAnnotationInstaller<A extends Annotation, T extends EventListener>
-		implements CommandAnnotationInstaller {
-	private static final Logger log = LoggerFactory.getLogger(AbstractListenerAnnotationInstaller.class);
+abstract class AbstractListenerAnnotationResolver<A extends Annotation, T extends EventListener>
+		implements ComponentAnnotationResolver {
+	private static final Logger log = LoggerFactory.getLogger(AbstractListenerAnnotationResolver.class);
 	private final Class<A> annotationType;
 	private final String addMethod;
 	private final Class<T> listenerType;
 	private CommandExecutor executor;
 
-	public AbstractListenerAnnotationInstaller(CommandExecutor executor, Class<A> annotationtype, String addMethod,
+	public AbstractListenerAnnotationResolver(CommandExecutor executor, Class<A> annotationtype, String addMethod,
 			Class<T> listenerType) {
 		this.executor = executor;
 		this.annotationType = annotationtype;
@@ -31,7 +31,7 @@ abstract class AbstractListenerAnnotationInstaller<A extends Annotation, T exten
 	}
 
 	@Override
-	public final void installAnnotation(Component component, Annotation annotationObj) {
+	public final void install(Component component, Annotation annotationObj) {
 		if (!supportsComponent(component))
 			throw new IllegalArgumentException(
 					getClass().getSimpleName() + " supports only components with " + addMethod + " method.");
@@ -51,7 +51,7 @@ abstract class AbstractListenerAnnotationInstaller<A extends Annotation, T exten
 	abstract T createListener(A annotation);
 
 	@Override
-	public final boolean supportsAnnotation(Annotation annotation) {
+	public final boolean supports(Annotation annotation) {
 		return annotationType.equals(annotation.annotationType());
 	}
 

@@ -22,16 +22,16 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-import io.github.suice.command.annotation.installer.CommandAnnotationInstaller;
+import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
 
 public class CommandModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(CommandModule.class);
-	private static final Matcher<TypeLiteral<?>> INITIALIZE_COMMANDS_MATCHER = new InitializeCommandsMatcher();
+	private static final Matcher<TypeLiteral<?>> INITIALIZE_COMMANDS_MATCHER = new InstallCommandsMatcher();
 	private ClassPath classpath;
 	private final String commandPackage;
-	private CommandInitializableInjectionListener commandInitializableInjectionListener;
-	private Set<Class<? extends CommandAnnotationInstaller>> annotationInstallerTypes;
-	private Set<CommandAnnotationInstaller> annotationInstallers;
+	private CommandInstallerInjectionListener commandInstallerInjectionListener;
+	private Set<Class<? extends ComponentAnnotationResolver>> annotationResolverTypes;
+	private Set<ComponentAnnotationResolver> annotationResolvers;
 	private boolean includeSubpackages;
 
 	public CommandModule(String commandPackage) {
@@ -49,13 +49,13 @@ public class CommandModule extends AbstractModule {
 	public CommandModule(String commandPackage, boolean includeSubpackages) {
 		this.commandPackage = commandPackage;
 		this.includeSubpackages = includeSubpackages;
-		this.commandInitializableInjectionListener = new CommandInitializableInjectionListener();
-		this.annotationInstallers = new HashSet<>();
-		this.annotationInstallerTypes = new HashSet<>();
+		this.commandInstallerInjectionListener = new CommandInstallerInjectionListener();
+		this.annotationResolvers = new HashSet<>();
+		this.annotationResolverTypes = new HashSet<>();
 	}
 
-	public void addCommandAnnotationInstaller(CommandAnnotationInstaller annotationInstaller) {
-		this.annotationInstallers.add(annotationInstaller);
+	public void addAnnotationResolver(ComponentAnnotationResolver annotationInstaller) {
+		this.annotationResolvers.add(annotationInstaller);
 	}
 
 	@Override
@@ -66,18 +66,18 @@ public class CommandModule extends AbstractModule {
 
 			@Override
 			public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-				encounter.register(commandInitializableInjectionListener);
+				encounter.register(commandInstallerInjectionListener);
 			}
 		});
 
 		bind(CommandExecutor.class).to(DefaultInjectableCommandExecutor.class).asEagerSingleton();
-		bind(CommandInitializer.class).asEagerSingleton();
+		bind(CommandInstaller.class).asEagerSingleton();
 
 		bindCommands();
 
-		Multibinder<CommandAnnotationInstaller> annotationInstallerBinder = newSetBinder(binder(),
-				CommandAnnotationInstaller.class);
-		annotationInstallerTypes.forEach(installerType -> annotationInstallerBinder.addBinding().to(installerType));
+		Multibinder<ComponentAnnotationResolver> annotationInstallerBinder = newSetBinder(binder(),
+				ComponentAnnotationResolver.class);
+		annotationResolverTypes.forEach(installerType -> annotationInstallerBinder.addBinding().to(installerType));
 	}
 
 	private void bindCommands() {
@@ -101,11 +101,11 @@ public class CommandModule extends AbstractModule {
 	}
 
 	@Inject
-	private void initListener(CommandInitializer commandInitializer,
-			Set<CommandAnnotationInstaller> injectedAnnotationInstallers) {
-		injectedAnnotationInstallers.forEach(commandInitializer::addAnnotationInstaller);
-		annotationInstallers.forEach(commandInitializer::addAnnotationInstaller);
-		commandInitializableInjectionListener.setCommandInitializer(commandInitializer);
+	private void initListener(CommandInstaller commandInstaller,
+			Set<ComponentAnnotationResolver> injectedAnnotationInstallers) {
+		injectedAnnotationInstallers.forEach(commandInstaller::addAnnotationResolver);
+		annotationResolvers.forEach(commandInstaller::addAnnotationResolver);
+		commandInstallerInjectionListener.setCommandInitializer(commandInstaller);
 	}
 
 	private void initClassPath() {

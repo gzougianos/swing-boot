@@ -26,7 +26,7 @@ import io.github.suice.command.Command;
 import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.annotation.OnActionPerformed;
 
-class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
+class OnActionPerformedResolverTests extends AnnotationInstallerTestBase {
 
 	@OnActionPerformed(TestCommand.class)
 	private int noModifier;
@@ -40,13 +40,13 @@ class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
 	@OnActionPerformed(IncorrectEventParameterizedCommand.class)
 	private int incorrectPatameterized;
 
-	private OnActionPerformedInstaller installer;
+	private OnActionPerformedResolver installer;
 	private CommandExecutor executor;
 
 	@Test
 	void anyModifier() throws NoSuchFieldException, SecurityException {
 		JButton button = new JButton();
-		installer.installAnnotation(button, annotationOfField("noModifier"));
+		installer.install(button, annotationOfField("noModifier"));
 
 		Arrays.asList(button.getActionListeners()).forEach(l -> l.actionPerformed(createEvent(button, 0)));
 
@@ -58,14 +58,13 @@ class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
 
 		verifyNoMoreInteractions(executor);
 
-		assertThrows(IllegalArgumentException.class,
-				() -> installer.installAnnotation(new JPanel(), annotationOfField("noModifier")));
+		assertThrows(IllegalArgumentException.class, () -> installer.install(new JPanel(), annotationOfField("noModifier")));
 	}
 
 	@Test
 	void specificModifier() throws Exception {
 		JButton button = new JButton();
-		installer.installAnnotation(button, annotationOfField("withModifier"));
+		installer.install(button, annotationOfField("withModifier"));
 
 		Arrays.asList(button.getActionListeners()).forEach(l -> l.actionPerformed(createEvent(button, 800)));
 
@@ -80,7 +79,7 @@ class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
 	@Test
 	void validPatameterized() throws Exception {
 		JButton button = new JButton();
-		installer.installAnnotation(button, annotationOfField("correctPatameterized"));
+		installer.install(button, annotationOfField("correctPatameterized"));
 
 		Arrays.asList(button.getActionListeners()).forEach(l -> l.actionPerformed(createEvent(button, 800)));
 
@@ -91,17 +90,12 @@ class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
 	@Test
 	void invalidPatameterized() throws Exception {
 		JButton button = new JButton();
-		installer.installAnnotation(button, annotationOfField("incorrectPatameterized"));
+		installer.install(button, annotationOfField("incorrectPatameterized"));
 
 		Arrays.asList(button.getActionListeners()).forEach(l -> l.actionPerformed(createEvent(button, 800)));
 
 		verify(executor).execute(eq(IncorrectEventParameterizedCommand.class));
 		verifyNoMoreInteractions(executor);
-	}
-
-	@Test
-	void eventParametrized() throws Exception {
-
 	}
 
 	private ActionEvent createEvent(AbstractButton button, int modifier) {
@@ -111,7 +105,7 @@ class OnActionPerformedInstallerTests extends AnnotationInstallerTestBase {
 	@BeforeEach
 	void init() {
 		executor = mock(CommandExecutor.class);
-		installer = new OnActionPerformedInstaller(executor);
+		installer = new OnActionPerformedResolver(executor);
 	}
 
 	private static class TestCommand implements Command<Void> {

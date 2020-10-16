@@ -10,9 +10,9 @@ import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.ReflectionSupport;
 import io.github.suice.command.annotation.OnActionPerformed;
 
-public class OnActionPerformedInstaller extends AbstractListenerAnnotationInstaller<OnActionPerformed, ActionListener> {
+public class OnActionPerformedResolver extends AbstractListenerAnnotationResolver<OnActionPerformed, ActionListener> {
 
-	public OnActionPerformedInstaller(CommandExecutor executor) {
+	public OnActionPerformedResolver(CommandExecutor executor) {
 		super(executor, OnActionPerformed.class, "addActionListener", ActionListener.class);
 	}
 

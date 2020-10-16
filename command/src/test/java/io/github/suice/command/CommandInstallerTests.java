@@ -18,67 +18,67 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.CommandAnnotationInstaller;
+import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
 
-class CommandInitializerTests {
+class CommandInstallerTests {
 
-	private CommandInitializer commandInitializer;
-	private CommandAnnotationInstaller installer;
+	private CommandInstaller commandInstaller;
+	private ComponentAnnotationResolver annotationResolver;
 
 	@Test
 	void nullField() {
 		WithNullField objectWithNullField = new WithNullField();
 
-		assertThrows(CommandInitializationException.class, () -> commandInitializer.initializeCommands(objectWithNullField));
-		verifyZeroInteractions(installer);
+		assertThrows(CommandInstallationException.class, () -> commandInstaller.installCommands(objectWithNullField));
+		verifyZeroInteractions(annotationResolver);
 	}
 
 	@Test
-	void inheritedInitiation() {
+	void inheritedInstallation() {
 		ChildClass child = new ChildClass();
 
-		commandInitializer.initializeCommands(child);
+		commandInstaller.installCommands(child);
 
-		verify(installer).installAnnotation(eq(child.getButton()), isA(OnActionPerformed.class));
+		verify(annotationResolver).install(eq(child.getButton()), isA(OnActionPerformed.class));
 	}
 
 	@Test
 	void notAComponent() {
 		NotAComponent notAComponent = new NotAComponent();
 
-		commandInitializer.initializeCommands(notAComponent);
-		verifyZeroInteractions(installer);
+		commandInstaller.installCommands(notAComponent);
+		verifyZeroInteractions(annotationResolver);
 	}
 
 	@Test
 	void zeroAnnotations() {
 		ZeroAnnotations zeroAnnotations = new ZeroAnnotations();
 
-		commandInitializer.initializeCommands(zeroAnnotations);
-		verifyZeroInteractions(installer);
+		commandInstaller.installCommands(zeroAnnotations);
+		verifyZeroInteractions(annotationResolver);
 	}
 
 	@Test
 	void properDeclaration() throws NoSuchFieldException, SecurityException {
 		ProperDeclaration properDeclaration = new ProperDeclaration();
 
-		commandInitializer.initializeCommands(properDeclaration);
-		verify(installer).supportsAnnotation(eq(ProperDeclaration.class.getDeclaredField("button").getDeclaredAnnotations()[0]));
-		verify(installer).installAnnotation(eq(properDeclaration.button), isA(OnActionPerformed.class));
+		commandInstaller.installCommands(properDeclaration);
+		verify(annotationResolver).supports(eq(ProperDeclaration.class.getDeclaredField("button").getDeclaredAnnotations()[0]));
+		verify(annotationResolver).install(eq(properDeclaration.button), isA(OnActionPerformed.class));
 
-		assertThrows(CommandInitializationException.class, () -> commandInitializer.initializeCommands(properDeclaration));
-		verifyNoMoreInteractions(installer);
+		assertThrows(CommandInstallationException.class, () -> commandInstaller.installCommands(properDeclaration));
+		verifyNoMoreInteractions(annotationResolver);
 	}
 
 	@BeforeEach
 	void init() {
 		CommandExecutor executor = mock(CommandExecutor.class);
-		commandInitializer = new CommandInitializer(executor);
+		commandInstaller = new CommandInstaller(executor);
 
-		installer = mock(CommandAnnotationInstaller.class);
-		when(installer.supportsAnnotation(any())).thenReturn(true);
+		annotationResolver = mock(ComponentAnnotationResolver.class);
+		when(annotationResolver.supports(any())).thenReturn(true);
 
-		commandInitializer.addAnnotationInstaller(installer);
+		commandInstaller.addAnnotationResolver(annotationResolver);
 	}
 
 	private static class ProperDeclaration {
@@ -102,7 +102,7 @@ class CommandInitializerTests {
 
 	}
 
-	@InitializeCommands
+	@InstallCommands
 	private static class ParentClass {
 		@OnActionPerformed(TestCommand.class)
 		private JButton button = new JButton();

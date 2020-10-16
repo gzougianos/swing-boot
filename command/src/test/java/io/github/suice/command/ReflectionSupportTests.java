@@ -23,20 +23,20 @@ class ReflectionSupportTests {
 	@Test
 	void getDeclaredAndInheritedFieldsFromAnnotatedType() throws Exception {
 
-		Set<Field> fields = ReflectionSupport.getDeclaredAndInheritedFields(Child.class, InitializeCommands.class);
+		Set<Field> fields = ReflectionSupport.getDeclaredAndInheritedFields(Child.class, InstallCommands.class);
 		assertEquals(3, fields.size());
 		assertTrue(fields.contains(Child.class.getDeclaredField("childField")));
 		assertTrue(fields.contains(Child.class.getDeclaredField("protectedChildField")));
 		assertTrue(fields.contains(Child.class.getDeclaredField("publicChildField")));
 
-		fields = ReflectionSupport.getDeclaredAndInheritedFields(GrandChild.class, InitializeCommands.class);
+		fields = ReflectionSupport.getDeclaredAndInheritedFields(GrandChild.class, InstallCommands.class);
 		assertEquals(4, fields.size());
 		assertTrue(fields.contains(Child.class.getDeclaredField("childField")));
 		assertTrue(fields.contains(GrandChild.class.getDeclaredField("grandField")));
 		assertTrue(fields.contains(Child.class.getDeclaredField("protectedChildField")));
 		assertTrue(fields.contains(Child.class.getDeclaredField("publicChildField")));
 
-		fields = ReflectionSupport.getDeclaredAndInheritedFields(Parent.class, InitializeCommands.class);
+		fields = ReflectionSupport.getDeclaredAndInheritedFields(Parent.class, InstallCommands.class);
 		assertEquals(2, fields.size());
 		assertTrue(fields.contains(Parent.class.getDeclaredField("field")));
 		assertTrue(fields.contains(Parent.class.getDeclaredField("field2")));
@@ -66,7 +66,7 @@ class ReflectionSupportTests {
 		protected String field2;
 	}
 
-	@InitializeCommands
+	@InstallCommands
 	@SuppressWarnings("unused")
 	private class Child extends Parent {
 		private String childField;
@@ -75,7 +75,7 @@ class ReflectionSupportTests {
 		private static final String someStaticField = "s";
 	}
 
-	@InitializeCommands
+	@InstallCommands
 	@SuppressWarnings("unused")
 	private class GrandChild extends Child {
 		private String grandField;

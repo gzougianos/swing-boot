@@ -23,14 +23,14 @@ import com.google.inject.Module;
 
 import io.github.suice.command.Command;
 import io.github.suice.command.CommandModule;
-import io.github.suice.command.InitializeCommands;
+import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.CommandAnnotationInstaller;
+import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
 
-class AdditionalInstallerCallTests {
+class AdditionalResolverCallTests {
 
 	private CommandModule module;
-	private CommandAnnotationInstaller installer;
+	private ComponentAnnotationResolver installer;
 
 	@Test
 	void nullFieldException() {
@@ -61,15 +61,15 @@ class AdditionalInstallerCallTests {
 		Injector injector = Guice.createInjector(createModuleWith(ProperInitialization.class), module);
 
 		ProperInitialization intializee = injector.getInstance(ProperInitialization.class);
-		verify(installer).installAnnotation(eq(intializee.button), any());
+		verify(installer).install(eq(intializee.button), any());
 	}
 
 	@BeforeEach
 	void init() {
 		module = new CommandModule(getClass().getPackage().getName());
-		installer = mock(CommandAnnotationInstaller.class);
-		module.addCommandAnnotationInstaller(installer);
-		when(installer.supportsAnnotation(any())).thenReturn(Boolean.TRUE);
+		installer = mock(ComponentAnnotationResolver.class);
+		module.addAnnotationResolver(installer);
+		when(installer.supports(any())).thenReturn(Boolean.TRUE);
 	}
 
 	private Module createModuleWith(Class<?> clazz) {
@@ -82,7 +82,7 @@ class AdditionalInstallerCallTests {
 	}
 
 	@Singleton
-	@InitializeCommands
+	@InstallCommands
 	private static class InitializeCommandsNullField {
 
 		@OnActionPerformed(TestCommand.class)
@@ -90,7 +90,7 @@ class AdditionalInstallerCallTests {
 
 	}
 
-	@InitializeCommands
+	@InstallCommands
 	private static class InitializeCommandsButFieldWithoutAnnotation {
 
 		@SuppressWarnings("unused")
@@ -98,7 +98,7 @@ class AdditionalInstallerCallTests {
 
 	}
 
-	@InitializeCommands
+	@InstallCommands
 	private static class ProperInitialization {
 
 		@OnActionPerformed(TestCommand.class)
