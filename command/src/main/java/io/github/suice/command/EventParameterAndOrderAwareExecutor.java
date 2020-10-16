@@ -37,7 +37,7 @@ public class EventParameterAndOrderAwareExecutor {
 			Parameter parameter = commandType.getMethod("execute", Optional.class).getParameters()[0];
 			TypeLiteral<?> literal = TypeLiteral.get(parameter.getParameterizedType());
 			Class<?> parType = literal.getFieldType(Optional.class.getDeclaredField("value")).getRawType();
-			if (AWTEvent.class.isAssignableFrom(parType))
+			if (equalsOrExtends(parType, AWTEvent.class))
 				return ((Class<? extends AWTEvent>) parType);
 		} catch (NoSuchMethodException | NoSuchFieldException e) {
 			log.error("Error checking if command type is event parametrized.", e);
@@ -45,12 +45,16 @@ public class EventParameterAndOrderAwareExecutor {
 		return null;
 	}
 
+	private static boolean equalsOrExtends(Class<?> typeA, Class<?> typeB) {
+		return typeA.equals(typeB) || typeB.isAssignableFrom(typeA);
+	}
+
 	@SuppressWarnings("unchecked")
 	public void execute(AWTEvent event) {
 		for (Class<? extends Command<?>> cmdType : commandTypesWithParameterTypes.keySet()) {
 			Class<? extends AWTEvent> parType = commandTypesWithParameterTypes.get(cmdType);
 			Class<? extends Command<AWTEvent>> parametrizedCmdType = (Class<? extends Command<AWTEvent>>) cmdType;
-			if (parType != null && event.getClass().isAssignableFrom(parType))
+			if (parType != null && equalsOrExtends(event.getClass(), parType))
 				executor.execute(parametrizedCmdType, event);
 			else
 				executor.execute(cmdType);
