@@ -1,15 +1,10 @@
 package io.github.suice.command;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.awt.AWTEvent;
-import java.awt.event.ComponentEvent;
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -50,16 +45,6 @@ class ReflectionSupportTests {
 		assertTrue(ReflectionSupport.hasMethod("length", String.class));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
-	void definePatametrizedCommandTypes() {
-		Map<Class<? extends Command<?>>, Class<? extends AWTEvent>> map = ReflectionSupport
-				.defineParameterizedCommandTypes(new Class[] { TestCommand.class, EventTestCommand.class });
-		assertEquals(2, map.size());
-		assertNull(map.get(TestCommand.class));
-		assertEquals(ComponentEvent.class, map.get(EventTestCommand.class));
-	}
-
 	@SuppressWarnings("unused")
 	private class Parent {
 		private String field;
@@ -79,20 +64,6 @@ class ReflectionSupportTests {
 	@SuppressWarnings("unused")
 	private class GrandChild extends Child {
 		private String grandField;
-	}
-
-	private static class TestCommand implements Command<Boolean> {
-
-		@Override
-		public void execute(Optional<Boolean> parameter) {
-		}
-	}
-
-	private static class EventTestCommand implements Command<ComponentEvent> {
-
-		@Override
-		public void execute(Optional<ComponentEvent> parameter) {
-		}
 	}
 
 }
