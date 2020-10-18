@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Singleton;
 
@@ -61,7 +60,7 @@ class CommandModuleBindingTests {
 	private static class InnerStaticCommand implements Command<Void> {
 
 		@Override
-		public void execute(Optional<Void> parameter) {
+		public void execute(Void parameter) {
 		}
 
 	}

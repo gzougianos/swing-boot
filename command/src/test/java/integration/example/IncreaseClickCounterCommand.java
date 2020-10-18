@@ -1,7 +1,5 @@
 package integration.example;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
 import io.github.suice.command.Command;
@@ -16,7 +14,7 @@ public class IncreaseClickCounterCommand implements Command<Void> {
 	}
 
 	@Override
-	public void execute(Optional<Void> parameter) {
+	public void execute(Void parameter) {
 		view.increaseClickCount();
 	}
 

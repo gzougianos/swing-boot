@@ -1,7 +1,6 @@
 package integration.example;
 
 import java.awt.event.ActionEvent;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -17,8 +16,8 @@ public class DecreaseClickCounterCommand implements Command<ActionEvent> {
 	}
 
 	@Override
-	public void execute(Optional<ActionEvent> parameter) {
-		System.out.println("Event: " + parameter.get());
+	public void execute(ActionEvent parameter) {
+		System.out.println("Event: " + parameter);
 		view.decreaseClickCount();
 	}
 

@@ -1,8 +1,5 @@
 package io.github.suice.command;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.ofNullable;
-
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
@@ -18,13 +15,13 @@ public class DefaultInjectableCommandExecutor implements CommandExecutor {
 	@Override
 	public <T extends Command<?>> void execute(Class<T> commandClass) {
 		Command<?> commandInstance = injector.getInstance(commandClass);
-		commandInstance.execute(empty());
+		commandInstance.execute(null);
 	}
 
 	@Override
-	public <S, T extends Command<S>> void execute(Class<T> commandClass, S parameters) {
+	public <S, T extends Command<S>> void execute(Class<T> commandClass, S parameter) {
 		Command<S> commandInstance = injector.getInstance(commandClass);
-		commandInstance.execute(ofNullable(parameters));
+		commandInstance.execute(parameter);
 	}
 
 }

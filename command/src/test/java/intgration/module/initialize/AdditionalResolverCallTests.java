@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
 import javax.inject.Singleton;
 import javax.swing.JButton;
 
@@ -117,7 +115,7 @@ class AdditionalResolverCallTests {
 	private static class TestCommand implements Command<Void> {
 
 		@Override
-		public void execute(Optional<Void> parameter) {
+		public void execute(Void parameter) {
 		}
 
 	}

@@ -1,13 +1,11 @@
 package intgration.module.correctbinding;
 
-import java.util.Optional;
-
 import io.github.suice.command.Command;
 
 class PackagePrivateCommand implements Command<Void> {
 
 	@Override
-	public void execute(Optional<Void> parameter) {
+	public void execute(Void parameter) {
 	}
 
 }

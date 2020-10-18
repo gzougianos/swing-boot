@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.util.Arrays;
-import java.util.Optional;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -111,7 +110,7 @@ class OnActionPerformedResolverTests extends AnnotationInstallerTestBase {
 	private static class TestCommand implements Command<Void> {
 
 		@Override
-		public void execute(Optional<Void> parameter) {
+		public void execute(Void parameter) {
 		}
 
 	}
@@ -119,7 +118,7 @@ class OnActionPerformedResolverTests extends AnnotationInstallerTestBase {
 	private static class CorrectEventParameterizedCommand implements Command<ActionEvent> {
 
 		@Override
-		public void execute(Optional<ActionEvent> parameter) {
+		public void execute(ActionEvent parameter) {
 
 		}
 
@@ -127,7 +126,7 @@ class OnActionPerformedResolverTests extends AnnotationInstallerTestBase {
 
 	private static class IncorrectEventParameterizedCommand implements Command<ComponentEvent> {
 		@Override
-		public void execute(Optional<ComponentEvent> parameter) {
+		public void execute(ComponentEvent parameter) {
 
 		}
 	}

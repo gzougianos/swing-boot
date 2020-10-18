@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
-import java.util.Optional;
 
 import javax.swing.JButton;
 
@@ -41,7 +40,7 @@ public class EventParameterAndOrderAwareExecutorTests {
 	private static class WithoutParametersCommand implements Command<Void> {
 
 		@Override
-		public void execute(Optional<Void> parameter) {
+		public void execute(Void parameter) {
 		}
 
 	}
@@ -49,7 +48,7 @@ public class EventParameterAndOrderAwareExecutorTests {
 	private static class ParameterMismatchCommand implements Command<ComponentEvent> {
 
 		@Override
-		public void execute(Optional<ComponentEvent> parameter) {
+		public void execute(ComponentEvent parameter) {
 		}
 
 	}
@@ -57,7 +56,7 @@ public class EventParameterAndOrderAwareExecutorTests {
 	private static class ParameterCommand implements Command<ActionEvent> {
 
 		@Override
-		public void execute(Optional<ActionEvent> parameter) {
+		public void execute(ActionEvent parameter) {
 		}
 
 	}
@@ -65,7 +64,7 @@ public class EventParameterAndOrderAwareExecutorTests {
 	private static class AwtParameterCommand implements Command<AWTEvent> {
 
 		@Override
-		public void execute(Optional<AWTEvent> parameter) {
+		public void execute(AWTEvent parameter) {
 		}
 
 	}

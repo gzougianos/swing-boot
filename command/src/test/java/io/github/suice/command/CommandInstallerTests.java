@@ -10,8 +10,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
-
 import javax.swing.JButton;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -136,7 +134,7 @@ class CommandInstallerTests {
 	private static class TestCommand implements Command<Void> {
 
 		@Override
-		public void execute(Optional<Void> parameter) {
+		public void execute(Void parameter) {
 		}
 
 	}
