@@ -19,5 +19,4 @@ public @interface OnActionPerformed {
 
 	int modifiers() default ANY_MODIFIER;
 
-	String name() default "";
 }
