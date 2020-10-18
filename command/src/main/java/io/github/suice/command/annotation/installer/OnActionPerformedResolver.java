@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import io.github.suice.command.Command;
 import io.github.suice.command.CommandExecutor;
-import io.github.suice.command.EventParameterAndOrderAwareExecutor;
+import io.github.suice.command.EventParameterAwareExecutor;
 import io.github.suice.command.annotation.OnActionPerformed;
 
 public class OnActionPerformedResolver extends AbstractListenerAnnotationResolver<OnActionPerformed, ActionListener> {
@@ -19,15 +19,16 @@ public class OnActionPerformedResolver extends AbstractListenerAnnotationResolve
 
 	@Override
 	ActionListener createListener(OnActionPerformed annotation) {
-		final Class<? extends Command<?>>[] commandTypes = annotation.value();
+		final Class<? extends Command<?>> commandType = annotation.value();
 
-		final EventParameterAndOrderAwareExecutor eventParameterAndOrderAwareExecutor = new EventParameterAndOrderAwareExecutor(executor, commandTypes);
+		final EventParameterAwareExecutor eventParameterAwareExecutor = new EventParameterAwareExecutor(
+				executor, commandType);
 
 		final boolean anyModifier = annotation.modifiers() == OnActionPerformed.ANY_MODIFIER;
 		return (ActionEvent event) -> {
 			int eventModifiers = event.getModifiers();
 			if (eventModifiers == annotation.modifiers() || anyModifier)
-				eventParameterAndOrderAwareExecutor.execute(event);
+				eventParameterAwareExecutor.execute(event);
 		};
 	}
 

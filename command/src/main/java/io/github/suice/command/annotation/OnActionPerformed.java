@@ -15,7 +15,9 @@ import io.github.suice.command.Command;
 public @interface OnActionPerformed {
 	public static final int ANY_MODIFIER = -500;
 
-	Class<? extends Command<?>>[] value();
+	Class<? extends Command<?>> value();
 
 	int modifiers() default ANY_MODIFIER;
+
+	String name() default "";
 }

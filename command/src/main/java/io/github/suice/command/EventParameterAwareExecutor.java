@@ -6,27 +6,23 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EventParameterAndOrderAwareExecutor {
+public class EventParameterAwareExecutor {
 	private static final Map<Class<? extends Command<?>>, Class<? extends AWTEvent>> commandTypesWithParameterTypes = new LinkedHashMap<>();
 	private CommandExecutor executor;
-	private Class<? extends Command<?>>[] commandTypes;
+	private Class<? extends Command<?>> commandType;
 
-	public EventParameterAndOrderAwareExecutor(CommandExecutor executor, Class<? extends Command<?>>[] commandTypes) {
+	public EventParameterAwareExecutor(CommandExecutor executor, Class<? extends Command<?>> commandType) {
 		this.executor = executor;
-		this.commandTypes = commandTypes;
+		this.commandType = commandType;
 
 		analyzeCommandTypeParameters();
 	}
 
 	private void analyzeCommandTypeParameters() {
-		for (Class<? extends Command<?>> cmdType : commandTypes) {
+		boolean alreadyAnalyzed = commandTypesWithParameterTypes.containsKey(commandType);
 
-			boolean alreadyAnalyzed = commandTypesWithParameterTypes.containsKey(cmdType);
-			if (alreadyAnalyzed)
-				continue;
-
-			commandTypesWithParameterTypes.put(cmdType, getGenericAwtEventParameterType(cmdType));
-		}
+		if (!alreadyAnalyzed)
+			commandTypesWithParameterTypes.put(commandType, getGenericAwtEventParameterType(commandType));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -62,13 +58,12 @@ public class EventParameterAndOrderAwareExecutor {
 
 	@SuppressWarnings("unchecked")
 	public void execute(AWTEvent event) {
-		for (Class<? extends Command<?>> cmdType : commandTypes) {
-			Class<? extends AWTEvent> parType = commandTypesWithParameterTypes.get(cmdType);
-			Class<? extends Command<AWTEvent>> parametrizedCmdType = (Class<? extends Command<AWTEvent>>) cmdType;
-			if (parType != null && equalsOrExtends(event.getClass(), parType))
-				executor.execute(parametrizedCmdType, event);
-			else
-				executor.execute(cmdType);
+		Class<? extends AWTEvent> parType = commandTypesWithParameterTypes.get(commandType);
+		if (parType != null && equalsOrExtends(event.getClass(), parType)) {
+			Class<? extends Command<AWTEvent>> parametrizedCmdType = (Class<? extends Command<AWTEvent>>) commandType;
+			executor.execute(parametrizedCmdType, event);
+		} else {
+			executor.execute(commandType);
 		}
 	}
 }
