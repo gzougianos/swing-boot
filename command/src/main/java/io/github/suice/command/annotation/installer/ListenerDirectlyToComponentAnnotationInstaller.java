@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 import io.github.suice.command.ReflectionSupport;
 import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
-public class BasicListenerAnnotationInstaller<A extends Annotation, T extends EventListener>
+public class ListenerDirectlyToComponentAnnotationInstaller<A extends Annotation, T extends EventListener>
 		implements ComponentAnnotationInstaller {
-	private static final Logger log = LoggerFactory.getLogger(BasicListenerAnnotationInstaller.class);
+	private static final Logger log = LoggerFactory.getLogger(ListenerDirectlyToComponentAnnotationInstaller.class);
 	private final Class<A> annotationType;
 	private final String addMethod;
 	private final Class<T> listenerType;
 	private ListenerCreator<A, T> listenerCreator;
 
-	public BasicListenerAnnotationInstaller(Class<A> annotationtype, String addMethod, Class<T> listenerType,
+	public ListenerDirectlyToComponentAnnotationInstaller(Class<A> annotationtype, String addMethod, Class<T> listenerType,
 			ListenerCreator<A, T> listenerCreator) {
 		this.annotationType = annotationtype;
 		this.addMethod = addMethod;

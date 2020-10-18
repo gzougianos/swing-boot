@@ -2,6 +2,7 @@ package io.github.suice.command;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -10,9 +11,11 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.BasicListenerAnnotationInstaller;
+import io.github.suice.command.annotation.OnComponentResized;
+import io.github.suice.command.annotation.installer.ListenerDirectlyToComponentAnnotationInstaller;
 import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
 import io.github.suice.command.annotation.installer.creator.OnActionPerformedCreator;
+import io.github.suice.command.annotation.installer.creator.OnComponentResizedCreator;
 
 public class CommandInstaller {
 	private final Set<Object> installedObjects = new HashSet<>();
@@ -28,12 +31,19 @@ public class CommandInstaller {
 	private void createDefaultInstallers() {
 		//@formatter:off
 		annotationInstallers.add(
-				new BasicListenerAnnotationInstaller<>(
+				new ListenerDirectlyToComponentAnnotationInstaller<>(
 						OnActionPerformed.class, 
 						"addActionListener",
 						ActionListener.class, 
 						new OnActionPerformedCreator(executor)
-						
+						));
+		
+		annotationInstallers.add(
+				new ListenerDirectlyToComponentAnnotationInstaller<>(
+						OnComponentResized.class, 
+						"addComponentListener",
+						ComponentListener.class, 
+						new OnComponentResizedCreator(executor)
 						));
 		//@formatter:on
 	}

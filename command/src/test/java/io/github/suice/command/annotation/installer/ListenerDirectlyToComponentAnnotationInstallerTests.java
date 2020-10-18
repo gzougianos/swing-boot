@@ -18,7 +18,7 @@ import io.github.suice.command.Command;
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
-class BasicListenerAnnotationInstallerTests implements AnnotationInstallerTestUtils {
+class ListenerDirectlyToComponentAnnotationInstallerTests implements AnnotationInstallerTestUtils {
 	@OnActionPerformed(TestCommand.class)
 	private int field;
 
@@ -30,7 +30,7 @@ class BasicListenerAnnotationInstallerTests implements AnnotationInstallerTestUt
 		};
 		when(creator.createListener(any())).thenReturn(listener);
 
-		ComponentAnnotationInstaller resolver = new BasicListenerAnnotationInstaller<>(OnActionPerformed.class, "addActionListener",
+		ComponentAnnotationInstaller resolver = new ListenerDirectlyToComponentAnnotationInstaller<>(OnActionPerformed.class, "addActionListener",
 				ActionListener.class, creator);
 
 		assertThrows(IllegalArgumentException.class, () -> resolver.install(new JPanel(), annotationOfField("field")));
