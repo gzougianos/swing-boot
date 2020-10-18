@@ -9,18 +9,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.suice.command.ReflectionSupport;
+import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
-abstract class AbstractListenerAnnotationResolver<A extends Annotation, T extends EventListener>
-		implements ComponentAnnotationResolver {
-	private static final Logger log = LoggerFactory.getLogger(AbstractListenerAnnotationResolver.class);
+public class BasicListenerAnnotationInstaller<A extends Annotation, T extends EventListener>
+		implements ComponentAnnotationInstaller {
+	private static final Logger log = LoggerFactory.getLogger(BasicListenerAnnotationInstaller.class);
 	private final Class<A> annotationType;
 	private final String addMethod;
 	private final Class<T> listenerType;
+	private ListenerCreator<A, T> listenerCreator;
 
-	public AbstractListenerAnnotationResolver(Class<A> annotationtype, String addMethod, Class<T> listenerType) {
+	public BasicListenerAnnotationInstaller(Class<A> annotationtype, String addMethod, Class<T> listenerType,
+			ListenerCreator<A, T> listenerCreator) {
 		this.annotationType = annotationtype;
 		this.addMethod = addMethod;
 		this.listenerType = listenerType;
+		this.listenerCreator = listenerCreator;
 	}
 
 	@Override
@@ -30,7 +34,7 @@ abstract class AbstractListenerAnnotationResolver<A extends Annotation, T extend
 					getClass().getSimpleName() + " supports only components with " + addMethod + " method.");
 
 		@SuppressWarnings("unchecked")
-		T listener = createListener((A) annotationObj);
+		T listener = listenerCreator.createListener((A) annotationObj);
 
 		Class<? extends Component> componentType = component.getClass();
 		try {
@@ -40,8 +44,6 @@ abstract class AbstractListenerAnnotationResolver<A extends Annotation, T extend
 			log.error("Error invoking " + addMethod + " method to " + componentType, e);
 		}
 	}
-
-	abstract T createListener(A annotation);
 
 	@Override
 	public final boolean supports(Annotation annotation) {

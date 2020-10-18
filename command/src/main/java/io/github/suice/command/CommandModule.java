@@ -22,7 +22,7 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
+import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
 
 public class CommandModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(CommandModule.class);
@@ -30,8 +30,8 @@ public class CommandModule extends AbstractModule {
 	private ClassPath classpath;
 	private final String commandPackage;
 	private CommandInstallerInjectionListener commandInstallerInjectionListener;
-	private Set<Class<? extends ComponentAnnotationResolver>> annotationResolverTypes;
-	private Set<ComponentAnnotationResolver> annotationResolvers;
+	private Set<Class<? extends ComponentAnnotationInstaller>> annotationInstallerTypes;
+	private Set<ComponentAnnotationInstaller> annotationInstallers;
 	private boolean includeSubpackages;
 
 	public CommandModule(String commandPackage) {
@@ -50,12 +50,16 @@ public class CommandModule extends AbstractModule {
 		this.commandPackage = commandPackage;
 		this.includeSubpackages = includeSubpackages;
 		this.commandInstallerInjectionListener = new CommandInstallerInjectionListener();
-		this.annotationResolvers = new HashSet<>();
-		this.annotationResolverTypes = new HashSet<>();
+		this.annotationInstallers = new HashSet<>();
+		this.annotationInstallerTypes = new HashSet<>();
 	}
 
-	public void addAnnotationResolver(ComponentAnnotationResolver annotationInstaller) {
-		this.annotationResolvers.add(annotationInstaller);
+	public void addAnnotationInstaller(ComponentAnnotationInstaller annotationInstaller) {
+		this.annotationInstallers.add(annotationInstaller);
+	}
+
+	public void addAnnotationInstallerType(Class<? extends ComponentAnnotationInstaller> annotationInstallerType) {
+		this.annotationInstallerTypes.add(annotationInstallerType);
 	}
 
 	@Override
@@ -75,9 +79,9 @@ public class CommandModule extends AbstractModule {
 
 		bindCommands();
 
-		Multibinder<ComponentAnnotationResolver> annotationInstallerBinder = newSetBinder(binder(),
-				ComponentAnnotationResolver.class);
-		annotationResolverTypes.forEach(installerType -> annotationInstallerBinder.addBinding().to(installerType));
+		Multibinder<ComponentAnnotationInstaller> annotationInstallerBinder = newSetBinder(binder(),
+				ComponentAnnotationInstaller.class);
+		annotationInstallerTypes.forEach(installerType -> annotationInstallerBinder.addBinding().to(installerType));
 	}
 
 	private void bindCommands() {
@@ -101,10 +105,9 @@ public class CommandModule extends AbstractModule {
 	}
 
 	@Inject
-	private void initListener(CommandInstaller commandInstaller,
-			Set<ComponentAnnotationResolver> injectedAnnotationInstallers) {
-		injectedAnnotationInstallers.forEach(commandInstaller::addAnnotationResolver);
-		annotationResolvers.forEach(commandInstaller::addAnnotationResolver);
+	private void initListener(CommandInstaller commandInstaller, Set<ComponentAnnotationInstaller> injectedAnnotationInstallers) {
+		injectedAnnotationInstallers.forEach(commandInstaller::addAnnotationInstaller);
+		annotationInstallers.forEach(commandInstaller::addAnnotationInstaller);
 		commandInstallerInjectionListener.setCommandInitializer(commandInstaller);
 	}
 

@@ -1,6 +1,7 @@
 package io.github.suice.command;
 
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -8,12 +9,14 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
-import io.github.suice.command.annotation.installer.OnActionPerformedResolver;
+import io.github.suice.command.annotation.OnActionPerformed;
+import io.github.suice.command.annotation.installer.BasicListenerAnnotationInstaller;
+import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
+import io.github.suice.command.annotation.installer.creator.OnActionPerformedCreator;
 
 public class CommandInstaller {
 	private final Set<Object> installedObjects = new HashSet<>();
-	private final Set<ComponentAnnotationResolver> annotationResolvers = new HashSet<>();
+	private final Set<ComponentAnnotationInstaller> annotationInstallers = new HashSet<>();
 	private CommandExecutor executor;
 
 	@Inject
@@ -23,11 +26,20 @@ public class CommandInstaller {
 	}
 
 	private void createDefaultInstallers() {
-		annotationResolvers.add(new OnActionPerformedResolver(executor));
+		//@formatter:off
+		annotationInstallers.add(
+				new BasicListenerAnnotationInstaller<>(
+						OnActionPerformed.class, 
+						"addActionListener",
+						ActionListener.class, 
+						new OnActionPerformedCreator(executor)
+						
+						));
+		//@formatter:on
 	}
 
-	public void addAnnotationResolver(ComponentAnnotationResolver resolver) {
-		annotationResolvers.add(resolver);
+	public void addAnnotationInstaller(ComponentAnnotationInstaller resolver) {
+		annotationInstallers.add(resolver);
 	}
 
 	public void installCommands(Object object) throws CommandInstallationException {
@@ -63,7 +75,7 @@ public class CommandInstaller {
 				ensureNotNull(component, field);
 
 				for (Annotation annotation : annotations) {
-					annotationResolvers.stream().filter(i -> i.supports(annotation))
+					annotationInstallers.stream().filter(i -> i.supports(annotation))
 							.forEach(i -> i.install(component, annotation));
 				}
 

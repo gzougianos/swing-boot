@@ -16,12 +16,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
+import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
 
 class CommandInstallerTests {
 
 	private CommandInstaller commandInstaller;
-	private ComponentAnnotationResolver annotationResolver;
+	private ComponentAnnotationInstaller annotationResolver;
 
 	@Test
 	void nullField() {
@@ -83,10 +83,10 @@ class CommandInstallerTests {
 		CommandExecutor executor = mock(CommandExecutor.class);
 		commandInstaller = new CommandInstaller(executor);
 
-		annotationResolver = mock(ComponentAnnotationResolver.class);
+		annotationResolver = mock(ComponentAnnotationInstaller.class);
 		when(annotationResolver.supports(any())).thenReturn(true);
 
-		commandInstaller.addAnnotationResolver(annotationResolver);
+		commandInstaller.addAnnotationInstaller(annotationResolver);
 	}
 
 	private static class ProperDeclaration {

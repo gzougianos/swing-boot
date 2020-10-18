@@ -1,4 +1,4 @@
-package io.github.suice.command.annotation.installer;
+package io.github.suice.command.annotation.installer.creator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,21 +8,19 @@ import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.EventParameterAwareExecutor;
 import io.github.suice.command.annotation.OnActionPerformed;
 
-public class OnActionPerformedResolver extends AbstractListenerAnnotationResolver<OnActionPerformed, ActionListener> {
+public class OnActionPerformedCreator implements ListenerCreator<OnActionPerformed, ActionListener> {
 
 	private CommandExecutor executor;
 
-	public OnActionPerformedResolver(CommandExecutor executor) {
-		super(OnActionPerformed.class, "addActionListener", ActionListener.class);
+	public OnActionPerformedCreator(CommandExecutor executor) {
 		this.executor = executor;
 	}
 
 	@Override
-	ActionListener createListener(OnActionPerformed annotation) {
+	public ActionListener createListener(OnActionPerformed annotation) {
 		final Class<? extends Command<?>> commandType = annotation.value();
 
-		final EventParameterAwareExecutor eventParameterAwareExecutor = new EventParameterAwareExecutor(
-				executor, commandType);
+		final EventParameterAwareExecutor eventParameterAwareExecutor = new EventParameterAwareExecutor(executor, commandType);
 
 		final boolean anyModifier = annotation.modifiers() == OnActionPerformed.ANY_MODIFIER;
 		return (ActionEvent event) -> {

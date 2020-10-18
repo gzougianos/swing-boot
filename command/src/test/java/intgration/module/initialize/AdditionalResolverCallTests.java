@@ -23,12 +23,12 @@ import io.github.suice.command.Command;
 import io.github.suice.command.CommandModule;
 import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.ComponentAnnotationResolver;
+import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
 
 class AdditionalResolverCallTests {
 
 	private CommandModule module;
-	private ComponentAnnotationResolver installer;
+	private ComponentAnnotationInstaller installer;
 
 	@Test
 	void nullFieldException() {
@@ -65,8 +65,8 @@ class AdditionalResolverCallTests {
 	@BeforeEach
 	void init() {
 		module = new CommandModule(getClass().getPackage().getName());
-		installer = mock(ComponentAnnotationResolver.class);
-		module.addAnnotationResolver(installer);
+		installer = mock(ComponentAnnotationInstaller.class);
+		module.addAnnotationInstaller(installer);
 		when(installer.supports(any())).thenReturn(Boolean.TRUE);
 	}
 
