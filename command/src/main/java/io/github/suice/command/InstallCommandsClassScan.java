@@ -39,7 +39,7 @@ class InstallCommandsClassScan {
 	}
 
 	private boolean isComponentField(Field field) {
-		return Component.class.isAssignableFrom(field.getType());
+		return ReflectionUtils.equalsOrExtends(field.getType(), Component.class);
 	}
 
 	private boolean hasAnnotations(Field field) {

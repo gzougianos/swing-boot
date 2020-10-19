@@ -1,17 +1,14 @@
 package io.github.suice.command.annotation.installer;
 
-import static java.util.Arrays.asList;
-
 import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.EventListener;
-import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.suice.command.ReflectionUtils;
 import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
 public class ListenerDirectlyToComponentAnnotationInstaller<A extends Annotation, T extends EventListener>
@@ -55,12 +52,7 @@ public class ListenerDirectlyToComponentAnnotationInstaller<A extends Annotation
 
 	private final boolean supportsComponent(Component component) {
 		Class<?> componentType = component.getClass();
-		return hasMethod(addMethod, componentType);
+		return ReflectionUtils.hasMethod(addMethod, componentType);
 	}
 
-	private static boolean hasMethod(String methodName, Class<?> type) {
-		Predicate<Method> methodNameEquals = method -> method.getName().equals(methodName);
-		return asList(type.getMethods()).stream().anyMatch(methodNameEquals)
-				|| asList(type.getDeclaredMethods()).stream().anyMatch(methodNameEquals);
-	}
 }
