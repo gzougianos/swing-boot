@@ -1,5 +1,7 @@
 package io.github.suice.command;
 
+import static io.github.suice.command.ReflectionUtils.equalsOrExtends;
+
 import java.awt.AWTEvent;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -50,10 +52,6 @@ public class EventParameterAwareExecutor {
 
 	private static boolean typeIsClass(Type type) {
 		return type instanceof Class<?>;
-	}
-
-	private static boolean equalsOrExtends(Class<?> typeA, Class<?> typeB) {
-		return typeA.equals(typeB) || typeB.isAssignableFrom(typeA);
 	}
 
 	@SuppressWarnings("unchecked")
