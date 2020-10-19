@@ -1,6 +1,7 @@
 package io.github.suice.command.annotation.installer;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -30,10 +31,11 @@ class ListenerDirectlyToComponentAnnotationInstallerTests implements AnnotationI
 		};
 		when(creator.createListener(any())).thenReturn(listener);
 
-		ComponentAnnotationInstaller resolver = new ListenerDirectlyToComponentAnnotationInstaller<>(OnActionPerformed.class, "addActionListener",
-				ActionListener.class, creator);
+		ComponentAnnotationInstaller resolver = new ListenerDirectlyToComponentAnnotationInstaller<>(OnActionPerformed.class,
+				"addActionListener", ActionListener.class, creator);
 
 		assertThrows(IllegalArgumentException.class, () -> resolver.install(new JPanel(), annotationOfField("field")));
+		assertDoesNotThrow(() -> resolver.install(new JButton(), annotationOfField("field")));
 
 		JButton button = new JButton();
 
