@@ -9,9 +9,11 @@ import javax.swing.JPanel;
 
 import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.OnActionPerformed;
+import io.github.suice.command.annotation.OnComponentResized;
 
 @InstallCommands
 @Singleton
+@OnComponentResized(PrintResizeCommand.class)
 public class ClickCounterView extends JPanel {
 	private static final long serialVersionUID = 4816090097824292469L;
 	private int clickCount;

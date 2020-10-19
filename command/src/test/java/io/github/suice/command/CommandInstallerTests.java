@@ -78,6 +78,25 @@ class CommandInstallerTests {
 		verifyNoMoreInteractions(annotationResolver);
 	}
 
+	@Test
+	void onComponentObjectWithoutAnnotationInheritance() {
+		JButton button = new ParentComponentClass();
+		commandInstaller.installCommands(button);
+
+		OnActionPerformed expectedAnnotation = ParentComponentClass.class.getAnnotation(OnActionPerformed.class);
+		verify(annotationResolver).supports(eq(expectedAnnotation));
+		verify(annotationResolver).install(eq(button), eq(expectedAnnotation));
+		verifyNoMoreInteractions(annotationResolver);
+	}
+
+	@Test
+	void onComponentObjectWithAnnotationInheritance() {
+		JButton button = new ChildComponentClass();
+		commandInstaller.installCommands(button);
+
+		verifyZeroInteractions(annotationResolver);
+	}
+
 	@BeforeEach
 	void init() {
 		CommandExecutor executor = mock(CommandExecutor.class);
@@ -120,22 +139,27 @@ class CommandInstallerTests {
 		}
 	}
 
-	private static class ChildClass extends ParentClass {
+	@SuppressWarnings("serial")
+	@InstallCommands
+	@OnActionPerformed(TestCommand.class)
+	private static class ParentComponentClass extends JButton {
+	}
 
+	@SuppressWarnings("serial")
+	private static class ChildComponentClass extends ParentComponentClass {
+	}
+
+	private static class ChildClass extends ParentClass {
 	}
 
 	private static class NotAComponent {
-
 		@OnActionPerformed(TestCommand.class)
 		private String s = "ss";
-
 	}
 
 	private static class TestCommand implements Command<Void> {
-
 		@Override
 		public void execute(Void parameter) {
 		}
-
 	}
 }

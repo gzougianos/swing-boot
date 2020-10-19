@@ -61,7 +61,14 @@ public class CommandInstaller {
 
 		installedObjects.add(object);
 
-		installCommandsOnFields(object);
+		Class<?> objectType = object.getClass();
+
+		InstallCommandsClassScan classScan = fromCacheOrNew(objectType);
+
+		installCommandsOnFields(object, classScan);
+
+		if (object instanceof Component)
+			installAnnotations((Component) object, objectType.getAnnotations());
 
 		if (object instanceof AdditionalCommandInstallation) {
 			((AdditionalCommandInstallation) object).installCommands(executor);
@@ -69,11 +76,7 @@ public class CommandInstaller {
 
 	}
 
-	private void installCommandsOnFields(Object object) {
-		Class<?> objectType = object.getClass();
-
-		InstallCommandsClassScan classScan = fromCacheOrNew(objectType);
-
+	private void installCommandsOnFields(Object object, InstallCommandsClassScan classScan) {
 		for (Field field : classScan.getAnnotatedComponentFields()) {
 			ensureAccessible(field);
 
@@ -81,15 +84,25 @@ public class CommandInstaller {
 				Component component = (Component) field.get(object);
 				ensureNotNull(component, field);
 
-				for (Annotation annotation : field.getDeclaredAnnotations()) {
-					annotationInstallers.stream().filter(i -> i.supports(annotation))
-							.forEach(i -> i.install(component, annotation));
-				}
+				installAnnotations(component, field.getDeclaredAnnotations());
 
 			} catch (IllegalAccessException e) {
 				throw new CommandInstallationException("Cannot get acccess to field " + field + ".");
 			}
 		}
+	}
+
+	private void installAnnotations(Component component, Annotation[] annotations) {
+		//@formatter:off
+		for (Annotation annotation : annotations) {
+			if (annotation.annotationType() == InstallCommands.class)
+				continue;
+			
+			annotationInstallers.stream()
+				.filter(i -> i.supports(annotation))
+				.forEach(i -> i.install(component, annotation));
+		}
+		//@formatter:on
 	}
 
 	private InstallCommandsClassScan fromCacheOrNew(Class<?> objectType) {
