@@ -63,8 +63,8 @@ public class CommandInstaller {
 
 		installCommandsOnFields(object);
 
-		if (object instanceof ParameterizedCommandInstaller) {
-			((ParameterizedCommandInstaller) object).installCommands(executor);
+		if (object instanceof AdditionalCommandInstallation) {
+			((AdditionalCommandInstallation) object).installCommands(executor);
 		}
 
 	}

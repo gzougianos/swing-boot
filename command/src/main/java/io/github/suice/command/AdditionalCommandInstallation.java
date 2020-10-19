@@ -1,6 +1,6 @@
 package io.github.suice.command;
 
-public interface ParameterizedCommandInstaller {
+public interface AdditionalCommandInstallation {
 
 	void installCommands(CommandExecutor commandExecutor);
 }

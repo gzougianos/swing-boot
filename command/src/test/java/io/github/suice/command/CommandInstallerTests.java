@@ -32,8 +32,8 @@ class CommandInstallerTests {
 	}
 
 	@Test
-	void parameterizedCommandsInstall() {
-		ParameterizedCommandInstaller installer = mock(ParameterizedCommandInstaller.class);
+	void additionalCommandsInstall() {
+		AdditionalCommandInstallation installer = mock(AdditionalCommandInstallation.class);
 
 		commandInstaller.installCommands(installer);
 
