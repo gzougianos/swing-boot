@@ -21,16 +21,16 @@ public class EventParameterAwareExecutorTests {
 
 		ActionEvent event = new ActionEvent(new JButton(), 0, "");
 
-		new EventParameterAwareExecutor(executor, WithoutParametersCommand.class).execute(event);
+		new CommandDeclarationExecutor(executor, WithoutParametersCommand.class).execute(event);
 		verify(executor).execute(eq(WithoutParametersCommand.class));
 
-		new EventParameterAwareExecutor(executor, ParameterMismatchCommand.class).execute(event);
+		new CommandDeclarationExecutor(executor, ParameterMismatchCommand.class).execute(event);
 		verify(executor).execute(eq(ParameterMismatchCommand.class));
 
-		new EventParameterAwareExecutor(executor, ParameterCommand.class).execute(event);
+		new CommandDeclarationExecutor(executor, ParameterCommand.class).execute(event);
 		verify(executor).execute(eq(ParameterCommand.class), eq(event));
 
-		new EventParameterAwareExecutor(executor, AwtParameterCommand.class).execute(event);
+		new CommandDeclarationExecutor(executor, AwtParameterCommand.class).execute(event);
 		verify(executor).execute(eq(AwtParameterCommand.class), eq(event));
 
 		verifyNoMoreInteractions(executor);

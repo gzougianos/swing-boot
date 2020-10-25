@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 import io.github.suice.command.Command;
 import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.installer.AnnotationInstallerTestUtils;
+import io.github.suice.command.annotation.installer.ReflectionTestUtils;
 
-class OnActionPerformedCreatorTests implements AnnotationInstallerTestUtils {
+class OnActionPerformedCreatorTests implements ReflectionTestUtils {
 
 	@OnActionPerformed(TestCommand.class)
 	private int noModifier;

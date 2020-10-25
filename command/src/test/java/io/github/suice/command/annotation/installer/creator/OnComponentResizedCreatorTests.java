@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import io.github.suice.command.Command;
 import io.github.suice.command.CommandExecutor;
 import io.github.suice.command.annotation.OnComponentResized;
-import io.github.suice.command.annotation.installer.AnnotationInstallerTestUtils;
+import io.github.suice.command.annotation.installer.ReflectionTestUtils;
 
-class OnComponentResizedCreatorTests implements AnnotationInstallerTestUtils {
+class OnComponentResizedCreatorTests implements ReflectionTestUtils {
 
 	@OnComponentResized(TestCommand.class)
 	private int field;

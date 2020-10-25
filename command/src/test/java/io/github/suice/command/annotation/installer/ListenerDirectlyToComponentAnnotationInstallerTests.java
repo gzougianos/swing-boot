@@ -19,7 +19,7 @@ import io.github.suice.command.Command;
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
-class ListenerDirectlyToComponentAnnotationInstallerTests implements AnnotationInstallerTestUtils {
+class ListenerDirectlyToComponentAnnotationInstallerTests implements ReflectionTestUtils {
 	@OnActionPerformed(TestCommand.class)
 	private int field;
 

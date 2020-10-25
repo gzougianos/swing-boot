@@ -12,4 +12,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface InstallCommands {
 
+	String[] ignoreIdsFromParent() default {};
+
+	boolean ignoreAllIdsFromParent() default false;
 }
