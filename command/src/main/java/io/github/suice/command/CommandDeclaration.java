@@ -49,8 +49,9 @@ public class CommandDeclaration {
 		Class<?> targetType = getTargetType(targetElement);
 
 		if (!supportsType(declaresCommand, targetType)) {
+			Class<?> declaringClass = getTargetElementDeclaringClass();
 			throw new InvalidCommandDeclarationException(
-					"@" + annotation.annotationType().getSimpleName() + " cannot be delcared to objects of type " + targetType);
+					annotation + " declared in " + declaringClass + " cannot be installed to objects of type " + targetType);
 		}
 	}
 
@@ -119,14 +120,14 @@ public class CommandDeclaration {
 		Class<?> parameterSourceReturnType = parameterSource.getValueReturnType();
 
 		if (!equalsOrExtends(parameterSourceReturnType, commandGenericParameterType)) {
-			Class<?> declaringClass = getClassThatDeclaresTargetElement();
+			Class<?> declaringClass = getTargetElementDeclaringClass();
 			throw new InvalidCommandDeclarationException("@ParameterSource(" + parameterSource.getId() + ") in " + declaringClass
 					+ " can only return " + commandGenericParameterType.getSimpleName() + " values. It currently returns "
 					+ parameterSource.getValueReturnType().getSimpleName() + ".");
 		}
 	}
 
-	private Class<?> getClassThatDeclaresTargetElement() {
+	private Class<?> getTargetElementDeclaringClass() {
 		if (targetElement instanceof Class<?>)
 			return (Class<?>) targetElement;
 		if (targetElement instanceof Member)
