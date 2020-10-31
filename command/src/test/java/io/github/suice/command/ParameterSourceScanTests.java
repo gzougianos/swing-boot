@@ -63,6 +63,46 @@ class ParameterSourceScanTests {
 				scan.getParameterSources().get("id").getAccessibleObject());
 	}
 
+	@Test
+	void inheritAll() throws Exception {
+		ParameterSourceScan scan = new ParameterSourceScan(ChildWithAll.class);
+		assertEquals(2, scan.getParameterSources().size());
+		assertEquals(MethodAndField.class.getDeclaredMethod("x"),
+				scan.getParameterSources().get("idmethod").getAccessibleObject());
+		assertEquals(MethodAndField.class.getDeclaredField("x"), scan.getParameterSources().get("idfield").getAccessibleObject());
+	}
+
+	@Test
+	void inheritButIgnoreOne() throws Exception {
+		ParameterSourceScan scan = new ParameterSourceScan(ChildIgnoringOne.class);
+		assertEquals(1, scan.getParameterSources().size());
+		assertEquals(MethodAndField.class.getDeclaredField("x"), scan.getParameterSources().get("idfield").getAccessibleObject());
+	}
+
+	@Test
+	void inheritButIgnoreAll() throws Exception {
+		ParameterSourceScan scan = new ParameterSourceScan(ChildIgnoreAll.class);
+		assertEquals(0, scan.getParameterSources().size());
+	}
+
+	@Test
+	void methodOverride() throws Exception {
+		ParameterSourceScan scan = new ParameterSourceScan(MethodOverride.class);
+		assertEquals(2, scan.getParameterSources().size());
+		assertEquals(MethodOverride.class.getDeclaredMethod("x"),
+				scan.getParameterSources().get("idmethod").getAccessibleObject());
+		assertEquals(MethodAndField.class.getDeclaredField("x"), scan.getParameterSources().get("idfield").getAccessibleObject());
+	}
+
+	@Test
+	void fieldOverride() throws Exception {
+		ParameterSourceScan scan = new ParameterSourceScan(FieldOverride.class);
+		assertEquals(2, scan.getParameterSources().size());
+		assertEquals(MethodAndField.class.getDeclaredMethod("x"),
+				scan.getParameterSources().get("idmethod").getAccessibleObject());
+		assertEquals(FieldOverride.class.getDeclaredMethod("x"), scan.getParameterSources().get("idfield").getAccessibleObject());
+	}
+
 	private static class StaticField {
 		@ParameterSource("id")
 		private static final int x = 5;
@@ -76,11 +116,14 @@ class ParameterSourceScanTests {
 	}
 
 	@SuppressWarnings("serial")
+	@InstallCommands
 	private static class MethodAndField extends JPanel {
 		@ParameterSource("idfield")
 		private final int x = 5;
+		@SuppressWarnings("unused")
 		private int y;//show that his is not added
 		@Inject
+		@SuppressWarnings("unused")
 		private int z; //Show that fields with other annotations are dodged
 
 		@Inject //Show that methods with other annotations are dodged
@@ -124,4 +167,34 @@ class ParameterSourceScanTests {
 		}
 	}
 
+	@SuppressWarnings("serial")
+	@InstallCommands
+	private static class ChildWithAll extends MethodAndField {
+	}
+
+	@SuppressWarnings("serial")
+	@InstallCommands(ignoreIdsFromParent = "idmethod")
+	private static class ChildIgnoringOne extends MethodAndField {
+	}
+
+	@SuppressWarnings("serial")
+	@InstallCommands(ignoreAllIdsFromParent = true)
+	private static class ChildIgnoreAll extends MethodAndField {
+	}
+
+	@SuppressWarnings("serial")
+	private static class MethodOverride extends MethodAndField {
+		@ParameterSource("idmethod")
+		private int x() {
+			return -5;
+		}
+	}
+
+	@SuppressWarnings("serial")
+	private static class FieldOverride extends MethodAndField {
+		@ParameterSource("idfield")
+		private int x() {
+			return -5;
+		}
+	}
 }
