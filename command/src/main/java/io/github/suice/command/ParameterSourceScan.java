@@ -108,12 +108,20 @@ public class ParameterSourceScan {
 
 	private void addParameterSource(AccessibleObject accessibleObject) {
 		ParameterSource parameterSource = accessibleObject.getAnnotation(ParameterSource.class);
+		FieldOrMethod fieldOrMethod = new FieldOrMethod(accessibleObject);
+
 		String sourceId = parameterSource.value();
+		if (sourceId.isEmpty()) {
+			String type = fieldOrMethod.isField() ? "field" : "method";
+			throw new InvalidParameterSourceException("Parameter sources cannot have empty string as id. Found in " + type + " `"
+					+ fieldOrMethod.getName() + "` of " + fieldOrMethod.getDeclaringClass() + ".");
+		}
+
 		if (parameterSources.containsKey(sourceId))
 			throw new InvalidParameterSourceException(
 					"More than one @ParameterSource declared with id `" + sourceId + "` in " + clazz + ".");
 
-		parameterSources.put(sourceId, new FieldOrMethod(accessibleObject));
+		parameterSources.put(sourceId, fieldOrMethod);
 	}
 
 	private boolean hasAnyAnnotations(AnnotatedElement annotatedElement) {

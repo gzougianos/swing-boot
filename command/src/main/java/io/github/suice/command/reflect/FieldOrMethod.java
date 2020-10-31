@@ -36,6 +36,12 @@ public class FieldOrMethod {
 		accessibleObject.setAccessible(true);
 	}
 
+	public String getName() {
+		if (isField())
+			return ((Field) accessibleObject).getName();
+		return ((Method) accessibleObject).getName();
+	}
+
 	public boolean isMethod() {
 		return accessibleObject instanceof Method;
 	}

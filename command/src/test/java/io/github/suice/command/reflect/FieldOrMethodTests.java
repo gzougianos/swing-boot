@@ -25,6 +25,7 @@ class FieldOrMethodTests {
 		assertFalse(fom.isMethod());
 		assertEquals(int.class, fom.getValueReturnType());
 		assertEquals(FieldOrMethodTests.class, fom.getDeclaringClass());
+		assertEquals("x", fom.getName());
 
 		assertFalse(field.isAccessible());
 
@@ -48,6 +49,7 @@ class FieldOrMethodTests {
 
 		assertFalse(fom.isField());
 		assertTrue(fom.isMethod());
+		assertEquals("testField", fom.getName());
 
 		assertEquals(void.class, fom.getValueReturnType());
 		assertEquals(FieldOrMethodTests.class, fom.getDeclaringClass());

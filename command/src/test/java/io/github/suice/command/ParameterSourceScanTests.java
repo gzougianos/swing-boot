@@ -56,6 +56,11 @@ class ParameterSourceScanTests {
 	}
 
 	@Test
+	void emptyStringId() throws Exception {
+		assertThrows(InvalidParameterSourceException.class, () -> new ParameterSourceScan(EmptyStringAsId.class));
+	}
+
+	@Test
 	void methodWithOneAwtParameter() throws Exception {
 		ParameterSourceScan scan = new ParameterSourceScan(MethodWithOneAwtEventParameter.class);
 		assertEquals(1, scan.getParameterSources().size());
@@ -162,6 +167,13 @@ class ParameterSourceScanTests {
 
 	private static class MethodWithOneAwtEventParameter {
 		@ParameterSource("id")
+		private int x(ComponentEvent e) {
+			return -1;
+		}
+	}
+
+	private static class EmptyStringAsId {
+		@ParameterSource("")
 		private int x(ComponentEvent e) {
 			return -1;
 		}
