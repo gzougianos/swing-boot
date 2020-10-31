@@ -6,21 +6,23 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.util.Optional;
 
 import io.github.suice.command.annotation.DeclaresCommand;
 import io.github.suice.command.exception.InvalidCommandDeclarationException;
-import io.github.suice.command.reflect.FieldOrMethod;
 import io.github.suice.command.reflect.ReflectionUtils;
+import io.github.suice.parameter.ParameterSource;
 
 public class CommandDeclaration {
 
-	private FieldOrMethod parameterSource;
+	private ParameterSource parameterSource;
 	private String id;
 	private Class<? extends Command<?>> commandType;
 	private Class<?> commandGenericParameterType;
 	private Annotation annotation;
 	private AnnotatedElement targetElement;
+	private String parameterSourceId;
 
 	@SuppressWarnings("unchecked")
 	public CommandDeclaration(Annotation annotation, AnnotatedElement targetElement) {
@@ -33,6 +35,8 @@ public class CommandDeclaration {
 		id = String.valueOf(invokeMethodOfAnnotation(annotation, "id"));
 		if ("".equals(id))
 			id = annotation.toString();
+
+		parameterSourceId = String.valueOf(invokeMethodOfAnnotation(annotation, "parameterSource"));
 
 		commandType = (Class<? extends Command<?>>) invokeMethodOfAnnotation(annotation, "value");
 
@@ -67,7 +71,7 @@ public class CommandDeclaration {
 		return false;
 	}
 
-	public Optional<FieldOrMethod> getParameterSource() {
+	public Optional<ParameterSource> getParameterSource() {
 		return Optional.ofNullable(parameterSource);
 	}
 
@@ -77,6 +81,10 @@ public class CommandDeclaration {
 
 	public boolean targetsField() {
 		return targetElement instanceof Field;
+	}
+
+	public String getParameterSourceId() {
+		return parameterSourceId;
 	}
 
 	public String getId() {
@@ -95,18 +103,36 @@ public class CommandDeclaration {
 		return annotation;
 	}
 
-	void setParameterSource(FieldOrMethod parameterSource) {
+	void setParameterSource(ParameterSource parameterSource) {
+		if ("".equals(parameterSourceId))
+			throw new InvalidCommandDeclarationException(this.toString() + " does not support parameter source.");
+
+		if (!parameterSource.getId().equals(parameterSourceId))
+			throw new InvalidCommandDeclarationException(
+					"Parameter source " + parameterSource + " has different id than command declartion");
+
 		checkIfParameterSourceReturnTypeMatchesCommandGenericType(parameterSource);
 		this.parameterSource = parameterSource;
 	}
 
-	private void checkIfParameterSourceReturnTypeMatchesCommandGenericType(FieldOrMethod parameterSource) {
+	private void checkIfParameterSourceReturnTypeMatchesCommandGenericType(ParameterSource parameterSource) {
 		Class<?> parameterSourceReturnType = parameterSource.getValueReturnType();
 
-		if (!equalsOrExtends(parameterSourceReturnType, commandGenericParameterType))
-			throw new InvalidCommandDeclarationException("@ParameterSource(" + id + ") in  " + parameterSource.getDeclaringClass()
+		if (!equalsOrExtends(parameterSourceReturnType, commandGenericParameterType)) {
+			Class<?> declaringClass = getClassThatDeclaresTargetElement();
+			throw new InvalidCommandDeclarationException("@ParameterSource(" + parameterSource.getId() + ") in " + declaringClass
 					+ " can only return " + commandGenericParameterType.getSimpleName() + " values. It currently returns "
 					+ parameterSource.getValueReturnType().getSimpleName() + ".");
+		}
+	}
+
+	private Class<?> getClassThatDeclaresTargetElement() {
+		if (targetElement instanceof Class<?>)
+			return (Class<?>) targetElement;
+		if (targetElement instanceof Member)
+			return ((Member) targetElement).getDeclaringClass();
+
+		throw new UnsupportedOperationException("Error finding declaring class of target element: " + targetElement);
 	}
 
 	private static Object invokeMethodOfAnnotation(Annotation annotation, String method) {
@@ -123,7 +149,7 @@ public class CommandDeclaration {
 	public String toString() {
 		return "CommandDeclaration [parameterSource=" + parameterSource + ", id=" + id + ", commandType=" + commandType
 				+ ", commandGenericParameterType=" + commandGenericParameterType + ", annotation=" + annotation
-				+ ", targetElement=" + targetElement + "]";
+				+ ", targetElement=" + targetElement + ", parameterId=" + parameterSourceId + "]";
 	}
 
 }

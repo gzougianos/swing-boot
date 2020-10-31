@@ -17,14 +17,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.suice.command.annotation.DeclaresCommand;
+import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.command.reflect.ReflectionUtils;
+import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
 
 public class InstallCommandsClassAnalysis {
 
 	private static final Logger log = LoggerFactory.getLogger(InstallCommandsClassAnalysis.class);
 	private Class<?> clazz;
 	private Map<String, CommandDeclaration> commandDeclarations;
-	private ParameterSourceScan parameterSourceScan;
+	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
 
 	public InstallCommandsClassAnalysis(Class<?> clazz) {
 		this.clazz = clazz;
@@ -33,7 +35,7 @@ public class InstallCommandsClassAnalysis {
 		scanCommandDeclarationsOnFields();
 		scanCommandDeclarationsOnType();
 
-		parameterSourceScan = new ParameterSourceScan(clazz);
+		fieldAndMethodParameterSourceScan = new FieldAndMethodParameterSourceScan(clazz);
 
 		inheritCommandDeclarationsFromParents();
 
@@ -46,6 +48,7 @@ public class InstallCommandsClassAnalysis {
 		//TODO: ignore from parent
 		for (Annotation annotation : getDeclaresCommandAnnotations(clazz)) {
 			CommandDeclaration cmdDeclaration = new CommandDeclaration(annotation, clazz);
+			checkIfNotAlreadyExists(cmdDeclaration.getId());
 			commandDeclarations.put(cmdDeclaration.getId(), cmdDeclaration);
 		}
 	}
@@ -64,8 +67,16 @@ public class InstallCommandsClassAnalysis {
 
 			for (Annotation annotation : getDeclaresCommandAnnotations(field)) {
 				CommandDeclaration cmdDeclaration = new CommandDeclaration(annotation, field);
+
+				checkIfNotAlreadyExists(cmdDeclaration.getId());
 				commandDeclarations.put(cmdDeclaration.getId(), cmdDeclaration);
 			}
+		}
+	}
+
+	private void checkIfNotAlreadyExists(String id) {
+		if (commandDeclarations.containsKey(id)) {
+			throw new InvalidCommandDeclarationException("More than 2 commands declared with id `" + id + "` in " + clazz + ".");
 		}
 	}
 
@@ -74,12 +85,12 @@ public class InstallCommandsClassAnalysis {
 	}
 
 	private void bindParameterSourcesToCommandDeclarations() {
-		parameterSourceScan.getParameterSources().forEach((id, fieldOrMethod) -> {
+		fieldAndMethodParameterSourceScan.getParameterSources().forEach((id, parameterSource) -> {
 			CommandDeclaration cmdDeclaration = commandDeclarations.get(id);
 			if (cmdDeclaration == null) {
 				log.warn("@ParameterSource with id `" + id + "` in " + clazz + " does not match any command declaration id.");
 			} else {
-				cmdDeclaration.setParameterSource(fieldOrMethod);
+				cmdDeclaration.setParameterSource(parameterSource);
 			}
 		});
 	}

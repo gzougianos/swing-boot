@@ -25,4 +25,6 @@ public @interface OnActionPerformed {
 
 	String id() default "";
 
+	String parameterSource() default "";
+
 }

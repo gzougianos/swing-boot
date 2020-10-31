@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 
-import io.github.suice.command.reflect.FieldOrMethod;
+import io.github.suice.parameter.ParameterSource;
 
 public class ObjectOwnedCommandDeclaration {
 
@@ -20,7 +20,7 @@ public class ObjectOwnedCommandDeclaration {
 		return owner;
 	}
 
-	public Optional<FieldOrMethod> getParameterSource() {
+	public Optional<ParameterSource> getParameterSource() {
 		return declaration.getParameterSource();
 	}
 
