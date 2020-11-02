@@ -34,7 +34,7 @@ public class CommandDeclaration {
 
 		id = String.valueOf(invokeMethodOfAnnotation(annotation, "id"));
 		if ("".equals(id))
-			id = annotation.toString();
+			id = annotation.toString() + targetElement.toString();
 
 		parameterSourceId = String.valueOf(invokeMethodOfAnnotation(annotation, "parameterSource"));
 
@@ -80,10 +80,6 @@ public class CommandDeclaration {
 		return targetElement;
 	}
 
-	public boolean targetsField() {
-		return targetElement instanceof Field;
-	}
-
 	public String getParameterSourceId() {
 		return parameterSourceId;
 	}
@@ -105,8 +101,9 @@ public class CommandDeclaration {
 	}
 
 	void setParameterSource(ParameterSource parameterSource) {
-		if ("".equals(parameterSourceId))
-			throw new InvalidCommandDeclarationException(this.toString() + " does not support parameter source.");
+		if (Void.class.equals(commandGenericParameterType))
+			throw new InvalidCommandDeclarationException(
+					this.getAnnotation() + " does not support parameter source. Control's generic parameter is Void.");
 
 		if (!parameterSource.getId().equals(parameterSourceId))
 			throw new InvalidCommandDeclarationException(
