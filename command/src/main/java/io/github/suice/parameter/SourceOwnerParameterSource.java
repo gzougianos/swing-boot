@@ -26,4 +26,9 @@ public class SourceOwnerParameterSource implements ParameterSource {
 		return sourceOwner;
 	}
 
+	@Override
+	public String toString() {
+		return "SourceOwnerParameterSource [clazz=" + clazz + "]";
+	}
+
 }

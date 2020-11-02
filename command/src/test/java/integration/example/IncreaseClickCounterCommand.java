@@ -2,14 +2,11 @@ package integration.example;
 
 import io.github.suice.command.Command;
 
-public class IncreaseClickCounterCommand implements Command<IncreaseCounterParameter> {
+public class IncreaseClickCounterCommand implements Command<ClickCounterView> {
 
 	@Override
-	public void execute(IncreaseCounterParameter parameter) {
-		for (int i = 0; i < parameter.getCount(); i++) {
-			parameter.getClickCounterView().increaseClickCount();
-		}
-
+	public void execute(ClickCounterView parameter) {
+		parameter.increaseClickCount();
 	}
 
 }

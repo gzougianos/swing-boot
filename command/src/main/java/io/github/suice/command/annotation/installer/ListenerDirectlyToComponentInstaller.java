@@ -1,10 +1,12 @@
 package io.github.suice.command.annotation.installer;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.EventListener;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import io.github.suice.command.CommandDeclaration;
 import io.github.suice.command.CommandDeclarationExecutor;
 import io.github.suice.command.CommandExecutor;
-import io.github.suice.command.EventParameterAwareExecutor;
 import io.github.suice.command.ObjectOwnedCommandDeclaration;
 import io.github.suice.command.annotation.installer.creator.ListenerCreator;
 
@@ -50,8 +51,9 @@ public class ListenerDirectlyToComponentInstaller<A extends Annotation, T extend
 		try {
 			Component component = getTargetComponent(cmdDeclaration);
 
-			EventParameterAwareExecutor cmdDeclarationExecutor = new CommandDeclarationExecutor(executor, cmdDeclaration);
-			T listener = listenerCreator.createListener((A) cmdDeclaration.getAnnotation(), cmdDeclarationExecutor);
+			CommandDeclarationExecutor cmdDeclarationExecutor = new CommandDeclarationExecutor(executor, cmdDeclaration);
+			Consumer<AWTEvent> eventConsumer = cmdDeclarationExecutor::execute;
+			T listener = listenerCreator.createListener((A) cmdDeclaration.getAnnotation(), eventConsumer);
 			Class<? extends Component> componentType = component.getClass();
 			componentType.getMethod(addMethod, listenerType).invoke(component, listener);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | NoSuchMethodException

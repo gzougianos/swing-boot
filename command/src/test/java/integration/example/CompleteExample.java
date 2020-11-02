@@ -7,7 +7,6 @@ import javax.swing.SwingUtilities;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.matcher.Matchers;
@@ -33,20 +32,14 @@ public class CompleteExample {
 					});
 					requestInjection(this);
 					bind(ClickCounterView.class);
-					bind(AdvancedClickCounterView.class);
 				}
 
-				@Inject
-				private void e() {
-					System.out.println("EE");
-				}
 			};
 
 			Injector injector = Guice.createInjector(viewModule, new CommandModule(IncreaseClickCounterCommand.class));
 
 			frame.add(injector.getInstance(ClickCounterView.class), BorderLayout.PAGE_START);
-			frame.add(injector.getInstance(CompositeView.class), BorderLayout.CENTER);
-			frame.add(injector.getInstance(AdvancedClickCounterView.class), BorderLayout.PAGE_END);
+			frame.add(injector.getInstance(ClickCounterView.class), BorderLayout.PAGE_END);
 			frame.pack();
 			frame.setLocationByPlatform(true);
 			frame.setVisible(true);

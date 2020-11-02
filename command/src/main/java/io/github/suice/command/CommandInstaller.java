@@ -59,8 +59,6 @@ public class CommandInstaller {
 		if (alreadyInstalled(object))
 			throw new CommandInstallationException(object + " is already initialized.");
 
-		System.out.println("installing");
-
 		installedObjects.add(object);
 
 		Class<?> objectType = object.getClass();
@@ -68,9 +66,6 @@ public class CommandInstaller {
 		InstallCommandsClassAnalysis classAnalysis = fromCacheOrNew(objectType);
 
 		installCommandsOnFields(object, classAnalysis);
-
-		//		if (object instanceof Component)
-		//			installAnnotations((Component) object, objectType.getAnnotations());
 
 		if (object instanceof AdditionalCommandInstallation) {
 			((AdditionalCommandInstallation) object).installCommands(executor);

@@ -19,4 +19,6 @@ public @interface OnComponentResized {
 	Class<? extends Command<?>> value();
 
 	String id() default "";
+
+	String parameterSource() default "";
 }
