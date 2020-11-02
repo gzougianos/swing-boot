@@ -87,7 +87,7 @@ class MethodParameterSource implements ParameterSource {
 			return method.invoke(sourceOwner, (AWTEvent) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new ParameterSourceException("Error invoking method " + method.getName() + " of " + method.getDeclaringClass()
-					+ " with event parameter " + event.getClass() + ".", e);
+					+ " with event parameter " + (event == null ? "null" : event.getClass()) + ".", e);
 		}
 	}
 
