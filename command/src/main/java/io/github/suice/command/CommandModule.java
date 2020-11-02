@@ -86,9 +86,6 @@ public class CommandModule extends AbstractModule {
 	@Inject
 	private void initListener(CommandInstaller commandInstaller, Injector injector) {
 		commandInstallerInjectionListener.setCommandInstaller(commandInstaller);
-		injector.getAllBindings().forEach((k, b) -> {
-			System.out.println(k);
-		});
 	}
 
 	private void initClassPath() {
