@@ -4,9 +4,6 @@ import java.awt.AWTEvent;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import io.github.suice.Untested;
-
-@Untested
 class FieldParameterSource implements ParameterSource {
 	private final Field field;
 	private final String id;
