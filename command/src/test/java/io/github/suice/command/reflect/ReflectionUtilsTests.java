@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.suice.command.Command;
 
+@SuppressWarnings("all")
 class ReflectionUtilsTests {
 
 	@Test
@@ -36,7 +37,6 @@ class ReflectionUtilsTests {
 		assertFalse(ReflectionUtils.equalsOrExtends(Integer.class, float.class));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void getCommandGenericParameterType() {
 		assertEquals(Void.class, ReflectionUtils.getCommandGenericParameterType(VoidCommand.class));
@@ -79,7 +79,6 @@ class ReflectionUtilsTests {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	private static class RawCommand implements Command {
 		@Override
 		public void execute(Object parameter) {
@@ -98,7 +97,6 @@ class ReflectionUtilsTests {
 			super.execute(parameter);
 		}
 
-		@SuppressWarnings("unused")
 		public void execute(Integer obj) {
 		}
 

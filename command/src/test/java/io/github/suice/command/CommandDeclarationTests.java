@@ -17,9 +17,9 @@ import io.github.suice.command.annotation.ParameterSource;
 import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
 
+@SuppressWarnings("all")
 class CommandDeclarationTests {
 
-	@SuppressWarnings("unused")
 	@Inject
 	private int x;
 

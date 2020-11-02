@@ -15,6 +15,7 @@ import com.google.inject.Inject;
 import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.ParameterSource;
 
+@SuppressWarnings("all")
 class FieldAndMethodParameterSourceScanTests {
 
 	@Test
@@ -148,15 +149,12 @@ class FieldAndMethodParameterSourceScanTests {
 		}
 	}
 
-	@SuppressWarnings("serial")
 	@InstallCommands
 	private static class MethodAndField extends JPanel {
 		@ParameterSource("idfield")
 		private final int x = 5;
-		@SuppressWarnings("unused")
 		private int y;//show that his is not added
 		@Inject
-		@SuppressWarnings("unused")
 		private int z; //Show that fields with other annotations are dodged
 
 		@Inject //Show that methods with other annotations are dodged
@@ -207,24 +205,20 @@ class FieldAndMethodParameterSourceScanTests {
 		}
 	}
 
-	@SuppressWarnings("serial")
 	@InstallCommands
 	private static class ChildWithAll extends MethodAndField {
 		@ParameterSource("extra")
 		private int x;
 	}
 
-	@SuppressWarnings("serial")
 	@InstallCommands(ignoreIdsFromParent = "idmethod")
 	private static class ChildIgnoringOne extends MethodAndField {
 	}
 
-	@SuppressWarnings("serial")
 	@InstallCommands(ignoreAllIdsFromParent = true)
 	private static class ChildIgnoreAll extends MethodAndField {
 	}
 
-	@SuppressWarnings("serial")
 	private static class MethodOverride extends MethodAndField {
 		@ParameterSource("idmethod")
 		private int x() {
@@ -232,7 +226,6 @@ class FieldAndMethodParameterSourceScanTests {
 		}
 	}
 
-	@SuppressWarnings("serial")
 	private static class FieldOverride extends MethodAndField {
 		@ParameterSource("idfield")
 		private int x() {
