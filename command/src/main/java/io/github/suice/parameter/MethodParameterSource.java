@@ -1,5 +1,6 @@
 package io.github.suice.parameter;
 
+import static io.github.suice.command.annotation.ParameterSource.THIS;
 import static io.github.suice.command.reflect.ReflectionUtils.equalsOrExtends;
 
 import java.awt.AWTEvent;
@@ -21,14 +22,14 @@ class MethodParameterSource implements ParameterSource {
 
 		checkIdNotThis();
 		checkIdNotEmpty();
-		checkIfItsVoid();
+		checkNotVoid();
 		checkZeroOrOneAwtEventParameter();
 	}
 
-	private void checkIfItsVoid() {
+	private void checkNotVoid() {
 		if (method.getReturnType().equals(Void.TYPE)) {
 			throw new ParameterSourceException("ParameterSource method " + method.getName() + " in class"
-					+ method.getDeclaringClass().getSimpleName() + " is void. Parameter sources cannot be void.");
+					+ method.getDeclaringClass().getSimpleName() + " is void. Method parameter sources cannot be void.");
 		}
 	}
 
@@ -47,14 +48,14 @@ class MethodParameterSource implements ParameterSource {
 	}
 
 	private void checkIdNotEmpty() {
-		if (id.isEmpty()) {
+		if (id == null || id.isEmpty()) {
 			throw new ParameterSourceException("@ParameterSource cannot have empty string as id. Found in method `"
 					+ method.getName() + "` of " + method.getDeclaringClass() + ".");
 		}
 	}
 
 	private void checkIdNotThis() {
-		if ("this".equals(id)) {
+		if (THIS.equals(id)) {
 			throw new ParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `" + method.getName()
 					+ "` of " + method.getDeclaringClass() + ".");
 		}
@@ -81,13 +82,13 @@ class MethodParameterSource implements ParameterSource {
 			if (hasNoParameters())
 				return method.invoke(sourceOwner);
 
-			if (eventTypeMatchesParameterType(event))
+			if (event != null && eventTypeMatchesParameterType(event))
 				return method.invoke(sourceOwner, event);
 
 			return method.invoke(sourceOwner, (AWTEvent) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new ParameterSourceException("Error invoking method " + method.getName() + " of " + method.getDeclaringClass()
-					+ " with event parameter " + (event == null ? "null" : event.getClass()) + ".", e);
+					+ " with event parameter " + event + ".", e);
 		}
 	}
 
