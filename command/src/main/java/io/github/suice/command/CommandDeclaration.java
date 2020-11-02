@@ -84,6 +84,10 @@ public class CommandDeclaration {
 		return parameterSourceId;
 	}
 
+	public boolean expectsParameterSource() {
+		return !parameterSourceId.isEmpty();
+	}
+
 	public String getId() {
 		return id;
 	}

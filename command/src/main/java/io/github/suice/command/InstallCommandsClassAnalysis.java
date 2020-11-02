@@ -1,5 +1,7 @@
 package io.github.suice.command;
 
+import static io.github.suice.command.annotation.ParameterSource.THIS;
+
 import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -13,23 +15,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.github.suice.command.annotation.DeclaresCommand;
 import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.command.reflect.ReflectionUtils;
 import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
+import io.github.suice.parameter.ParameterSource;
+import io.github.suice.parameter.SourceOwnerParameterSource;
 
 public class InstallCommandsClassAnalysis {
-
-	private static final Logger log = LoggerFactory.getLogger(InstallCommandsClassAnalysis.class);
-	private Class<?> clazz;
+	private final Class<?> clazz;
 	private Map<String, CommandDeclaration> commandDeclarations;
 	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
 
 	public InstallCommandsClassAnalysis(Class<?> clazz) {
 		this.clazz = clazz;
+
+		checkInstallCommandsAnnotationIsPresent();
 
 		commandDeclarations = new HashMap<>();
 		scanCommandDeclarationsOnFields();
@@ -44,8 +45,12 @@ public class InstallCommandsClassAnalysis {
 		commandDeclarations = Collections.unmodifiableMap(commandDeclarations);
 	}
 
+	private void checkInstallCommandsAnnotationIsPresent() {
+		if (!clazz.isAnnotationPresent(InstallCommands.class))
+			throw new IllegalArgumentException(clazz + " is not annonated with @InstallCommands.");
+	}
+
 	private void scanCommandDeclarationsOnType() {
-		//TODO: ignore from parent
 		for (Annotation annotation : getDeclaresCommandAnnotations(clazz)) {
 			CommandDeclaration cmdDeclaration = new CommandDeclaration(annotation, clazz);
 			checkIfNotAlreadyExists(cmdDeclaration.getId());
@@ -85,12 +90,17 @@ public class InstallCommandsClassAnalysis {
 	}
 
 	private void bindParameterSourcesToCommandDeclarations() {
-		fieldAndMethodParameterSourceScan.getParameterSources().forEach((id, parameterSource) -> {
-			CommandDeclaration cmdDeclaration = commandDeclarations.get(id);
-			if (cmdDeclaration == null) {
-				log.warn("@ParameterSource with id `" + id + "` in " + clazz + " does not match any command declaration id.");
+		commandDeclarations.values().stream().filter(CommandDeclaration::expectsParameterSource).forEach(declaration -> {
+			String expectedParameterSourceId = declaration.getParameterSourceId();
+			if (expectedParameterSourceId.equals(THIS)) {
+				declaration.setParameterSource(new SourceOwnerParameterSource(clazz));
 			} else {
-				cmdDeclaration.setParameterSource(parameterSource);
+				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
+						.get(expectedParameterSourceId);
+				if (parSource == null)
+					throw new InvalidCommandDeclarationException(
+							"@ParameterSource(" + expectedParameterSourceId + ") not found in " + clazz + ".");
+				declaration.setParameterSource(parSource);
 			}
 		});
 	}
@@ -107,24 +117,24 @@ public class InstallCommandsClassAnalysis {
 
 		InstallCommandsClassAnalysis parentScan = new InstallCommandsClassAnalysis(parentClass);
 		parentScan.commandDeclarations.forEach((id, declaration) -> {
-			if (!ignoreInheritedIds.contains(id) && !commandDeclarations.containsKey(id))
-				commandDeclarations.put(id, declaration);
+			if (ignoreInheritedIds.contains(id))
+				return;
+
+			if (commandDeclarations.containsKey(id))
+				throw new InvalidCommandDeclarationException(
+						"Command with id '" + id + "' in " + clazz + " is already declared in parent " + parentScan.clazz + ".");
+
+			commandDeclarations.put(id, declaration);
 		});
 
 	}
 
 	private boolean ignoresAllIdsFromParent() {
-		if (clazz.isAnnotationPresent(InstallCommands.class)) {
-			InstallCommands installCommands = clazz.getAnnotation(InstallCommands.class);
-			return installCommands.ignoreAllIdsFromParent();
-		}
-		return false;
+		InstallCommands installCommands = clazz.getAnnotation(InstallCommands.class);
+		return installCommands.ignoreAllIdsFromParent();
 	}
 
 	private Set<String> getIgnoredIds(Class<?> clazz) {
-		if (!clazz.isAnnotationPresent(InstallCommands.class))
-			return new HashSet<>();
-
 		InstallCommands installCommands = clazz.getAnnotation(InstallCommands.class);
 		return new HashSet<>(Arrays.asList(installCommands.ignoreIdsFromParent()));
 	}
