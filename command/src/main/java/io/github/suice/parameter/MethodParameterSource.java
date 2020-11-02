@@ -21,7 +21,15 @@ class MethodParameterSource implements ParameterSource {
 
 		checkIdNotThis();
 		checkIdNotEmpty();
+		checkIfItsVoid();
 		checkZeroOrOneAwtEventParameter();
+	}
+
+	private void checkIfItsVoid() {
+		if (method.getReturnType().equals(Void.TYPE)) {
+			throw new ParameterSourceException("ParameterSource method " + method.getName() + " in class"
+					+ method.getDeclaringClass().getSimpleName() + " is void. Parameter sources cannot be void.");
+		}
 	}
 
 	private void checkZeroOrOneAwtEventParameter() {
