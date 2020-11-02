@@ -59,15 +59,10 @@ class ReflectionUtilsTests {
 		assertEquals(Object.class,
 				ReflectionUtils.getCommandGenericParameterType((Class<? extends Command<?>>) floatC.getClass()));
 
-		assertEquals(Object.class,
-				ReflectionUtils.getCommandGenericParameterType((Class<? extends Command<?>>) GenericCommand.class));
-
-		assertEquals(Object.class,
-				ReflectionUtils.getCommandGenericParameterType((Class<? extends Command<?>>) RawCommand.class));
-
 		assertEquals(Double.class, ReflectionUtils.getCommandGenericParameterType(GenericChildCommand.class));
 		assertEquals(Optional.class, ReflectionUtils.getCommandGenericParameterType(NestedGeneric.class));
 		assertEquals(Integer.class, ReflectionUtils.getCommandGenericParameterType(TwoGenericInterfaces.class));
+		assertEquals(Double.class, ReflectionUtils.getCommandGenericParameterType(AbstractCommand.class));
 	}
 
 	private static class VoidCommand implements Command<Void> {
@@ -79,12 +74,6 @@ class ReflectionUtilsTests {
 	private static class StringCommand implements Command<String> {
 		@Override
 		public void execute(String parameter) {
-		}
-	}
-
-	private static class RawCommand implements Command {
-		@Override
-		public void execute(Object parameter) {
 		}
 	}
 
@@ -102,6 +91,10 @@ class ReflectionUtilsTests {
 
 		public void execute(Integer obj) {
 		}
+
+	}
+
+	private static abstract class AbstractCommand implements Command<Double> {
 
 	}
 
