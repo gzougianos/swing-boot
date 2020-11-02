@@ -1,10 +1,7 @@
 package io.github.suice.command;
 
-import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,15 +11,16 @@ import javax.inject.Inject;
 
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.OnComponentResized;
-import io.github.suice.command.annotation.installer.ComponentAnnotationInstaller;
-import io.github.suice.command.annotation.installer.ListenerDirectlyToComponentAnnotationInstaller;
+import io.github.suice.command.annotation.installer.CommandDeclarationInstaller;
+import io.github.suice.command.annotation.installer.ListenerDirectlyToComponentInstaller;
 import io.github.suice.command.annotation.installer.creator.OnActionPerformedCreator;
 import io.github.suice.command.annotation.installer.creator.OnComponentResizedCreator;
 
 public class CommandInstaller {
-	private static final Map<Class<?>, InstallCommandsClassScan> scanCache = new HashMap<>();
+	private static final Map<Class<?>, InstallCommandsClassAnalysis> scanCache = new HashMap<>();
+	private Set<CommandDeclarationInstaller> declarationInstallers = new HashSet<>();
 	private final Set<Object> installedObjects = new HashSet<>();
-	private final Set<ComponentAnnotationInstaller> annotationInstallers = new HashSet<>();
+
 	private CommandExecutor executor;
 
 	@Inject
@@ -33,26 +31,28 @@ public class CommandInstaller {
 
 	private void createDefaultInstallers() {
 		//@formatter:off
-		annotationInstallers.add(
-				new ListenerDirectlyToComponentAnnotationInstaller<>(
+		declarationInstallers.add(
+				new ListenerDirectlyToComponentInstaller<>(
+						executor,
 						OnActionPerformed.class, 
 						"addActionListener",
 						ActionListener.class, 
-						new OnActionPerformedCreator(executor)
+						new OnActionPerformedCreator()
 						));
 		
-		annotationInstallers.add(
-				new ListenerDirectlyToComponentAnnotationInstaller<>(
+		declarationInstallers.add(
+				new ListenerDirectlyToComponentInstaller<>(
+						executor,
 						OnComponentResized.class, 
 						"addComponentListener",
 						ComponentListener.class, 
-						new OnComponentResizedCreator(executor)
+						new OnComponentResizedCreator()
 						));
 		//@formatter:on
 	}
 
-	public void addAnnotationInstaller(ComponentAnnotationInstaller resolver) {
-		annotationInstallers.add(resolver);
+	public void addCommandDeclarationInstaller(CommandDeclarationInstaller installer) {
+		declarationInstallers.add(installer);
 	}
 
 	public void installCommands(Object object) throws CommandInstallationException {
@@ -63,12 +63,9 @@ public class CommandInstaller {
 
 		Class<?> objectType = object.getClass();
 
-		InstallCommandsClassScan classScan = fromCacheOrNew(objectType);
+		InstallCommandsClassAnalysis classAnalysis = fromCacheOrNew(objectType);
 
-		installCommandsOnFields(object, classScan);
-
-		if (object instanceof Component)
-			installAnnotations((Component) object, objectType.getAnnotations());
+		installCommandsOnFields(object, classAnalysis);
 
 		if (object instanceof AdditionalCommandInstallation) {
 			((AdditionalCommandInstallation) object).installCommands(executor);
@@ -76,54 +73,24 @@ public class CommandInstaller {
 
 	}
 
-	private void installCommandsOnFields(Object object, InstallCommandsClassScan classScan) {
-		for (Field field : classScan.getAnnotatedComponentFields()) {
-			ensureAccessible(field);
-
-			try {
-				Component component = (Component) field.get(object);
-				ensureNotNull(component, field);
-
-				installAnnotations(component, field.getDeclaredAnnotations());
-
-			} catch (IllegalAccessException e) {
-				throw new CommandInstallationException("Cannot get acccess to field " + field + ".");
-			}
-		}
-	}
-
-	private void installAnnotations(Component component, Annotation[] annotations) {
+	private void installCommandsOnFields(Object object, InstallCommandsClassAnalysis classAnalysis) {
 		//@formatter:off
-		for (Annotation annotation : annotations) {
-			if (annotation.annotationType() == InstallCommands.class)
-				continue;
-			
-			annotationInstallers.stream()
-				.filter(i -> i.supports(annotation))
-				.forEach(i -> i.install(component, annotation));
-		}
+		classAnalysis.getCommandDeclarations().values().stream()
+				.forEach(cmdDeclaration -> {
+					declarationInstallers.stream()
+						.filter(installer -> installer.supports(cmdDeclaration))		
+						.forEach(installer -> installer.install(new ObjectOwnedCommandDeclaration(object, cmdDeclaration)));
+				});
 		//@formatter:on
 	}
 
-	private InstallCommandsClassScan fromCacheOrNew(Class<?> objectType) {
-		InstallCommandsClassScan classScan = scanCache.get(objectType);
+	private InstallCommandsClassAnalysis fromCacheOrNew(Class<?> objectType) {
+		InstallCommandsClassAnalysis classScan = scanCache.get(objectType);
 		if (classScan == null) {
-			classScan = new InstallCommandsClassScan(objectType);
+			classScan = new InstallCommandsClassAnalysis(objectType);
 			scanCache.put(objectType, classScan);
 		}
 		return classScan;
-	}
-
-	private void ensureNotNull(Component component, Field field) {
-		if (component == null) {
-			throw new CommandInstallationException(field.getType().getSimpleName() + " field `" + field.getName() + "` of class "
-					+ field.getDeclaringClass().getSimpleName() + " is null.", new NullPointerException());
-		}
-	}
-
-	private void ensureAccessible(Field field) {
-		if (!field.isAccessible())
-			field.setAccessible(true);
 	}
 
 	private boolean alreadyInstalled(Object object) {

@@ -2,7 +2,6 @@ package integration.example;
 
 import java.awt.FlowLayout;
 
-import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,19 +9,20 @@ import javax.swing.JPanel;
 import io.github.suice.command.InstallCommands;
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.OnComponentResized;
+import io.github.suice.command.annotation.ParameterSource;
 
 @InstallCommands
-@Singleton
 @OnComponentResized(PrintResizeCommand.class)
 public class ClickCounterView extends JPanel {
 	private static final long serialVersionUID = 4816090097824292469L;
+
 	private int clickCount;
 	private JLabel clickCountLabel;
 
-	@OnActionPerformed(IncreaseClickCounterCommand.class)
+	@OnActionPerformed(value = IncreaseClickCounterCommand.class, parameterSource = ParameterSource.THIS)
 	private JButton increaseCounterButton;
 
-	@OnActionPerformed(DecreaseClickCounterCommand.class)
+	@OnActionPerformed(value = DecreaseClickCounterCommand.class, parameterSource = ParameterSource.THIS)
 	private JButton decreaseCounterButton;
 
 	public ClickCounterView() {

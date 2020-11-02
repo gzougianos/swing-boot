@@ -17,7 +17,7 @@ public class CommandInstallerInjectionListener implements InjectionListener<Obje
 		commandInstaller.installCommands(injectee);
 	}
 
-	public void setCommandInitializer(CommandInstaller commandInstaller) {
+	public void setCommandInstaller(CommandInstaller commandInstaller) {
 		this.commandInstaller = commandInstaller;
 	}
 
