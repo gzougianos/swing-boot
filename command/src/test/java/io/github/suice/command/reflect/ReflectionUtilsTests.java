@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Component;
+import java.util.Optional;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -65,6 +66,8 @@ class ReflectionUtilsTests {
 				ReflectionUtils.getCommandGenericParameterType((Class<? extends Command<?>>) RawCommand.class));
 
 		assertEquals(Double.class, ReflectionUtils.getCommandGenericParameterType(GenericChildCommand.class));
+		assertEquals(Optional.class, ReflectionUtils.getCommandGenericParameterType(NestedGeneric.class));
+		assertEquals(Integer.class, ReflectionUtils.getCommandGenericParameterType(TwoGenericInterfaces.class));
 	}
 
 	private static class VoidCommand implements Command<Void> {
@@ -100,6 +103,26 @@ class ReflectionUtilsTests {
 		public void execute(Integer obj) {
 		}
 
+	}
+
+	private static class NestedGeneric implements Command<Optional<Integer>> {
+		@Override
+		public void execute(Optional<Integer> parameter) {
+		}
+	}
+
+	private static class TwoGenericInterfaces implements Command<Integer>, GenericInterface<String> {
+		@Override
+		public void execute(Integer parameter) {
+		}
+
+		@Override
+		public void aMethod(String par) {
+		}
+	}
+
+	private static interface GenericInterface<T> {
+		void aMethod(T par);
 	}
 
 }
