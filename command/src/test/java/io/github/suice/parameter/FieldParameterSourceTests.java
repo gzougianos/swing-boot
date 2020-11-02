@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.suice.command.annotation.ParameterSource;
+
 @SuppressWarnings("all")
 class FieldParameterSourceTests {
 
@@ -23,6 +25,14 @@ class FieldParameterSourceTests {
 		FieldParameterSource staticS = new FieldParameterSource("id", this.getClass().getDeclaredField("y"));
 		assertEquals("somes", staticS.getValue(this, null));
 		assertEquals(String.class, staticS.getValueReturnType());
+	}
+
+	@Test
+	void wrongIds() throws Exception {
+		assertThrows(ParameterSourceException.class, () -> new FieldParameterSource(null, this.getClass().getDeclaredField("x")));
+		assertThrows(ParameterSourceException.class, () -> new FieldParameterSource("", this.getClass().getDeclaredField("x")));
+		assertThrows(ParameterSourceException.class,
+				() -> new FieldParameterSource(ParameterSource.THIS, this.getClass().getDeclaredField("x")));
 	}
 
 	@Test

@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
 @Target({ FIELD, METHOD })
 public @interface ParameterSource {
 	String value();
+
+	public static final String THIS = "this";
 }

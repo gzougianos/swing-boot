@@ -1,5 +1,7 @@
 package io.github.suice.parameter;
 
+import static io.github.suice.command.annotation.ParameterSource.THIS;
+
 import java.awt.AWTEvent;
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -8,9 +10,26 @@ class FieldParameterSource implements ParameterSource {
 	private final Field field;
 	private final String id;
 
-	FieldParameterSource(String id, Field field) {
+	FieldParameterSource(String id, Field field) throws ParameterSourceException {
 		this.id = id;
 		this.field = field;
+
+		checkIdNotEmpty();
+		checkIdNotThis();
+	}
+
+	private void checkIdNotEmpty() {
+		if (id == null || id.isEmpty()) {
+			throw new ParameterSourceException("@ParameterSource cannot have empty string as id. Found in field `"
+					+ field.getName() + "` of " + field.getDeclaringClass() + ".");
+		}
+	}
+
+	private void checkIdNotThis() {
+		if (THIS.equals(id)) {
+			throw new ParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `" + field.getName()
+					+ "` of " + field.getDeclaringClass() + ".");
+		}
 	}
 
 	@Override
