@@ -27,7 +27,7 @@ class FieldParameterSource implements ParameterSource {
 	}
 
 	private void ensureAccess() {
-		if (field.isAccessible())
+		if (!field.isAccessible())
 			field.setAccessible(true);
 	}
 

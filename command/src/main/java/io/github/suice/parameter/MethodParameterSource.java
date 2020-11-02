@@ -101,7 +101,7 @@ class MethodParameterSource implements ParameterSource {
 	}
 
 	private void ensureAccess() {
-		if (method.isAccessible())
+		if (!method.isAccessible())
 			method.setAccessible(true);
 	}
 
