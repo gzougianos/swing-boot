@@ -18,6 +18,7 @@ import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
 
 @SuppressWarnings("all")
+@OnActionPerformed(VoidCommand2.class)
 class CommandDeclarationTests {
 
 	@Inject
@@ -47,6 +48,9 @@ class CommandDeclarationTests {
 		Field field = CommandDeclarationTests.class.getDeclaredField("panel");
 		assertThrows(InvalidCommandDeclarationException.class,
 				() -> new CommandDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+
+		assertThrows(InvalidCommandDeclarationException.class,
+				() -> new CommandDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), this.getClass()));
 	}
 
 	@Test
@@ -122,5 +126,11 @@ class CommandDeclarationTests {
 		@Override
 		public void execute(Integer parameter) {
 		}
+	}
+}
+
+class VoidCommand2 implements Command<Void> {
+	@Override
+	public void execute(Void parameter) {
 	}
 }
