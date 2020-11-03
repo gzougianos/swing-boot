@@ -25,7 +25,7 @@ public class CommandDeclaration {
 	private String parameterSourceId;
 
 	@SuppressWarnings("unchecked")
-	public CommandDeclaration(Annotation annotation, AnnotatedElement targetElement) {
+	private CommandDeclaration(Annotation annotation, AnnotatedElement targetElement) {
 		this.targetElement = targetElement;
 		if (!annotation.annotationType().isAnnotationPresent(DeclaresCommand.class))
 			throw new InvalidCommandDeclarationException(annotation.annotationType() + " is not a @DeclaresCommand annotation.");
@@ -42,6 +42,14 @@ public class CommandDeclaration {
 
 		this.annotation = annotation;
 		commandGenericParameterType = ReflectionUtils.getCommandGenericParameterType(commandType);
+	}
+
+	public CommandDeclaration(Annotation annotation, Class<?> clazz) {
+		this(annotation, (AnnotatedElement) clazz);
+	}
+
+	public CommandDeclaration(Annotation annotation, Field field) {
+		this(annotation, (AnnotatedElement) field);
 	}
 
 	private void checkIfAnnotationCanBeInstalledToTargetElement(Annotation annotation, AnnotatedElement targetElement) {

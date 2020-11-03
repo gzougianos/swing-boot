@@ -1,7 +1,6 @@
 package io.github.suice.command;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,16 +8,13 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.github.suice.command.annotation.OnActionPerformed;
-import io.github.suice.command.annotation.OnComponentResized;
-import io.github.suice.command.annotation.installer.CommandDeclarationInstaller;
-import io.github.suice.command.annotation.installer.ListenerDirectlyToComponentInstaller;
-import io.github.suice.command.annotation.installer.creator.OnActionPerformedCreator;
-import io.github.suice.command.annotation.installer.creator.OnComponentResizedCreator;
+import io.github.suice.command.annotation.installer.AnnotationToComponentInstaller;
+import io.github.suice.command.annotation.installer.OnActionPerformedInstaller;
+import io.github.suice.command.annotation.installer.OnComponentResizedInstaller;
 
 public class CommandInstaller {
 	private static final Map<Class<?>, InstallCommandsClassAnalysis> scanCache = new HashMap<>();
-	private Set<CommandDeclarationInstaller> declarationInstallers = new HashSet<>();
+	private Set<AnnotationToComponentInstaller> installers = new HashSet<>();
 	private final Set<Object> installedObjects = new HashSet<>();
 
 	private CommandExecutor executor;
@@ -30,34 +26,13 @@ public class CommandInstaller {
 	}
 
 	private void createDefaultInstallers() {
-		//@formatter:off
-		declarationInstallers.add(
-				new ListenerDirectlyToComponentInstaller<>(
-						executor,
-						OnActionPerformed.class, 
-						"addActionListener",
-						ActionListener.class, 
-						new OnActionPerformedCreator()
-						));
-		
-		declarationInstallers.add(
-				new ListenerDirectlyToComponentInstaller<>(
-						executor,
-						OnComponentResized.class, 
-						"addComponentListener",
-						ComponentListener.class, 
-						new OnComponentResizedCreator()
-						));
-		//@formatter:on
-	}
-
-	public void addCommandDeclarationInstaller(CommandDeclarationInstaller installer) {
-		declarationInstallers.add(installer);
+		installers.add(new OnActionPerformedInstaller());
+		installers.add(new OnComponentResizedInstaller());
 	}
 
 	public void installCommands(Object object) throws CommandInstallationException {
 		if (alreadyInstalled(object))
-			throw new CommandInstallationException(object + " is already initialized.");
+			return;
 
 		installedObjects.add(object);
 
@@ -76,12 +51,20 @@ public class CommandInstaller {
 	private void installCommandsOnFields(Object object, InstallCommandsClassAnalysis classAnalysis) {
 		//@formatter:off
 		classAnalysis.getCommandDeclarations().values().stream()
-				.forEach(cmdDeclaration -> {
-					declarationInstallers.stream()
-						.filter(installer -> installer.supports(cmdDeclaration))		
-						.forEach(installer -> installer.install(new ObjectOwnedCommandDeclaration(object, cmdDeclaration)));
-				});
+				.map(cmdDeclaration-> new ObjectOwnedCommandDeclaration(object, cmdDeclaration))
+				.forEach(this::install);
 		//@formatter:on
+	}
+
+	private void install(ObjectOwnedCommandDeclaration declaration) {
+		for (AnnotationToComponentInstaller installer : installers) {
+			if (!installer.supportsAnnotation(declaration.getAnnotation()))
+				continue;
+
+			CommandDeclarationExecutor cmdDeclarationExecutor = new CommandDeclarationExecutor(executor, declaration);
+			Component targetComponent = declaration.getTargetComponent();
+			installer.installAnnotation(targetComponent, declaration.getAnnotation(), cmdDeclarationExecutor::execute);
+		}
 	}
 
 	private InstallCommandsClassAnalysis fromCacheOrNew(Class<?> objectType) {
