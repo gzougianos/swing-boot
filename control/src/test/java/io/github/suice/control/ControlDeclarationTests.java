@@ -38,8 +38,7 @@ class ControlDeclarationTests {
 	@Test
 	void notADeclaresControlAnnotation() throws Exception {
 		Field field = ControlDeclarationTests.class.getDeclaredField("x");
-		assertThrows(ControlDeclarationException.class,
-				() -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
+		assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
 	}
 
 	@Test
@@ -79,6 +78,19 @@ class ControlDeclarationTests {
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
 		assertThrows(ControlDeclarationException.class,
 				() -> declaration.setParameterSource(scan.getParameterSources().get("parsourceString")));
+	}
+
+	@Test
+	void annotationNotDeclaredOnThisTargetElement() throws Exception {
+		Field field = this.getClass().getDeclaredField("button");
+		OnActionPerformed annotation = field.getAnnotation(OnActionPerformed.class);
+
+		//declared on field, but targets a class
+		assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(annotation, this.getClass()));
+
+		//declared on field, but targets a different field
+		assertThrows(ControlDeclarationException.class,
+				() -> new ControlDeclaration(annotation, this.getClass().getDeclaredField("button2")));
 	}
 
 	@Test

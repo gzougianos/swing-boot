@@ -7,6 +7,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.util.Arrays;
 import java.util.Optional;
 
 import io.github.suice.control.annotation.DeclaresControl;
@@ -26,21 +27,31 @@ public class ControlDeclaration {
 	@SuppressWarnings("unchecked")
 	private ControlDeclaration(Annotation annotation, AnnotatedElement targetElement) {
 		this.targetElement = targetElement;
-		if (!annotation.annotationType().isAnnotationPresent(DeclaresControl.class))
-			throw new ControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
+		this.annotation = annotation;
 
-		checkIfAnnotationCanBeInstalledToTargetElement(annotation, targetElement);
+		checkIfThisAnnotationIsDeclaredOnThisElement();
+		checkIfAnnotationDeclaresControl();
+		checkIfAnnotationCanBeInstalledToTargetElement();
 
-		id = String.valueOf(invokeMethodOfAnnotation(annotation, "id"));
+		id = String.valueOf(invokeMethodOfAnnotation("id"));
 		if ("".equals(id))
 			id = annotation.toString() + targetElement.toString();
 
-		parameterSourceId = String.valueOf(invokeMethodOfAnnotation(annotation, "parameterSource"));
+		parameterSourceId = String.valueOf(invokeMethodOfAnnotation("parameterSource"));
 
-		controlType = (Class<? extends Control<?>>) invokeMethodOfAnnotation(annotation, "value");
+		controlType = (Class<? extends Control<?>>) invokeMethodOfAnnotation("value");
 
-		this.annotation = annotation;
 		controlParameterType = ReflectionUtils.getControlParameterType(controlType);
+	}
+
+	private void checkIfAnnotationDeclaresControl() {
+		if (!annotation.annotationType().isAnnotationPresent(DeclaresControl.class))
+			throw new ControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
+	}
+
+	private void checkIfThisAnnotationIsDeclaredOnThisElement() {
+		if (!Arrays.asList(targetElement.getDeclaredAnnotations()).stream().anyMatch(a -> a == annotation))
+			throw new ControlDeclarationException("The annotation should be declared to target element.");
 	}
 
 	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
@@ -51,7 +62,7 @@ public class ControlDeclaration {
 		this(annotation, (AnnotatedElement) field);
 	}
 
-	private void checkIfAnnotationCanBeInstalledToTargetElement(Annotation annotation, AnnotatedElement targetElement) {
+	private void checkIfAnnotationCanBeInstalledToTargetElement() {
 		DeclaresControl declaresControl = annotation.annotationType().getAnnotation(DeclaresControl.class);
 		Class<?> targetType = getTargetType(targetElement);
 
@@ -144,7 +155,7 @@ public class ControlDeclaration {
 		throw new UnsupportedOperationException("Error finding declaring class of target element: " + targetElement);
 	}
 
-	private static Object invokeMethodOfAnnotation(Annotation annotation, String method) {
+	private Object invokeMethodOfAnnotation(String method) {
 		try {
 			return annotation.annotationType().getMethod(method).invoke(annotation);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
