@@ -30,7 +30,7 @@ public class CommandInstaller {
 		installers.add(new OnComponentResizedInstaller());
 	}
 
-	public void installCommands(Object object) throws CommandInstallationException {
+	public void installCommands(Object object) {
 		if (alreadyInstalled(object))
 			return;
 
@@ -63,6 +63,10 @@ public class CommandInstaller {
 
 			CommandDeclarationExecutor cmdDeclarationExecutor = new CommandDeclarationExecutor(executor, declaration);
 			Component targetComponent = declaration.getTargetComponent();
+
+			if (targetComponent == null)
+				throw new NullPointerException("Component of " + declaration.getTargetComponent() + "is null.");
+
 			installer.installAnnotation(targetComponent, declaration.getAnnotation(), cmdDeclarationExecutor::execute);
 		}
 	}

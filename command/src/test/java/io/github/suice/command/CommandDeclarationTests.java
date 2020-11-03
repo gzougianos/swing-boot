@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.ParameterSource;
-import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
 
 @SuppressWarnings("all")
@@ -39,17 +38,17 @@ class CommandDeclarationTests {
 	@Test
 	void notADeclaresCommandAnnotation() throws Exception {
 		Field field = CommandDeclarationTests.class.getDeclaredField("x");
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> new CommandDeclaration(field.getAnnotation(Inject.class), field));
 	}
 
 	@Test
 	void annotationCannotBeInstalledToTargetElement() throws Exception {
 		Field field = CommandDeclarationTests.class.getDeclaredField("panel");
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> new CommandDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> new CommandDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), this.getClass()));
 	}
 
@@ -69,7 +68,7 @@ class CommandDeclarationTests {
 		Field field = CommandDeclarationTests.class.getDeclaredField("button");
 		CommandDeclaration declaration = new CommandDeclaration(field.getAnnotation(OnActionPerformed.class), field);
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> declaration.setParameterSource(scan.getParameterSources().get("parsource")));
 	}
 
@@ -78,7 +77,7 @@ class CommandDeclarationTests {
 		Field field = CommandDeclarationTests.class.getDeclaredField("button2");
 		CommandDeclaration declaration = new CommandDeclaration(field.getAnnotation(OnActionPerformed.class), field);
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> declaration.setParameterSource(scan.getParameterSources().get("parsourceString")));
 	}
 
@@ -87,7 +86,7 @@ class CommandDeclarationTests {
 		Field field = CommandDeclarationTests.class.getDeclaredField("button2");
 		CommandDeclaration declaration = new CommandDeclaration(field.getAnnotation(OnActionPerformed.class), field);
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> declaration.setParameterSource(scan.getParameterSources().get("differentId")));
 	}
 

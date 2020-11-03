@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import io.github.suice.command.annotation.OnActionPerformed;
 import io.github.suice.command.annotation.ParameterSource;
-import io.github.suice.command.exception.InvalidCommandDeclarationException;
 
 @SuppressWarnings("all")
 class InstallCommandsClassAnalysisTests {
@@ -25,12 +24,12 @@ class InstallCommandsClassAnalysisTests {
 
 	@Test
 	void exceptionWhenSameId() {
-		assertThrows(InvalidCommandDeclarationException.class, () -> new InstallCommandsClassAnalysis(DeclaredSameId.class));
+		assertThrows(CommandDeclarationException.class, () -> new InstallCommandsClassAnalysis(DeclaredSameId.class));
 	}
 
 	@Test
 	void declaredParameterSourceDoesNotExist() {
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> new InstallCommandsClassAnalysis(DeclaresParameterSourceButDoesNotExist.class));
 	}
 
@@ -80,7 +79,7 @@ class InstallCommandsClassAnalysisTests {
 
 	@Test
 	void childDeclaresIdThatExistInParent() throws Exception {
-		assertThrows(InvalidCommandDeclarationException.class,
+		assertThrows(CommandDeclarationException.class,
 				() -> new InstallCommandsClassAnalysis(ChildDeclaresIdThatExistsOnParent.class));
 	}
 

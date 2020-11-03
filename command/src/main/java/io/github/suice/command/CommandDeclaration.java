@@ -10,7 +10,6 @@ import java.lang.reflect.Member;
 import java.util.Optional;
 
 import io.github.suice.command.annotation.DeclaresCommand;
-import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.command.reflect.ReflectionUtils;
 import io.github.suice.parameter.ParameterSource;
 
@@ -28,7 +27,7 @@ public class CommandDeclaration {
 	private CommandDeclaration(Annotation annotation, AnnotatedElement targetElement) {
 		this.targetElement = targetElement;
 		if (!annotation.annotationType().isAnnotationPresent(DeclaresCommand.class))
-			throw new InvalidCommandDeclarationException(annotation.annotationType() + " is not a @DeclaresCommand annotation.");
+			throw new CommandDeclarationException(annotation.annotationType() + " is not a @DeclaresCommand annotation.");
 
 		checkIfAnnotationCanBeInstalledToTargetElement(annotation, targetElement);
 
@@ -58,7 +57,7 @@ public class CommandDeclaration {
 
 		if (!supportsType(declaresCommand, targetType)) {
 			Class<?> declaringClass = getTargetElementDeclaringClass();
-			throw new InvalidCommandDeclarationException(
+			throw new CommandDeclarationException(
 					annotation + " declared in " + declaringClass + " cannot be installed to objects of type " + targetType);
 		}
 	}
@@ -69,7 +68,7 @@ public class CommandDeclaration {
 		if (targetElement instanceof Class<?>)
 			return (Class<?>) targetElement;
 
-		throw new InvalidCommandDeclarationException("Unsupported target element:" + targetElement);
+		throw new CommandDeclarationException("Unsupported target element:" + targetElement);
 	}
 
 	private boolean supportsType(DeclaresCommand declaresCommand, Class<?> type) {
@@ -114,11 +113,11 @@ public class CommandDeclaration {
 
 	void setParameterSource(ParameterSource parameterSource) {
 		if (Void.class.equals(commandGenericParameterType))
-			throw new InvalidCommandDeclarationException(
+			throw new CommandDeclarationException(
 					this.getAnnotation() + " does not support parameter source. Control's generic parameter is Void.");
 
 		if (!parameterSource.getId().equals(parameterSourceId))
-			throw new InvalidCommandDeclarationException(
+			throw new CommandDeclarationException(
 					"Parameter source " + parameterSource + " has different id than command declartion");
 
 		checkIfParameterSourceReturnTypeMatchesCommandGenericType(parameterSource);
@@ -130,7 +129,7 @@ public class CommandDeclaration {
 
 		if (!equalsOrExtends(parameterSourceReturnType, commandGenericParameterType)) {
 			Class<?> declaringClass = getTargetElementDeclaringClass();
-			throw new InvalidCommandDeclarationException("@ParameterSource(" + parameterSource.getId() + ") in " + declaringClass
+			throw new CommandDeclarationException("@ParameterSource(" + parameterSource.getId() + ") in " + declaringClass
 					+ " can only return " + commandGenericParameterType.getSimpleName() + " values. It currently returns "
 					+ parameterSource.getValueReturnType().getSimpleName() + ".");
 		}
@@ -150,7 +149,7 @@ public class CommandDeclaration {
 			return annotation.annotationType().getMethod(method).invoke(annotation);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			throw new InvalidCommandDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".",
+			throw new CommandDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".",
 					e);
 		}
 	}

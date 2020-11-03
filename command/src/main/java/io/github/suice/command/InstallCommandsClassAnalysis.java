@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.suice.command.annotation.DeclaresCommand;
-import io.github.suice.command.exception.InvalidCommandDeclarationException;
 import io.github.suice.command.reflect.ReflectionUtils;
 import io.github.suice.parameter.FieldAndMethodParameterSourceScan;
 import io.github.suice.parameter.ParameterSource;
@@ -81,7 +80,7 @@ public class InstallCommandsClassAnalysis {
 
 	private void checkIfNotAlreadyExists(String id) {
 		if (commandDeclarations.containsKey(id)) {
-			throw new InvalidCommandDeclarationException("More than 2 commands declared with id `" + id + "` in " + clazz + ".");
+			throw new CommandDeclarationException("More than 2 commands declared with id `" + id + "` in " + clazz + ".");
 		}
 	}
 
@@ -98,7 +97,7 @@ public class InstallCommandsClassAnalysis {
 				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
 						.get(expectedParameterSourceId);
 				if (parSource == null)
-					throw new InvalidCommandDeclarationException(
+					throw new CommandDeclarationException(
 							"@ParameterSource(" + expectedParameterSourceId + ") not found in " + clazz + ".");
 				declaration.setParameterSource(parSource);
 			}
@@ -121,7 +120,7 @@ public class InstallCommandsClassAnalysis {
 				return;
 
 			if (commandDeclarations.containsKey(id))
-				throw new InvalidCommandDeclarationException(
+				throw new CommandDeclarationException(
 						"Command with id '" + id + "' in " + clazz + " is already declared in parent " + parentScan.clazz + ".");
 
 			commandDeclarations.put(id, declaration);
