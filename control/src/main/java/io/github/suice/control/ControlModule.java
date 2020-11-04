@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,15 +65,21 @@ public class ControlModule extends AbstractModule {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void bindControls() {
 		ImmutableSet<ClassInfo> topLevelClasses = includeSubpackages ? classpath.getTopLevelClassesRecursive(controlsPackage)
 				: classpath.getTopLevelClasses(controlsPackage);
 
 		for (ClassInfo classInfo : topLevelClasses) {
 			Class<?> clazz = classInfo.load();
-			if (isControl(clazz))
-				bind(clazz);
+			if (isControl(clazz)) {
+				bindControlClass((Class<? extends Control<?>>) clazz);
+			}
 		}
+	}
+
+	protected void bindControlClass(Class<? extends Control<?>> controlType) {
+		bind(controlType).in(Singleton.class);
 	}
 
 	private boolean isControl(Class<?> clazz) {
