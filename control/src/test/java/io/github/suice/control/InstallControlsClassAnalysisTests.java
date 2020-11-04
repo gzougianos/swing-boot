@@ -110,6 +110,30 @@ class InstallControlsClassAnalysisTests {
 		assertEquals(thisParameterSource, declaration.getParameterSource().get().getValue(thisParameterSource, null));
 	}
 
+	@Test
+	void grandChildInheritsAll() throws Exception {
+		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChild.class);
+		assertEquals(4, analysis.getControlDeclarations().size());
+		assertNotNull(analysis.getControlDeclarations().get("onTypeId"));
+		assertNotNull(analysis.getControlDeclarations().get("onFieldId"));
+		assertNotNull(analysis.getControlDeclarations().get("childId"));
+		assertNotNull(analysis.getControlDeclarations().get("childId2"));
+	}
+
+	@Test
+	void grandChildIgnoresGrandParent() throws Exception {
+		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChildIgnoresGrandParent.class);
+		assertEquals(2, analysis.getControlDeclarations().size());
+		assertNotNull(analysis.getControlDeclarations().get("onFieldId"));
+		assertNotNull(analysis.getControlDeclarations().get("childId"));
+	}
+
+	@Test
+	void grandChildIgnoresAll() throws Exception {
+		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChildIgnoresAll.class);
+		assertEquals(0, analysis.getControlDeclarations().size());
+	}
+
 	private static class WithoutInstallControlsAnnotation {
 	}
 
@@ -174,6 +198,22 @@ class InstallControlsClassAnalysisTests {
 	@InstallControls
 	private static class ChildIgnoreNone extends BothFieldAndType {
 		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "childId")
+		private JButton button;
+	}
+
+	@InstallControls(ignoreIdsFromParent = "onTypeId")
+	private static class GrandChildIgnoresGrandParent extends ChildIgnoreNone {
+
+	}
+
+	@InstallControls(ignoreAllIdsFromParent = true)
+	private static class GrandChildIgnoresAll extends ChildIgnoreNone {
+
+	}
+
+	@InstallControls
+	private static class GrandChild extends ChildIgnoreNone {
+		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "childId2")
 		private JButton button;
 	}
 
