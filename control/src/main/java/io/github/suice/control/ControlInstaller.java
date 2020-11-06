@@ -1,9 +1,7 @@
 package io.github.suice.control;
 
 import java.awt.Component;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -13,7 +11,6 @@ import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
 
 public class ControlInstaller {
-	private static final Map<Class<?>, InstallControlsClassAnalysis> scanCache = new HashMap<>();
 	private Set<AnnotationToComponentInstaller> installers = new HashSet<>();
 	private final Set<Object> installedObjects = new HashSet<>();
 
@@ -38,9 +35,7 @@ public class ControlInstaller {
 
 		Class<?> objectType = object.getClass();
 
-		InstallControlsClassAnalysis classAnalysis = fromCacheOrNew(objectType);
-
-		installControls(object, classAnalysis);
+		installControls(object, InstallControlsClassAnalysis.of(objectType));
 
 		if (object instanceof AdditionalControlInstallation) {
 			((AdditionalControlInstallation) object).installAdditionalControls(controls);
@@ -69,15 +64,6 @@ public class ControlInstaller {
 
 			installer.installAnnotation(targetComponent, declaration.getAnnotation(), controlPerformer::perform);
 		}
-	}
-
-	private InstallControlsClassAnalysis fromCacheOrNew(Class<?> objectType) {
-		InstallControlsClassAnalysis classScan = scanCache.get(objectType);
-		if (classScan == null) {
-			classScan = new InstallControlsClassAnalysis(objectType);
-			scanCache.put(objectType, classScan);
-		}
-		return classScan;
 	}
 
 	private boolean alreadyInstalled(Object object) {

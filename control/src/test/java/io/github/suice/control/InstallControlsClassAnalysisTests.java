@@ -1,6 +1,8 @@
 package io.github.suice.control;
 
+import static io.github.suice.control.InstallControlsClassAnalysis.of;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,25 +20,23 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void exceptionIfItIsNotAnnotatedWithInstallControlsAnnotation() {
-		assertThrows(IllegalArgumentException.class,
-				() -> new InstallControlsClassAnalysis(WithoutInstallControlsAnnotation.class));
+		assertThrows(IllegalArgumentException.class, () -> of(WithoutInstallControlsAnnotation.class));
 	}
 
 	@Test
 	void exceptionWhenSameId() {
-		assertThrows(ControlDeclarationException.class, () -> new InstallControlsClassAnalysis(DeclaredSameId.class));
+		assertThrows(ControlDeclarationException.class, () -> of(DeclaredSameId.class));
 	}
 
 	@Test
 	void declaredParameterSourceDoesNotExist() {
-		assertThrows(ControlDeclarationException.class,
-				() -> new InstallControlsClassAnalysis(DeclaresParameterSourceButDoesNotExist.class));
+		assertThrows(ControlDeclarationException.class, () -> of(DeclaresParameterSourceButDoesNotExist.class));
 	}
 
 	@Test
 	void normalCaseAnnotationOnType() {
 		Class<?> clazz = AnnotationOnType.class;
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(clazz);
+		InstallControlsClassAnalysis analysis = of(clazz);
 		assertEquals(1, analysis.getControlDeclarations().size());
 
 		String expectedId = clazz.getAnnotation(OnActionPerformed.class) + clazz.toString();
@@ -50,7 +50,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void normalCaseOnlyAnnotatedField() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(NormalCaseWithAnnotatedField.class);
+		InstallControlsClassAnalysis analysis = of(NormalCaseWithAnnotatedField.class);
 		assertEquals(1, analysis.getControlDeclarations().size());
 
 		ControlDeclaration declaration = analysis.getControlDeclarations().get("someid");
@@ -62,7 +62,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void bothFieldAndType() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(BothFieldAndType.class);
+		InstallControlsClassAnalysis analysis = of(BothFieldAndType.class);
 		assertEquals(2, analysis.getControlDeclarations().size());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onTypeId").getParameterSourceId());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onFieldId").getParameterSourceId());
@@ -70,7 +70,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void inheritanceIgnoreNone() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(ChildIgnoreNone.class);
+		InstallControlsClassAnalysis analysis = of(ChildIgnoreNone.class);
 		assertEquals(3, analysis.getControlDeclarations().size());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onTypeId").getParameterSourceId());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onFieldId").getParameterSourceId());
@@ -79,14 +79,12 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void childDeclaresIdThatExistInParent() throws Exception {
-		assertThrows(ControlDeclarationException.class,
-				() -> new InstallControlsClassAnalysis(ChildDeclaresIdThatExistsOnParent.class));
+		assertThrows(ControlDeclarationException.class, () -> of(ChildDeclaresIdThatExistsOnParent.class));
 	}
 
 	@Test
 	void childDeclaresIdThatExistInParentButIgnoresParent() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(
-				ChildDeclaresIdThatExistsOnParentButIgnoresParent.class);
+		InstallControlsClassAnalysis analysis = of(ChildDeclaresIdThatExistsOnParentButIgnoresParent.class);
 		assertEquals(2, analysis.getControlDeclarations().size());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onFieldId").getParameterSourceId());
 		assertEquals("parsource", analysis.getControlDeclarations().get("onTypeId").getParameterSourceId());
@@ -94,13 +92,19 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void childIgnoresAll() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(ChildIgnoresAll.class);
+		InstallControlsClassAnalysis analysis = of(ChildIgnoresAll.class);
 		assertTrue(analysis.getControlDeclarations().isEmpty());
 	}
 
 	@Test
+	void cache() {
+		InstallControlsClassAnalysis analysis = of(ChildIgnoresAll.class);
+		assertSame(analysis, of(ChildIgnoresAll.class));
+	}
+
+	@Test
 	void withThisParameterSource() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(ThisParameterSource.class);
+		InstallControlsClassAnalysis analysis = of(ThisParameterSource.class);
 		assertEquals(1, analysis.getControlDeclarations().size());
 
 		ControlDeclaration declaration = analysis.getControlDeclarations().get("someId");
@@ -112,7 +116,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void grandChildInheritsAll() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChild.class);
+		InstallControlsClassAnalysis analysis = of(GrandChild.class);
 		assertEquals(4, analysis.getControlDeclarations().size());
 		assertNotNull(analysis.getControlDeclarations().get("onTypeId"));
 		assertNotNull(analysis.getControlDeclarations().get("onFieldId"));
@@ -122,7 +126,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void grandChildIgnoresGrandParent() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChildIgnoresGrandParent.class);
+		InstallControlsClassAnalysis analysis = of(GrandChildIgnoresGrandParent.class);
 		assertEquals(2, analysis.getControlDeclarations().size());
 		assertNotNull(analysis.getControlDeclarations().get("onFieldId"));
 		assertNotNull(analysis.getControlDeclarations().get("childId"));
@@ -130,7 +134,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void grandChildIgnoresAll() throws Exception {
-		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(GrandChildIgnoresAll.class);
+		InstallControlsClassAnalysis analysis = of(GrandChildIgnoresAll.class);
 		assertEquals(0, analysis.getControlDeclarations().size());
 	}
 

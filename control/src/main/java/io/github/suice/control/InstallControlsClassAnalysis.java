@@ -22,11 +22,12 @@ import io.github.suice.control.parameter.SourceOwnerParameterSource;
 import io.github.suice.control.reflect.ReflectionUtils;
 
 public class InstallControlsClassAnalysis {
+	private static final Map<Class<?>, InstallControlsClassAnalysis> cache = new HashMap<>();
 	private final Class<?> clazz;
 	private Map<String, ControlDeclaration> controlDeclarations;
 	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
 
-	public InstallControlsClassAnalysis(Class<?> clazz) {
+	private InstallControlsClassAnalysis(Class<?> clazz) {
 		this.clazz = clazz;
 
 		checkInstallControlsAnnotationIsPresent();
@@ -115,7 +116,7 @@ public class InstallControlsClassAnalysis {
 
 		Set<String> ignoreInheritedIds = getIgnoredIds(clazz);
 
-		InstallControlsClassAnalysis parentScan = new InstallControlsClassAnalysis(parentClass);
+		InstallControlsClassAnalysis parentScan = of(parentClass);
 		parentScan.controlDeclarations.forEach((id, declaration) -> {
 			if (ignoreInheritedIds.contains(id))
 				return;
@@ -160,5 +161,18 @@ public class InstallControlsClassAnalysis {
 
 	private boolean isComponentField(Field field) {
 		return ReflectionUtils.equalsOrExtends(field.getType(), Component.class);
+	}
+
+	static InstallControlsClassAnalysis of(Class<?> clazz) {
+		return fromCacheOrNew(clazz);
+	}
+
+	private static InstallControlsClassAnalysis fromCacheOrNew(Class<?> clazz) {
+		if (cache.containsKey(clazz))
+			return cache.get(clazz);
+
+		InstallControlsClassAnalysis analysis = new InstallControlsClassAnalysis(clazz);
+		cache.put(clazz, analysis);
+		return analysis;
 	}
 }
