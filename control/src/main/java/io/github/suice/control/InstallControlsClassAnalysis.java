@@ -96,9 +96,10 @@ public class InstallControlsClassAnalysis {
 			} else {
 				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
 						.get(expectedParameterSourceId);
-				if (parSource == null)
-					throw new ControlDeclarationException(
-							"@ParameterSource(" + expectedParameterSourceId + ") not found in " + clazz + ".");
+				if (parSource == null) {
+					throw new ControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId + ") found in class "
+							+ clazz.getSimpleName() + " for " + declaration + ".");
+				}
 				declaration.setParameterSource(parSource);
 			}
 		});

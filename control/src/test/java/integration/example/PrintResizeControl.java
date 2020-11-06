@@ -1,14 +1,14 @@
 package integration.example;
 
-import java.awt.event.ComponentEvent;
+import javax.annotation.Nullable;
 
 import io.github.suice.control.Control;
 
-public class PrintResizeControl implements Control<ComponentEvent> {
+public class PrintResizeControl implements Control<Integer> {
 
 	@Override
-	public void perform(ComponentEvent parameter) {
-		System.out.println(parameter);
+	public void perform(@Nullable Integer parameter) {
+		System.out.println("print resize");
 	}
 
 }

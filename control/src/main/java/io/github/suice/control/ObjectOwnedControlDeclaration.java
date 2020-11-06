@@ -35,11 +35,11 @@ public class ObjectOwnedControlDeclaration {
 	}
 
 	public Class<?> getControlParameterType() {
-		return declaration.getControlParameterType();
+		return declaration.getControlTypeInfo().getParameterType();
 	}
 
 	public Class<? extends Control<?>> getControlType() {
-		return declaration.getControlType();
+		return declaration.getControlTypeInfo().getControlType();
 	}
 
 	public Annotation getAnnotation() {

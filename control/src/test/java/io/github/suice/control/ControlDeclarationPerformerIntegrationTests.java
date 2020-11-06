@@ -1,71 +1,104 @@
 package io.github.suice.control;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
-import io.github.suice.control.annotation.listener.OnComponentResized;
 
-@InstallControls
 public class ControlDeclarationPerformerIntegrationTests {
 
-	@OnActionPerformed(VoidControl.class)
-	private JButton button = new JButton();
+	@Nested
+	@InstallControls
+	class NoParameterSource {
+		@OnActionPerformed(VoidControl.class)
+		private JButton button = new JButton();
 
-	@OnComponentResized(EventControl.class)
-	@OnActionPerformed(EventControl.class)
-	private JButton eventButton = new JButton();
-
-	@OnActionPerformed(value = EventControl.class, parameterSource = "parsource")
-	private JButton parameterSourcedButton = new JButton();
-
-	@Test
-	void noParameterSourceNoEventParameter() {
-		Controls controls = mock(Controls.class);
-		new ControlInstaller(controls).installControls(this);
-		button.doClick();
-		verify(controls).perform(eq(VoidControl.class));
-		verifyNoMoreInteractions(controls);
+		@Test
+		void main() {
+			Controls controls = mock(Controls.class);
+			new ControlInstaller(controls).installControls(this);
+			button.doClick();
+			verify(controls).perform(eq(VoidControl.class));
+			verifyNoMoreInteractions(controls);
+		}
 	}
 
-	@Test
-	void castableEventParameter() {
-		Controls controls = mock(Controls.class);
-		new ControlInstaller(controls).installControls(this);
-		eventButton.doClick();
-		verify(controls).perform(eq(EventControl.class), isA(ActionEvent.class));
-		verifyNoMoreInteractions(controls);
+	@Nested
+	@InstallControls
+	class NoEventParameterSource {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton button = new JButton();
+
+		@Test
+		void main() {
+			Controls controls = mock(Controls.class);
+			new ControlInstaller(controls).installControls(this);
+			button.doClick();
+			verify(controls).perform(eq(IntControl.class), eq(5));
+			verifyNoMoreInteractions(controls);
+		}
+
+		@ParameterSource("parsource")
+		private int parSource() {
+			return 5;
+		}
 	}
 
-	@Test
-	void nonCastableEventParameter() {
-		Controls controls = mock(Controls.class);
-		new ControlInstaller(controls).installControls(this);
-		Arrays.asList(eventButton.getComponentListeners())
-				.forEach(l -> l.componentResized(new ComponentEvent(eventButton, ComponentEvent.COMPONENT_RESIZED)));
-		verify(controls).perform(eq(EventControl.class));
-		verifyNoMoreInteractions(controls);
+	@Nested
+	@InstallControls
+	class WithCastableEventParameterSource {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton button = new JButton();
+
+		@Test
+		void main() {
+			Controls controls = mock(Controls.class);
+			new ControlInstaller(controls).installControls(this);
+			button.doClick();
+			verify(controls).perform(eq(IntControl.class), eq(7));
+			verifyNoMoreInteractions(controls);
+		}
+
+		@ParameterSource("parsource")
+		private int parSource(ActionEvent event) {
+			assertNotNull(event);
+			return 7;
+		}
 	}
 
-	@Test
-	void withParameterSource() {
-		Controls controls = mock(Controls.class);
-		new ControlInstaller(controls).installControls(this);
-		parameterSourcedButton.doClick();
-		verify(controls).perform(eq(EventControl.class), isA(ActionEvent.class));
-		verifyNoMoreInteractions(controls);
+	@Nested
+	@InstallControls
+	class WithNonCastableEventParameterSource {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton button = new JButton();
+
+		@Test
+		void main() {
+			Controls controls = mock(Controls.class);
+			new ControlInstaller(controls).installControls(this);
+			button.doClick();
+			verify(controls).perform(eq(IntControl.class), eq(10));
+			verifyNoMoreInteractions(controls);
+		}
+
+		@ParameterSource("parsource")
+		private int parSource(ComponentEvent event) {
+			assertNull(event);
+			return 10;
+		}
 	}
 
 	private static class VoidControl implements Control<Void> {
@@ -74,14 +107,10 @@ public class ControlDeclarationPerformerIntegrationTests {
 		}
 	}
 
-	private static class EventControl implements Control<ActionEvent> {
+	private static class IntControl implements Control<Integer> {
 		@Override
-		public void perform(ActionEvent parameter) {
+		public void perform(Integer parameter) {
 		}
 	}
 
-	@ParameterSource("parsource")
-	private ActionEvent parSource(ActionEvent event) {
-		return event;
-	}
 }

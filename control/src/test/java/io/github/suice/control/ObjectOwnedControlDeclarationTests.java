@@ -42,9 +42,9 @@ class ObjectOwnedControlDeclarationTests {
 		private JPanel panel = new JPanel();
 	}
 
-	private static class TestControl implements Control<Integer> {
+	private static class TestControl implements Control<Void> {
 		@Override
-		public void perform(Integer parameter) {
+		public void perform(Void parameter) {
 		}
 	}
 }

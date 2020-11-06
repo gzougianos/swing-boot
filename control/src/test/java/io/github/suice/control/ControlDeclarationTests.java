@@ -1,130 +1,218 @@
 package io.github.suice.control;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
-import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
 
-@SuppressWarnings("all")
-@OnActionPerformed(VoidControl2.class)
+@SuppressWarnings("unused")
 class ControlDeclarationTests {
 
-	@Inject
-	private int x;
+	@Nested
+	class NotADeclaresControlAnnotation {
+
+		@Inject
+		private int x;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("x");
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
+		}
+	}
 
 	@OnActionPerformed(VoidControl.class)
-	private JPanel panel;
+	@Nested
+	class AnnotationDoesNotSupportTargetElement {
 
-	@OnActionPerformed(value = VoidControl.class, id = "someId", parameterSource = "parsource")
-	private JButton button;
+		@OnActionPerformed(VoidControl.class)
+		private JPanel panel;
 
-	@OnActionPerformed(value = IntControl.class, id = "someId", parameterSource = "parsourceString")
-	private JButton button2;
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("panel");
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 
-	@OnActionPerformed(value = IntControl.class, id = "someId", parameterSource = "parsource")
-	private JButton button3;
-
-	@Test
-	void notADeclaresControlAnnotation() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("x");
-		assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), getClass()));
+		}
 	}
 
-	@Test
-	void annotationCannotBeInstalledToTargetElement() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("panel");
-		assertThrows(ControlDeclarationException.class,
-				() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+	@Nested
+	class ExceptionWhenParameterSourceGivenOnParameterlessControl {
+		@OnActionPerformed(value = VoidControl.class, parameterSource = "parsource")
+		private JButton field;
 
-		assertThrows(ControlDeclarationException.class,
-				() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), this.getClass()));
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+		}
 	}
 
-	@Test
-	void allGood() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("button");
-		ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-		assertEquals("parsource", declaration.getParameterSourceId());
-		assertEquals("someId", declaration.getId());
-		assertEquals(Void.class, declaration.getControlParameterType());
-		assertEquals(VoidControl.class, declaration.getControlType());
-		assertEquals(field, declaration.getTargetElement());
+	@Nested
+	class ExceptionWhenSettingParameterSourceOnParameterlessControl {
+		@OnActionPerformed(value = VoidControl.class)
+		private JButton field;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			io.github.suice.control.parameter.ParameterSource source = mock(
+					io.github.suice.control.parameter.ParameterSource.class);
+
+			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+		}
 	}
 
-	@Test
-	void settingVoidParameterSource() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("button");
-		ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(ControlDeclarationException.class,
-				() -> declaration.setParameterSource(scan.getParameterSources().get("parsource")));
+	@Nested
+	class ExceptionWhenParameterSourceReturnValueMismatchParameterType {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton field;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+
+			io.github.suice.control.parameter.ParameterSource source = mock(
+					io.github.suice.control.parameter.ParameterSource.class);
+			doReturn(String.class).when(source).getValueReturnType();
+			doReturn("parsource").when(source).getId();
+			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+		}
+
+		@ParameterSource("parsource")
+		public String wrongReturnValue() {
+			return null;
+		}
 	}
 
-	@Test
-	void parameterSourceTypeMismatch() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("button2");
-		ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(ControlDeclarationException.class,
-				() -> declaration.setParameterSource(scan.getParameterSources().get("parsourceString")));
+	@Nested
+	class ExceptionWhenParameterSourceNotGivenOnNonNullableParameterControl {
+		@OnActionPerformed(value = IntControl.class)
+		private JButton field;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+		}
 	}
 
-	@Test
-	void annotationNotDeclaredOnThisTargetElement() throws Exception {
-		Field field = this.getClass().getDeclaredField("button");
-		OnActionPerformed annotation = field.getAnnotation(OnActionPerformed.class);
+	@Nested
+	class NoExceptionWhenParameterSourceNotGivenOnNullableParameterControl {
+		@OnActionPerformed(value = IntNullableControl.class)
+		private JButton field;
 
-		//declared on field, but targets a class
-		assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(annotation, this.getClass()));
-
-		//declared on field, but targets a different field
-		assertThrows(ControlDeclarationException.class,
-				() -> new ControlDeclaration(annotation, this.getClass().getDeclaredField("button2")));
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			assertDoesNotThrow(() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+		}
 	}
 
-	@Test
-	void parameterSourceIdMismatch() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("button2");
-		ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		assertThrows(ControlDeclarationException.class,
-				() -> declaration.setParameterSource(scan.getParameterSources().get("differentId")));
+	@Nested
+	class AnnotationIsNotDeclaredOnTheTargetElement {
+		@OnActionPerformed(value = VoidControl.class)
+		private JButton field;
+
+		@OnActionPerformed(value = VoidControl.class)
+		private JButton field2;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			OnActionPerformed annotation = field.getAnnotation(OnActionPerformed.class);
+
+			//declared on field, but targets a class
+			assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(annotation, getClass()));
+
+			//declared on field, but targets a different field
+			assertThrows(ControlDeclarationException.class,
+					() -> new ControlDeclaration(annotation, getClass().getDeclaredField("field2")));
+		}
 	}
 
-	@Test
-	void parameterSourceOk() throws Exception {
-		Field field = ControlDeclarationTests.class.getDeclaredField("button3");
-		ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(this.getClass());
-		declaration.setParameterSource(scan.getParameterSources().get("parsource"));
-		assertTrue(declaration.getParameterSource().isPresent());
-		assertEquals(-1, declaration.getParameterSource().get().getValue(this, null));
+	@Nested
+	class settingAParameterSourceThatReturnsVoid {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton field;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+
+			io.github.suice.control.parameter.ParameterSource source = mock(
+					io.github.suice.control.parameter.ParameterSource.class);
+			doReturn(Void.class).when(source).getValueReturnType();
+			doReturn("parsource").when(source).getId();
+			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+		}
 	}
 
-	@ParameterSource("parsource")
-	private int parSourceInt() {
-		return -1;
+	@Nested
+	class ParameterSourceIdMismatch {
+		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
+		private JButton field;
+
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+
+			io.github.suice.control.parameter.ParameterSource source = mock(
+					io.github.suice.control.parameter.ParameterSource.class);
+			doReturn(Integer.class).when(source).getValueReturnType();
+			doReturn("A MISMATCHED ID").when(source).getId();
+			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+		}
 	}
 
-	@ParameterSource("parsourceString")
-	private String parSourceString() {
-		return "";
-	}
+	@Nested
+	class AllGood {
+		@OnActionPerformed(value = IntControl.class, id = "the_id", parameterSource = "parsource")
+		private JButton field;
 
-	@ParameterSource("differentId")
-	private int diffId() {
-		return -1;
+		@Test
+		void main() throws Exception {
+			Field field = getClass().getDeclaredField("field");
+			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+
+			io.github.suice.control.parameter.ParameterSource source = mock(
+					io.github.suice.control.parameter.ParameterSource.class);
+			doReturn(Integer.class).when(source).getValueReturnType();
+			doReturn("parsource").when(source).getId();
+
+			declaration.setParameterSource(source);
+			assertEquals("the_id", declaration.getId());
+			assertEquals("parsource", declaration.getParameterSourceId());
+			assertEquals(Integer.class, declaration.getControlTypeInfo().getParameterType());
+			assertEquals(IntControl.class, declaration.getControlTypeInfo().getControlType());
+			assertEquals(field, declaration.getTargetElement());
+			assertTrue(declaration.getParameterSource().isPresent());
+		}
 	}
 
 	private static class VoidControl implements Control<Void> {
@@ -138,10 +226,10 @@ class ControlDeclarationTests {
 		public void perform(Integer parameter) {
 		}
 	}
-}
 
-class VoidControl2 implements Control<Void> {
-	@Override
-	public void perform(Void parameter) {
+	private static class IntNullableControl implements Control<Integer> {
+		@Override
+		public void perform(@Nullable Integer parameter) {
+		}
 	}
 }

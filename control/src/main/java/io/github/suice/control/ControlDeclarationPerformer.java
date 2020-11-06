@@ -1,7 +1,5 @@
 package io.github.suice.control;
 
-import static io.github.suice.control.reflect.ReflectionUtils.equalsOrExtends;
-
 import java.awt.AWTEvent;
 import java.lang.reflect.InvocationTargetException;
 
@@ -21,12 +19,8 @@ public class ControlDeclarationPerformer {
 	}
 
 	public void perform(AWTEvent event) {
-		Class<?> parType = controlDeclaration.getControlParameterType();
-
 		if (controlDeclaration.getParameterSource().isPresent()) {
 			executeInvokingSource(controlDeclaration.getParameterSource().get(), event);
-		} else if (equalsOrExtends(event.getClass(), parType)) {
-			executeInjectingAwtEvent(event);
 		} else {
 			controls.perform(controlDeclaration.getControlType());
 		}
@@ -43,13 +37,6 @@ public class ControlDeclarationPerformer {
 				| SecurityException e) {
 			log.error("Error performing control type " + controlType + " with parameter source " + parameterSource + ".", e);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private void executeInjectingAwtEvent(AWTEvent event) {
-		Class<? extends Control<AWTEvent>> controlParameterType = (Class<? extends Control<AWTEvent>>) controlDeclaration
-				.getControlType();
-		controls.perform(controlParameterType, event);
 	}
 
 }
