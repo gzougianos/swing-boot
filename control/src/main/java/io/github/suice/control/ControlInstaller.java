@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.github.suice.control.annotation.installer.AnnotationToComponentInstaller;
+import io.github.suice.control.annotation.installer.KeyBindingInstaller;
 import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
 
@@ -25,6 +26,7 @@ public class ControlInstaller {
 	private void createDefaultInstallers() {
 		installers.add(new OnActionPerformedInstaller());
 		installers.add(new OnComponentResizedInstaller());
+		installers.add(new KeyBindingInstaller());
 	}
 
 	public void installControls(Object object) {
