@@ -10,9 +10,14 @@ import javax.swing.JButton;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.annotation.listener.OnActionPerformed;
+import testutils.EdtAll;
+import testutils.EdtExtension;
 
+@ExtendWith(EdtExtension.class)
+@EdtAll
 class ControlInstallerTests {
 	private static boolean additionalsInstalled = false;
 	private ControlInstaller installer;

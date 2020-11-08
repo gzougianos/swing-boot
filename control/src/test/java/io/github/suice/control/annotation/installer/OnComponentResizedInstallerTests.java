@@ -16,11 +16,16 @@ import java.util.function.Consumer;
 import javax.swing.JButton;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import io.github.suice.control.annotation.listener.OnComponentResized;
+import testutils.EdtAll;
+import testutils.EdtExtension;
 
+@ExtendWith(EdtExtension.class)
+@EdtAll
 class OnComponentResizedInstallerTests {
 	@OnComponentResized(TestControl.class)
 	private int field;

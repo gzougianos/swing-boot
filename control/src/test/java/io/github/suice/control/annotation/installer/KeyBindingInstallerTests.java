@@ -17,13 +17,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.listener.KeyBinding;
+import testutils.EdtExtension;
+import testutils.EdtAll;
 
+@ExtendWith(EdtExtension.class)
+@EdtAll
 class KeyBindingInstallerTests {
 
 	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
@@ -78,11 +82,6 @@ class KeyBindingInstallerTests {
 		installer = new KeyBindingInstaller();
 		eventConsumer = mock(Consumer.class);
 		annotation = getClass().getDeclaredField("annotationHolder").getAnnotation(KeyBinding.class);
-	}
-
-	@BeforeAll
-	static void unsetHeadless() {
-		System.setProperty("java.awt.headless", "false");
 	}
 
 	private static class TestControl implements Control<Integer> {

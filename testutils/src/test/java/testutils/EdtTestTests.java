@@ -7,10 +7,10 @@ import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(EdtExtension.class)
-public class EdtExtensionTests {
+class EdtTestTests {
 
 	@EdtTest
-	public void main() {
+	void main() {
 		assertTrue(SwingUtilities.isEventDispatchThread());
 	}
 
