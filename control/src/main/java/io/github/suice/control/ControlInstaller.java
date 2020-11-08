@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.suice.control.annotation.installer.AnnotationToComponentInstaller;
 import io.github.suice.control.annotation.installer.KeyBindingInstaller;
@@ -12,6 +16,7 @@ import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
 
 public class ControlInstaller {
+	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
 	private Set<AnnotationToComponentInstaller> installers = new HashSet<>();
 	private final Set<Object> installedObjects = new HashSet<>();
 
@@ -33,6 +38,8 @@ public class ControlInstaller {
 		if (alreadyInstalled(object))
 			return;
 
+		warnNonEdtInstallation(object);
+
 		installedObjects.add(object);
 
 		Class<?> objectType = object.getClass();
@@ -43,6 +50,14 @@ public class ControlInstaller {
 			((AdditionalControlInstallation) object).installAdditionalControls(controls);
 		}
 
+	}
+
+	private void warnNonEdtInstallation(Object object) {
+		boolean runsOnEdt = SwingUtilities.isEventDispatchThread();
+		if (!runsOnEdt) {
+			log.warn("Installing controls to " + object
+					+ " outside the event dispatch thread. All controls should be installed in event dispatch thread.");
+		}
 	}
 
 	private void installControls(Object object, InstallControlsClassAnalysis classAnalysis) {

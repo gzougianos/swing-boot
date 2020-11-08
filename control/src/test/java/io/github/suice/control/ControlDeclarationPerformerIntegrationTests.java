@@ -13,11 +13,14 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JButton;
 
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
+import testutils.EdtExtension;
+import testutils.EdtTest;
 
+@ExtendWith(EdtExtension.class)
 public class ControlDeclarationPerformerIntegrationTests {
 
 	@Nested
@@ -26,7 +29,7 @@ public class ControlDeclarationPerformerIntegrationTests {
 		@OnActionPerformed(VoidControl.class)
 		private JButton button = new JButton();
 
-		@Test
+		@EdtTest
 		void main() {
 			Controls controls = mock(Controls.class);
 			new ControlInstaller(controls).installControls(this);
@@ -42,7 +45,7 @@ public class ControlDeclarationPerformerIntegrationTests {
 		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
 		private JButton button = new JButton();
 
-		@Test
+		@EdtTest
 		void main() {
 			Controls controls = mock(Controls.class);
 			new ControlInstaller(controls).installControls(this);
@@ -63,7 +66,7 @@ public class ControlDeclarationPerformerIntegrationTests {
 		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
 		private JButton button = new JButton();
 
-		@Test
+		@EdtTest
 		void main() {
 			Controls controls = mock(Controls.class);
 			new ControlInstaller(controls).installControls(this);
@@ -85,7 +88,7 @@ public class ControlDeclarationPerformerIntegrationTests {
 		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
 		private JButton button = new JButton();
 
-		@Test
+		@EdtTest
 		void main() {
 			Controls controls = mock(Controls.class);
 			new ControlInstaller(controls).installControls(this);

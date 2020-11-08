@@ -12,12 +12,15 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<junit.version>1.7.0</junit.version>
 		<jupiter.version>5.7.0</jupiter.version>
+		<mockito.version>1.10.19</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<modules>
 		<module>control</module>
+		<module>testutils</module>
 	</modules>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -30,19 +33,6 @@
 
 
 	<dependencies>
-
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>4.2.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.30</version>
-		</dependency>
-
 
 		<!-- TEST DEPENDENCIES -->
 		<dependency>
@@ -83,7 +73,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
+			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 
