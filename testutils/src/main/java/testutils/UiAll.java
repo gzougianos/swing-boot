@@ -17,7 +17,7 @@ import org.junit.platform.commons.annotation.Testable;
 
 /**
  * <p>
- * When used on a test class among {@code @ExtendWith(EdtExtension.class)}
+ * When used on a test class among {@code @ExtendWith(UiExtension.class)}
  * annotation, all test methods will run in the <b>Event Dispatch Thread</b>.
  * The supported methods are:
  * <ul>
@@ -35,14 +35,14 @@ import org.junit.platform.commons.annotation.Testable;
  * method.
  * </p>
  * 
- * @see {@link EdtExtension}
- * @see {@link EdtTest}
+ * @see {@link UiExtension}
+ * @see {@link UiTest}
  * 
  */
 @Retention(RUNTIME)
 @Target({ ElementType.TYPE })
 @Testable
-public @interface EdtAll {
+public @interface UiAll {
 
 	/**
 	 * <p>
@@ -50,7 +50,7 @@ public @interface EdtAll {
 	 * Event Dispatch Thread.
 	 * </p>
 	 * <p>
-	 * For example {@code @EdtAll(exclude = BeforeAll.class)} will exclude
+	 * For example {@code @UiAll(exclude = BeforeAll.class)} will exclude
 	 * {@link BeforeAll} method from running in the Event Dispatch Thread.
 	 * </p>
 	 * 

@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.annotation.listener.OnActionPerformed;
-import testutils.EdtAll;
-import testutils.EdtExtension;
+import testutils.UiAll;
+import testutils.UiExtension;
 
-@ExtendWith(EdtExtension.class)
-@EdtAll
+@ExtendWith(UiExtension.class)
+@UiAll
 class ControlInstallerTests {
 	private static boolean additionalsInstalled = false;
 	private ControlInstaller installer;

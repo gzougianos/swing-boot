@@ -18,10 +18,10 @@ import com.google.inject.Injector;
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.InBackground;
 import io.github.suice.concurrency.LogFieldValueChanger;
-import testutils.EdtExtension;
-import testutils.EdtTest;
+import testutils.UiExtension;
+import testutils.UiTest;
 
-@ExtendWith(EdtExtension.class)
+@ExtendWith(UiExtension.class)
 class InBackgroundMethodInterceptorIntegrationTests {
 
 	@Test
@@ -31,14 +31,14 @@ class InBackgroundMethodInterceptorIntegrationTests {
 		instance.doInBackground();
 	}
 
-	@EdtTest
+	@UiTest
 	void startsABackgroundThread() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		BackgroundMethodOwner instance = injector.getInstance(BackgroundMethodOwner.class);
 		instance.doInBackground();
 	}
 
-	@EdtTest
+	@UiTest
 	void warnWhenMethodIsNotVoid() throws Exception {
 		Logger logger = mock(Logger.class);
 		new LogFieldValueChanger(InBackgroundMethodInterceptor.class).replaceWith(logger);

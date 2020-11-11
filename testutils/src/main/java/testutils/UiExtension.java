@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
 import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 
-public class EdtExtension implements InvocationInterceptor {
+public class UiExtension implements InvocationInterceptor {
 
 	@Override
 	public void interceptAfterAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		if (includedInEdtAll(invocationContext)) {
+		if (containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(() -> InvocationInterceptor.super.interceptAfterAllMethod(invocation, invocationContext, extensionContext));
 		} else {
 			InvocationInterceptor.super.interceptAfterAllMethod(invocation, invocationContext, extensionContext);
@@ -29,7 +29,7 @@ public class EdtExtension implements InvocationInterceptor {
 	@Override
 	public void interceptAfterEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		if (includedInEdtAll(invocationContext)) {
+		if (containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(() -> InvocationInterceptor.super.interceptAfterEachMethod(invocation, invocationContext, extensionContext));
 		} else {
 			InvocationInterceptor.super.interceptAfterEachMethod(invocation, invocationContext, extensionContext);
@@ -39,7 +39,7 @@ public class EdtExtension implements InvocationInterceptor {
 	@Override
 	public void interceptBeforeAllMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		if (includedInEdtAll(invocationContext)) {
+		if (containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(() -> InvocationInterceptor.super.interceptBeforeAllMethod(invocation, invocationContext, extensionContext));
 		} else {
 			InvocationInterceptor.super.interceptBeforeAllMethod(invocation, invocationContext, extensionContext);
@@ -49,7 +49,7 @@ public class EdtExtension implements InvocationInterceptor {
 	@Override
 	public void interceptBeforeEachMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		if (includedInEdtAll(invocationContext)) {
+		if (containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(
 					() -> InvocationInterceptor.super.interceptBeforeEachMethod(invocation, invocationContext, extensionContext));
 		} else {
@@ -60,9 +60,9 @@ public class EdtExtension implements InvocationInterceptor {
 	@Override
 	public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		final boolean isEdtTest = invocationContext.getExecutable().isAnnotationPresent(EdtTest.class);
+		final boolean isUiTest = invocationContext.getExecutable().isAnnotationPresent(UiTest.class);
 
-		if (isEdtTest || includedInEdtAll(invocationContext)) {
+		if (isUiTest || containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(() -> InvocationInterceptor.super.interceptTestMethod(invocation, invocationContext, extensionContext));
 		} else {
 			InvocationInterceptor.super.interceptTestMethod(invocation, invocationContext, extensionContext);
@@ -72,7 +72,7 @@ public class EdtExtension implements InvocationInterceptor {
 	@Override
 	public void interceptTestTemplateMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
 			ExtensionContext extensionContext) throws Throwable {
-		if (includedInEdtAll(invocationContext)) {
+		if (containerIsUiAllAnnotatedAndIncludes(invocationContext)) {
 			runInEdt(() -> InvocationInterceptor.super.interceptTestTemplateMethod(invocation, invocationContext,
 					extensionContext));
 		} else {
@@ -80,13 +80,13 @@ public class EdtExtension implements InvocationInterceptor {
 		}
 	}
 
-	private boolean includedInEdtAll(ReflectiveInvocationContext<?> invocationContext) {
+	private boolean containerIsUiAllAnnotatedAndIncludes(ReflectiveInvocationContext<?> invocationContext) {
 		Executable executable = invocationContext.getExecutable();
-
 		Class<?> declaringClass = executable.getDeclaringClass();
-		if (declaringClass.isAnnotationPresent(EdtAll.class)) {
-			EdtAll edtAll = declaringClass.getAnnotation(EdtAll.class);
-			Set<Class<? extends Annotation>> exlusions = getEdtAllExclusions(edtAll);
+
+		if (declaringClass.isAnnotationPresent(UiAll.class)) {
+			UiAll uiAll = declaringClass.getAnnotation(UiAll.class);
+			Set<Class<? extends Annotation>> exlusions = getUiAllExclusions(uiAll);
 			//@formatter:off 
 			return !Arrays.asList(executable.getAnnotations()).stream()
 					.map(Annotation::annotationType)
@@ -96,8 +96,8 @@ public class EdtExtension implements InvocationInterceptor {
 		return false;
 	}
 
-	private Set<Class<? extends Annotation>> getEdtAllExclusions(EdtAll edtAll) {
-		Class<? extends Annotation>[] exclusions = edtAll.exclude();
+	private Set<Class<? extends Annotation>> getUiAllExclusions(UiAll uiAll) {
+		Class<? extends Annotation>[] exclusions = uiAll.exclude();
 		Set<Class<? extends Annotation>> exclusionsSet = new HashSet<>();
 		for (Class<? extends Annotation> exclusion : exclusions) {
 			exclusionsSet.add(exclusion);

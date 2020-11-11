@@ -18,13 +18,13 @@ import io.github.suice.concurrency.AssertBackground;
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.LogFieldValueChanger;
 import io.github.suice.concurrency.exception.AssertThreadException;
-import testutils.EdtExtension;
-import testutils.EdtTest;
+import testutils.UiExtension;
+import testutils.UiTest;
 
-@ExtendWith(EdtExtension.class)
+@ExtendWith(UiExtension.class)
 class AssertBackgroundMethodInterceptorIntegrationTests {
 
-	@EdtTest
+	@UiTest
 	void exceptionWhenRunsInEdt() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatThrowsException instance = injector.getInstance(AssertorThatThrowsException.class);
@@ -38,7 +38,7 @@ class AssertBackgroundMethodInterceptorIntegrationTests {
 		assertDoesNotThrow(instance::run);
 	}
 
-	@EdtTest
+	@UiTest
 	void warningWhenRunsInEdtButDoesNotThrowException() throws Exception {
 		Logger logger = mock(Logger.class);
 		new LogFieldValueChanger(AssertBackgroundMethodInterceptor.class).replaceWith(logger);

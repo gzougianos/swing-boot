@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(EdtExtension.class)
-@EdtAll
-class EdtAllTests {
+@ExtendWith(UiExtension.class)
+@UiAll
+class UiAllTests {
 
 	@Test
 	void test() {

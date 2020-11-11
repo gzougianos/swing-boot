@@ -14,10 +14,10 @@ import com.google.inject.Injector;
 
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.InUi;
-import testutils.EdtExtension;
-import testutils.EdtTest;
+import testutils.UiExtension;
+import testutils.UiTest;
 
-@ExtendWith(EdtExtension.class)
+@ExtendWith(UiExtension.class)
 class InUiMethodInterceptorIntegrationTests {
 
 	@Test
@@ -27,7 +27,7 @@ class InUiMethodInterceptorIntegrationTests {
 		assertEquals("something", instance.run());
 	}
 
-	@EdtTest
+	@UiTest
 	void startingFromEdt() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		UiMethodOwner instance = injector.getInstance(UiMethodOwner.class);

@@ -21,11 +21,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import io.github.suice.control.annotation.listener.OnComponentResized;
-import testutils.EdtAll;
-import testutils.EdtExtension;
+import testutils.UiAll;
+import testutils.UiExtension;
 
-@ExtendWith(EdtExtension.class)
-@EdtAll
+@ExtendWith(UiExtension.class)
+@UiAll
 class OnComponentResizedInstallerTests {
 	@OnComponentResized(TestControl.class)
 	private int field;

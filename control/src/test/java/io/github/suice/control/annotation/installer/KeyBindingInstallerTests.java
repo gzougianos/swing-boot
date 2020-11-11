@@ -23,11 +23,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.listener.KeyBinding;
-import testutils.EdtExtension;
-import testutils.EdtAll;
+import testutils.UiExtension;
+import testutils.UiAll;
 
-@ExtendWith(EdtExtension.class)
-@EdtAll
+@ExtendWith(UiExtension.class)
+@UiAll
 class KeyBindingInstallerTests {
 
 	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")

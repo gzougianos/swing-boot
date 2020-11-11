@@ -6,10 +6,10 @@ import javax.swing.SwingUtilities;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(EdtExtension.class)
-class EdtTestTests {
+@ExtendWith(UiExtension.class)
+class UiTestTests {
 
-	@EdtTest
+	@UiTest
 	void main() {
 		assertTrue(SwingUtilities.isEventDispatchThread());
 	}

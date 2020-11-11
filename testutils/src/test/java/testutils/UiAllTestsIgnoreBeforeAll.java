@@ -12,9 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(EdtExtension.class)
-@EdtAll(exclude = BeforeAll.class)
-class EdtAllTestsIgnoreBeforeAll {
+@ExtendWith(UiExtension.class)
+@UiAll(exclude = BeforeAll.class)
+class UiAllTestsIgnoreBeforeAll {
 
 	@Test
 	void test() {

@@ -18,10 +18,10 @@ import io.github.suice.concurrency.AssertUi;
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.LogFieldValueChanger;
 import io.github.suice.concurrency.exception.AssertThreadException;
-import testutils.EdtExtension;
-import testutils.EdtTest;
+import testutils.UiExtension;
+import testutils.UiTest;
 
-@ExtendWith(EdtExtension.class)
+@ExtendWith(UiExtension.class)
 public class AssertUiMethodInterceptorIntegrationTests {
 	@Test
 	void exceptionWhenNotInEdt() {
@@ -43,14 +43,14 @@ public class AssertUiMethodInterceptorIntegrationTests {
 		verifyNoMoreInteractions(testLogger);
 	}
 
-	@EdtTest
+	@UiTest
 	void inEdt() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatThrowsException instance = injector.getInstance(AssertorThatThrowsException.class);
 		assertDoesNotThrow(instance::run);
 	}
 
-	@EdtTest
+	@UiTest
 	void inEdt2() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatDoesNotThrowException instance = injector.getInstance(AssertorThatDoesNotThrowException.class);

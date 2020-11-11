@@ -56,7 +56,7 @@ public class ControlInstaller {
 		boolean runsOnEdt = SwingUtilities.isEventDispatchThread();
 		if (!runsOnEdt) {
 			log.warn("Installing controls to " + object
-					+ " outside the event dispatch thread. All controls should be installed in event dispatch thread.");
+					+ " outside the event dispatch thread. All controls should be installed in the event dispatch thread.");
 		}
 	}
 
