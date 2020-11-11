@@ -48,8 +48,8 @@ public class KeyBindingInstaller implements AnnotationToComponentInstaller {
 		final KeyStroke keyStroke = KeyStroke.getKeyStroke(binding.keyStroke());
 		final String id = binding.id();
 
-		component.getInputMap(condition).put(keyStroke, String.valueOf(id));
-		component.getActionMap().put(String.valueOf(id), action);
+		component.getInputMap(condition).put(keyStroke, id);
+		component.getActionMap().put(id, action);
 	}
 
 	private static class KeyBindingAction extends AbstractAction {
