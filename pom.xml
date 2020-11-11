@@ -19,6 +19,7 @@
 	<modules>
 		<module>control</module>
 		<module>testutils</module>
+		<module>concurrency</module>
 	</modules>
 	
 	<build>
