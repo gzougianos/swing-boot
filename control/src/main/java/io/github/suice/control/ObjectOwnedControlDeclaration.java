@@ -56,7 +56,7 @@ public class ObjectOwnedControlDeclaration {
 				return (Component) getOwner();
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException("Error getting value from target element " + getTargetComponent(), e);
+			throw new RuntimeException("Error getting value from target element " + getTargetElement(), e);
 		}
 	}
 
