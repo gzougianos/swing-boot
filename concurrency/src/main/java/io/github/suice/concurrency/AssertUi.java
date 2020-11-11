@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
-public @interface InEdt {
+public @interface AssertUi {
+	boolean throwException() default true;
 }

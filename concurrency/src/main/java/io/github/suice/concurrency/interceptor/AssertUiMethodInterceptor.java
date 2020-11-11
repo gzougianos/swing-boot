@@ -9,11 +9,11 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.suice.concurrency.AssertEdt;
-import io.github.suice.concurrency.exception.MethodExecutedInWrongThreadException;
+import io.github.suice.concurrency.AssertUi;
+import io.github.suice.concurrency.exception.AssertThreadException;
 
-public class AssertEdtMethodInterceptor implements MethodInterceptor {
-	private static final Logger log = LoggerFactory.getLogger(AssertEdtMethodInterceptor.class);
+public class AssertUiMethodInterceptor implements MethodInterceptor {
+	private static final Logger log = LoggerFactory.getLogger(AssertUiMethodInterceptor.class);
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -21,11 +21,12 @@ public class AssertEdtMethodInterceptor implements MethodInterceptor {
 			return invocation.proceed();
 
 		Method method = invocation.getMethod();
-		AssertEdt assertEdt = method.getAnnotation(AssertEdt.class);
-		final String errorMessage = "@AssertEdt method '" + method.getName() + "' declared in "
+		AssertUi assertUi = method.getAnnotation(AssertUi.class);
+		final String errorMessage = "@AssertUi method '" + method.getName() + "' declared in "
 				+ method.getDeclaringClass() + " executed outside the Event Dispatch Thread.";
-		if (assertEdt.throwException()) {
-			throw new MethodExecutedInWrongThreadException(errorMessage);
+
+		if (assertUi.throwException()) {
+			throw new AssertThreadException(errorMessage);
 		}
 
 		log.warn(errorMessage);

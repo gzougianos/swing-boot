@@ -1,10 +1,10 @@
 package io.github.suice.concurrency.exception;
 
-public class MethodExecutedInWrongThreadException extends RuntimeException {
+public class AssertThreadException extends RuntimeException {
 
 	private static final long serialVersionUID = 5208734274016003414L;
 
-	public MethodExecutedInWrongThreadException(String message) {
+	public AssertThreadException(String message) {
 		super(message);
 	}
 

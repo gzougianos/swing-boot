@@ -17,7 +17,7 @@ import com.google.inject.Injector;
 import io.github.suice.concurrency.AssertBackground;
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.LogFieldValueChanger;
-import io.github.suice.concurrency.exception.MethodExecutedInWrongThreadException;
+import io.github.suice.concurrency.exception.AssertThreadException;
 import testutils.EdtExtension;
 import testutils.EdtTest;
 
@@ -28,7 +28,7 @@ class AssertBackgroundMethodInterceptorIntegrationTests {
 	void exceptionWhenRunsInEdt() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatThrowsException instance = injector.getInstance(AssertorThatThrowsException.class);
-		assertThrows(MethodExecutedInWrongThreadException.class, instance::run);
+		assertThrows(AssertThreadException.class, instance::run);
 	}
 
 	@Test

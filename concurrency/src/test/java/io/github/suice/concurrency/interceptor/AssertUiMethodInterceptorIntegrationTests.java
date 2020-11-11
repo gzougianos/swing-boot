@@ -14,26 +14,26 @@ import org.slf4j.Logger;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import io.github.suice.concurrency.AssertEdt;
+import io.github.suice.concurrency.AssertUi;
 import io.github.suice.concurrency.ConcurrencyModule;
 import io.github.suice.concurrency.LogFieldValueChanger;
-import io.github.suice.concurrency.exception.MethodExecutedInWrongThreadException;
+import io.github.suice.concurrency.exception.AssertThreadException;
 import testutils.EdtExtension;
 import testutils.EdtTest;
 
 @ExtendWith(EdtExtension.class)
-public class AssertEdtMethodInterceptorIntegrationTests {
+public class AssertUiMethodInterceptorIntegrationTests {
 	@Test
 	void exceptionWhenNotInEdt() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatThrowsException instance = injector.getInstance(AssertorThatThrowsException.class);
-		assertThrows(MethodExecutedInWrongThreadException.class, instance::run);
+		assertThrows(AssertThreadException.class, instance::run);
 	}
 
 	@Test
 	void logMessageWhenNotInEdtAndNoExceptionThrow() throws Exception {
 		Logger testLogger = mock(Logger.class);
-		new LogFieldValueChanger(AssertEdtMethodInterceptor.class).replaceWith(testLogger);
+		new LogFieldValueChanger(AssertUiMethodInterceptor.class).replaceWith(testLogger);
 
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
 		AssertorThatDoesNotThrowException instance = injector.getInstance(AssertorThatDoesNotThrowException.class);
@@ -58,14 +58,14 @@ public class AssertEdtMethodInterceptorIntegrationTests {
 	}
 
 	static class AssertorThatThrowsException {
-		@AssertEdt
+		@AssertUi
 		void run() {
 
 		}
 	}
 
 	static class AssertorThatDoesNotThrowException {
-		@AssertEdt(throwException = false)
+		@AssertUi(throwException = false)
 		void run() {
 
 		}

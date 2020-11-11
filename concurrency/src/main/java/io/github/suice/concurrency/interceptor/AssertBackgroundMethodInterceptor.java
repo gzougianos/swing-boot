@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.suice.concurrency.AssertBackground;
-import io.github.suice.concurrency.exception.MethodExecutedInWrongThreadException;
+import io.github.suice.concurrency.exception.AssertThreadException;
 
 public class AssertBackgroundMethodInterceptor implements MethodInterceptor {
 	private static final Logger log = LoggerFactory.getLogger(AssertBackgroundMethodInterceptor.class);
@@ -26,7 +26,7 @@ public class AssertBackgroundMethodInterceptor implements MethodInterceptor {
 				+ method.getDeclaringClass() + " executed inside the Event Dispatch Thread.";
 
 		if (assertBackground.throwException()) {
-			throw new MethodExecutedInWrongThreadException(errorMessage);
+			throw new AssertThreadException(errorMessage);
 		}
 
 		log.warn(errorMessage);
