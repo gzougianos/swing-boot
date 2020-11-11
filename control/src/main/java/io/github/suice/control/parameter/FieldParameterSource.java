@@ -6,11 +6,13 @@ import java.awt.AWTEvent;
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+import io.github.suice.control.reflect.ReflectionException;
+
 class FieldParameterSource implements ParameterSource {
 	private final Field field;
 	private final String id;
 
-	FieldParameterSource(String id, Field field) throws ParameterSourceException {
+	FieldParameterSource(String id, Field field) throws InvalidParameterSourceException {
 		this.id = id;
 		this.field = field;
 
@@ -20,25 +22,25 @@ class FieldParameterSource implements ParameterSource {
 
 	private void checkIdNotEmpty() {
 		if (id == null || id.isEmpty()) {
-			throw new ParameterSourceException("@ParameterSource cannot have empty string as id. Found in field `"
+			throw new InvalidParameterSourceException("@ParameterSource cannot have empty string as id. Found in field `"
 					+ field.getName() + "` of " + field.getDeclaringClass() + ".");
 		}
 	}
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new ParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `" + field.getName()
+			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `" + field.getName()
 					+ "` of " + field.getDeclaringClass() + ".");
 		}
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) throws ParameterSourceException {
+	public Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException {
 		ensureAccess();
 		try {
 			return field.get(sourceOwner);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new ParameterSourceException("Error getting value from field paramater source: " + toString(), e);
+			throw new ReflectionException("Error getting value from field paramater source: " + toString(), e);
 		}
 	}
 

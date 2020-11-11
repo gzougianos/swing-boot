@@ -1,15 +1,6 @@
 package io.github.suice.control.reflect;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.common.reflect.TypeToken;
-import com.google.inject.TypeLiteral;
-
-import io.github.suice.control.Control;
-
 public final class ReflectionUtils {
-	private static final Map<Class<? extends Control<?>>, Class<?>> controlParameterTypes = new HashMap<>();
 	//@formatter:off
 	private static final Class<?>[][] primitives = {
 			{Integer.class, int.class},
@@ -38,21 +29,4 @@ public final class ReflectionUtils {
 		return false;
 	}
 
-	public static Class<?> getControlParameterType(Class<? extends Control<?>> controlType) {
-		if (controlParameterTypes.containsKey(controlType))
-			return controlParameterTypes.get(controlType);
-
-		for (TypeToken<?> typeToken : TypeToken.of(controlType).getTypes()) {
-			Class<?> rawType = typeToken.getRawType();
-			if (rawType == Control.class) {
-				TypeLiteral<?> typeLiteral = TypeLiteral.get(typeToken.getType());
-				TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(rawType.getMethods()[0]).get(0);
-				Class<?> parType = methodParameterTypeLiteral.getRawType();
-				controlParameterTypes.put(controlType, parType);
-				return parType;
-			}
-		}
-		controlParameterTypes.put(controlType, Object.class);
-		return Object.class;
-	}
 }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.suice.control.parameter.ParameterSource;
+import io.github.suice.control.reflect.ReflectionException;
 
 public class ControlDeclarationPerformer {
 	private static final Logger log = LoggerFactory.getLogger(ControlDeclarationPerformer.class);
@@ -35,7 +36,8 @@ public class ControlDeclarationPerformer {
 					parameterSourceValue);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			log.error("Error performing control type " + controlType + " with parameter source " + parameterSource + ".", e);
+			throw new ReflectionException(
+					"Error performing control type " + controlType + " with parameter source " + parameterSource + ".", e);
 		}
 	}
 

@@ -47,7 +47,7 @@ public class ControlDeclaration {
 	private void checkIfParameterSourceGivenWhenControlTakesNoParameter() {
 		if (controlTypeInfo.isParameterless() && !parameterSourceId.isEmpty()) {
 			String format = "%s declares a non parameterized control but parameter source was given. Remove parameterSource value.";
-			throw new ControlDeclarationException(String.format(format, this.toString()));
+			throw new InvalidControlDeclarationException(String.format(format, this.toString()));
 		}
 	}
 
@@ -57,19 +57,19 @@ public class ControlDeclaration {
 
 		if (!controlTypeInfo.isParameterNullable() && parameterSourceId.isEmpty()) {
 			String format = "%s declares a parameterized control with non-nullable %s parameter but no parameter source was declared.";
-			throw new ControlDeclarationException(
+			throw new InvalidControlDeclarationException(
 					String.format(format, this.toString(), controlTypeInfo.getParameterType().getSimpleName()));
 		}
 	}
 
 	private void checkIfAnnotationDeclaresControl() {
 		if (!annotation.annotationType().isAnnotationPresent(DeclaresControl.class))
-			throw new ControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
+			throw new InvalidControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
 	}
 
 	private void checkIfThisAnnotationIsDeclaredOnThisElement() {
 		if (!Arrays.asList(targetElement.getDeclaredAnnotations()).stream().anyMatch(a -> a == annotation))
-			throw new ControlDeclarationException("The annotation should be declared to target element.");
+			throw new InvalidControlDeclarationException("The annotation should be declared to target element.");
 	}
 
 	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
@@ -86,7 +86,7 @@ public class ControlDeclaration {
 
 		if (!supportsType(declaresControl, targetType)) {
 			Class<?> declaringClass = getTargetElementDeclaringClass();
-			throw new ControlDeclarationException(
+			throw new InvalidControlDeclarationException(
 					annotation + " declared in " + declaringClass + " cannot be installed to objects of type " + targetType);
 		}
 	}
@@ -97,7 +97,7 @@ public class ControlDeclaration {
 		if (targetElement instanceof Class<?>)
 			return (Class<?>) targetElement;
 
-		throw new ControlDeclarationException("Unsupported target element:" + targetElement);
+		throw new InvalidControlDeclarationException("Unsupported target element:" + targetElement);
 	}
 
 	private boolean supportsType(DeclaresControl declaresControl, Class<?> type) {
@@ -138,11 +138,11 @@ public class ControlDeclaration {
 
 	void setParameterSource(ParameterSource parameterSource) {
 		if (controlTypeInfo.isParameterless())
-			throw new ControlDeclarationException(
+			throw new InvalidControlDeclarationException(
 					this.getAnnotation() + " does not support parameter source. Control's generic parameter is Void.");
 
 		if (!parameterSource.getId().equals(parameterSourceId))
-			throw new ControlDeclarationException(
+			throw new InvalidControlDeclarationException(
 					this + " does not a support a parameter source with id " + parameterSource.getId() + "");
 
 		checkIfParameterSourceReturnTypeMatchesControlParameterType(parameterSource);
@@ -153,7 +153,7 @@ public class ControlDeclaration {
 		Class<?> parameterSourceReturnType = parameterSource.getValueReturnType();
 
 		if (!equalsOrExtends(parameterSourceReturnType, controlTypeInfo.getParameterType())) {
-			throw new ControlDeclarationException(this + " declares a parameter source that returns "
+			throw new InvalidControlDeclarationException(this + " declares a parameter source that returns "
 					+ parameterSourceReturnType.getSimpleName() + " values while control takes "
 					+ controlTypeInfo.getParameterType().getSimpleName() + " parameter.");
 		}
@@ -173,7 +173,7 @@ public class ControlDeclaration {
 			return annotation.annotationType().getMethod(method).invoke(annotation);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			throw new ControlDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".", e);
+			throw new InvalidControlDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".", e);
 		}
 	}
 

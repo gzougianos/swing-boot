@@ -50,24 +50,24 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void exceptionWhenMultipleSourcesSameId() throws Exception {
-		assertThrows(ParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(MultipleSourcesSameId.class));
+		assertThrows(InvalidParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(MultipleSourcesSameId.class));
 	}
 
 	@Test
 	void methodHasNoAwtEventParameter() throws Exception {
-		assertThrows(ParameterSourceException.class,
+		assertThrows(InvalidParameterSourceException.class,
 				() -> new FieldAndMethodParameterSourceScan(MethodWithNoAwtEventParameter.class));
 	}
 
 	@Test
 	void methodHasMoreThanOneParameter() throws Exception {
-		assertThrows(ParameterSourceException.class,
+		assertThrows(InvalidParameterSourceException.class,
 				() -> new FieldAndMethodParameterSourceScan(MethodWithMoreThanOneParameter.class));
 	}
 
 	@Test
 	void emptyStringId() throws Exception {
-		assertThrows(ParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(EmptyStringAsId.class));
+		assertThrows(InvalidParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(EmptyStringAsId.class));
 	}
 
 	@Test

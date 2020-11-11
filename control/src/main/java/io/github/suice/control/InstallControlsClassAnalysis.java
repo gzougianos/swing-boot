@@ -82,7 +82,7 @@ public class InstallControlsClassAnalysis {
 
 	private void checkIfNotAlreadyExists(String id) {
 		if (controlDeclarations.containsKey(id)) {
-			throw new ControlDeclarationException("More than 2 controls declared with id `" + id + "` in " + clazz + ".");
+			throw new InvalidControlDeclarationException("More than 2 controls declared with id `" + id + "` in " + clazz + ".");
 		}
 	}
 
@@ -99,7 +99,7 @@ public class InstallControlsClassAnalysis {
 				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
 						.get(expectedParameterSourceId);
 				if (parSource == null) {
-					throw new ControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId + ") found in class "
+					throw new InvalidControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId + ") found in class "
 							+ clazz.getSimpleName() + " for " + declaration + ".");
 				}
 				declaration.setParameterSource(parSource);
@@ -123,7 +123,7 @@ public class InstallControlsClassAnalysis {
 				return;
 
 			if (controlDeclarations.containsKey(id))
-				throw new ControlDeclarationException(
+				throw new InvalidControlDeclarationException(
 						"Control with id '" + id + "' in " + clazz + " is already declared in parent " + parentScan.clazz + ".");
 
 			controlDeclarations.put(id, declaration);

@@ -26,12 +26,12 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void exceptionWhenSameId() {
-		assertThrows(ControlDeclarationException.class, () -> of(DeclaredSameId.class));
+		assertThrows(InvalidControlDeclarationException.class, () -> of(DeclaredSameId.class));
 	}
 
 	@Test
 	void declaredParameterSourceDoesNotExist() {
-		assertThrows(ControlDeclarationException.class, () -> of(DeclaresParameterSourceButDoesNotExist.class));
+		assertThrows(InvalidControlDeclarationException.class, () -> of(DeclaresParameterSourceButDoesNotExist.class));
 	}
 
 	@Test
@@ -80,7 +80,7 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void childDeclaresIdThatExistInParent() throws Exception {
-		assertThrows(ControlDeclarationException.class, () -> of(ChildDeclaresIdThatExistsOnParent.class));
+		assertThrows(InvalidControlDeclarationException.class, () -> of(ChildDeclaresIdThatExistsOnParent.class));
 	}
 
 	@Test

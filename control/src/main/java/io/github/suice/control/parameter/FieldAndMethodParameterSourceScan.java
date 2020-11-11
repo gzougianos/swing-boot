@@ -78,7 +78,7 @@ public class FieldAndMethodParameterSourceScan {
 		String sourceId = parameterSource.value();
 
 		if (parameterSources.containsKey(sourceId))
-			throw new ParameterSourceException(
+			throw new InvalidParameterSourceException(
 					"More than one @ParameterSource declared with id `" + sourceId + "` in " + clazz + ".");
 
 		parameterSources.put(sourceId, createInvokable(sourceId, accessibleObject));

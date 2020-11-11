@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.ParameterSource;
+import io.github.suice.control.reflect.ReflectionException;
 
 @SuppressWarnings("all")
 class FieldParameterSourceTests {
@@ -29,15 +30,17 @@ class FieldParameterSourceTests {
 
 	@Test
 	void wrongIds() throws Exception {
-		assertThrows(ParameterSourceException.class, () -> new FieldParameterSource(null, this.getClass().getDeclaredField("x")));
-		assertThrows(ParameterSourceException.class, () -> new FieldParameterSource("", this.getClass().getDeclaredField("x")));
-		assertThrows(ParameterSourceException.class,
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new FieldParameterSource(null, this.getClass().getDeclaredField("x")));
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new FieldParameterSource("", this.getClass().getDeclaredField("x")));
+		assertThrows(InvalidParameterSourceException.class,
 				() -> new FieldParameterSource(ParameterSource.THIS, this.getClass().getDeclaredField("x")));
 	}
 
 	@Test
 	void wrongSourceOwner() throws Exception {
 		FieldParameterSource source = new FieldParameterSource("id", this.getClass().getDeclaredField("x"));
-		assertThrows(ParameterSourceException.class, () -> source.getValue(new String(), null));
+		assertThrows(ReflectionException.class, () -> source.getValue(new String(), null));
 	}
 }

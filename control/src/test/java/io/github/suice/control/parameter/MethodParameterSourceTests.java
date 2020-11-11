@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.ParameterSource;
+import io.github.suice.control.reflect.ReflectionException;
 
 @SuppressWarnings("all")
 class MethodParameterSourceTests {
@@ -23,21 +24,21 @@ class MethodParameterSourceTests {
 	@Test
 	void wrongIds() throws Exception {
 		Method method = this.getClass().getDeclaredMethod("y");
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource(null, method));
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource("", method));
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource(ParameterSource.THIS, method));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource(null, method));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("", method));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource(ParameterSource.THIS, method));
 	}
 
 	@Test
 	void wrongSignature() throws Exception {
 		Method moreThan1Parameter = this.getClass().getDeclaredMethod("moreThan1Parameter", AWTEvent.class, int.class);
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource("id", moreThan1Parameter));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", moreThan1Parameter));
 
 		Method aVoid = this.getClass().getDeclaredMethod("aVoid");
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource("id", aVoid));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", aVoid));
 
 		Method oneWrongParameter = this.getClass().getDeclaredMethod("oneWrongParameter", String.class);
-		assertThrows(ParameterSourceException.class, () -> new MethodParameterSource("id", oneWrongParameter));
+		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", oneWrongParameter));
 	}
 
 	@Test
@@ -46,8 +47,13 @@ class MethodParameterSourceTests {
 		MethodParameterSource source = new MethodParameterSource("id", zeroParameters);
 		assertEquals(int.class, source.getValueReturnType());
 		assertEquals(-5, source.getValue(this, null));
-		//Test wrong owner
-		assertThrows(ParameterSourceException.class, () -> source.getValue(new String(), null));
+	}
+
+	@Test
+	void wrongMethodObjectOwner() throws Exception {
+		Method zeroParameters = this.getClass().getDeclaredMethod("zeroParameters");
+		MethodParameterSource source = new MethodParameterSource("id", zeroParameters);
+		assertThrows(ReflectionException.class, () -> source.getValue(new String(), null));
 	}
 
 	@Test

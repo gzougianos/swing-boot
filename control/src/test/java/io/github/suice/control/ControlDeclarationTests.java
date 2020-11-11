@@ -32,7 +32,7 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("x");
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
 		}
 	}
@@ -47,10 +47,10 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("panel");
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), getClass()));
 		}
 	}
@@ -63,7 +63,7 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 		}
 	}
@@ -80,7 +80,7 @@ class ControlDeclarationTests {
 					io.github.suice.control.parameter.ParameterSource.class);
 
 			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
 		}
 	}
 
@@ -98,7 +98,7 @@ class ControlDeclarationTests {
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(String.class).when(source).getValueReturnType();
 			doReturn("parsource").when(source).getId();
-			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
 		}
 
 		@ParameterSource("parsource")
@@ -115,7 +115,7 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 		}
 	}
@@ -146,10 +146,10 @@ class ControlDeclarationTests {
 			OnActionPerformed annotation = field.getAnnotation(OnActionPerformed.class);
 
 			//declared on field, but targets a class
-			assertThrows(ControlDeclarationException.class, () -> new ControlDeclaration(annotation, getClass()));
+			assertThrows(InvalidControlDeclarationException.class, () -> new ControlDeclaration(annotation, getClass()));
 
 			//declared on field, but targets a different field
-			assertThrows(ControlDeclarationException.class,
+			assertThrows(InvalidControlDeclarationException.class,
 					() -> new ControlDeclaration(annotation, getClass().getDeclaredField("field2")));
 		}
 	}
@@ -168,7 +168,7 @@ class ControlDeclarationTests {
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(Void.class).when(source).getValueReturnType();
 			doReturn("parsource").when(source).getId();
-			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
 		}
 	}
 
@@ -186,7 +186,7 @@ class ControlDeclarationTests {
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(Integer.class).when(source).getValueReturnType();
 			doReturn("A MISMATCHED ID").when(source).getId();
-			assertThrows(ControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
 		}
 	}
 

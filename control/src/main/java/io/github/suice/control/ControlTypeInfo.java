@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.TypeLiteral;
 
+import io.github.suice.control.reflect.ReflectionException;
+
 public class ControlTypeInfo {
 	private static final String CONTROL_PERFORM_METHOD_NAME = "perform";
 	private static final Map<Class<? extends Control<?>>, ControlTypeInfo> cache = new HashMap<>();
@@ -27,13 +29,17 @@ public class ControlTypeInfo {
 		for (TypeToken<?> typeToken : TypeToken.of(controlClass).getTypes()) {
 			Class<?> rawType = typeToken.getRawType();
 			if (rawType == Control.class) {
-				TypeLiteral<?> typeLiteral = TypeLiteral.get(typeToken.getType());
+				try {
+					TypeLiteral<?> typeLiteral = TypeLiteral.get(typeToken.getType());
+					Method performMethod = rawType.getMethod("perform", Object.class);
 
-				Method performMethod = rawType.getMethods()[0];
-				TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(performMethod).get(0);
-				parameterType = methodParameterTypeLiteral.getRawType();
+					TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(performMethod).get(0);
+					parameterType = methodParameterTypeLiteral.getRawType();
 
-				checkNullableParameter();
+					checkNullableParameter();
+				} catch (NoSuchMethodException | SecurityException e) {
+					throw new ReflectionException(e);
+				}
 				return;
 			}
 		}

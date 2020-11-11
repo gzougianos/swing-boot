@@ -9,11 +9,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 
+import io.github.suice.control.reflect.ReflectionException;
+
 class MethodParameterSource implements ParameterSource {
 	private final String id;
 	private final Method method;
 
-	MethodParameterSource(String id, Method method) throws ParameterSourceException {
+	MethodParameterSource(String id, Method method) throws InvalidParameterSourceException {
 		this.id = id;
 		this.method = method;
 
@@ -25,7 +27,7 @@ class MethodParameterSource implements ParameterSource {
 
 	private void checkNotVoid() {
 		if (method.getReturnType().equals(Void.TYPE)) {
-			throw new ParameterSourceException("ParameterSource method " + method.getName() + " in class"
+			throw new InvalidParameterSourceException("ParameterSource method " + method.getName() + " in class"
 					+ method.getDeclaringClass().getSimpleName() + " is void. Method parameter sources cannot be void.");
 		}
 	}
@@ -40,20 +42,20 @@ class MethodParameterSource implements ParameterSource {
 				return;
 			}
 		}
-		throw new ParameterSourceException("ParameterSource method " + method.getName() + " in class"
+		throw new InvalidParameterSourceException("ParameterSource method " + method.getName() + " in class"
 				+ method.getDeclaringClass().getSimpleName() + " can have zero or only one AWTEvent parameter.");
 	}
 
 	private void checkIdNotEmpty() {
 		if (id == null || id.isEmpty()) {
-			throw new ParameterSourceException("@ParameterSource cannot have empty string as id. Found in method `"
+			throw new InvalidParameterSourceException("@ParameterSource cannot have empty string as id. Found in method `"
 					+ method.getName() + "` of " + method.getDeclaringClass() + ".");
 		}
 	}
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new ParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `" + method.getName()
+			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `" + method.getName()
 					+ "` of " + method.getDeclaringClass() + ".");
 		}
 	}
@@ -73,7 +75,7 @@ class MethodParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) throws ParameterSourceException {
+	public Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException {
 		ensureAccess();
 		try {
 			if (hasNoParameters())
@@ -84,7 +86,7 @@ class MethodParameterSource implements ParameterSource {
 
 			return method.invoke(sourceOwner, (AWTEvent) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new ParameterSourceException("Error invoking method " + method.getName() + " of " + method.getDeclaringClass()
+			throw new ReflectionException("Error invoking method " + method.getName() + " of " + method.getDeclaringClass()
 					+ " with event parameter " + event + ".", e);
 		}
 	}
