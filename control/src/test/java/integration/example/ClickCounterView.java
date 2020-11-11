@@ -6,7 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.github.suice.control.InstallControls;
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import io.github.suice.control.annotation.listener.OnComponentResized;

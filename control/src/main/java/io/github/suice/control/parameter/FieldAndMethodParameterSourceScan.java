@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.suice.control.InstallControls;
+import io.github.suice.control.annotation.InstallControls;
 
 public class FieldAndMethodParameterSourceScan {
 	private Map<String, ParameterSource> parameterSources = new HashMap<>();

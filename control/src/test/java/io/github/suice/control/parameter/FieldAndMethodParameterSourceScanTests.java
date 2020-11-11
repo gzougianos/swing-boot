@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.inject.Inject;
 
-import io.github.suice.control.InstallControls;
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.ParameterSource;
 
 @SuppressWarnings("all")

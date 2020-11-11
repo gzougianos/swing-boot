@@ -20,6 +20,8 @@ import com.google.inject.matcher.Matcher;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
+import io.github.suice.control.annotation.InstallControls;
+
 public class ControlModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(ControlModule.class);
 	private static final Matcher<TypeLiteral<?>> INSTALL_CONTROLS_MATCHER = new InstallControlsMatcher();

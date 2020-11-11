@@ -12,6 +12,7 @@ import javax.swing.JButton;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 

@@ -1,4 +1,4 @@
-package io.github.suice.control;
+package io.github.suice.control.annotation;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import testutils.UiAll;
 import testutils.UiExtension;

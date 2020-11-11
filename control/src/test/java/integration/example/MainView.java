@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.JFrame;
 
-import io.github.suice.control.InstallControls;
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.listener.KeyBinding;
 
 @SuppressWarnings("serial")

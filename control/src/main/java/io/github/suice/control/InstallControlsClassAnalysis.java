@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.github.suice.control.annotation.DeclaresControl;
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.parameter.SourceOwnerParameterSource;

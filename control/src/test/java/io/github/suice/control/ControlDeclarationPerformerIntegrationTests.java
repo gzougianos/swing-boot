@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.ParameterSource;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import testutils.UiExtension;
