@@ -1,5 +1,6 @@
 package io.github.suice.control.annotation.installer;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
+import io.github.suice.control.ControlListeners;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import io.github.suice.control.annotation.listener.OnComponentResized;
 import testutils.UiAll;
@@ -38,6 +40,7 @@ class OnComponentResizedInstallerTests {
 		Consumer<AWTEvent> eventConsumer = mock(Consumer.class);
 
 		installer.installAnnotation(annotationOfField("field"), button, eventConsumer);
+		assertNotNull(ControlListeners.get(ComponentListener.class, button));
 
 		ComponentEvent event = new ComponentEvent(button, ComponentEvent.COMPONENT_RESIZED);
 		fireListeners(button, ComponentListener.class, l -> l.componentResized(event));

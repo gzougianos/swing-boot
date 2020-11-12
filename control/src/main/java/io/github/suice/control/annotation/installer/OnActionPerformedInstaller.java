@@ -2,9 +2,11 @@ package io.github.suice.control.annotation.installer;
 
 import java.awt.AWTEvent;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.swing.AbstractButton;
 import javax.swing.JTextField;
@@ -21,25 +23,38 @@ public class OnActionPerformedInstaller implements AnnotationToComponentInstalle
 	@Override
 	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
-		ActionListener listener = createListener(eventConsumer, onActionPerformed);
+		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
+
+		Predicate<ActionEvent> eventPredicate = event -> {
+			int eventModifiers = event.getModifiers();
+			return anyModifier || eventModifiers == onActionPerformed.modifiers();
+		};
 
 		if (component instanceof AbstractButton) {
-			((AbstractButton) component).addActionListener(listener);
+			((AbstractButton) component).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else if (component instanceof JTextField) {
-			((JTextField) component).addActionListener(listener);
+			((JTextField) component).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else {
 			throw new IllegalArgumentException(
 					"Action listener cannot be installed to component of type: " + component.getClass());
 		}
 	}
 
-	private ActionListener createListener(Consumer<AWTEvent> eventConsumer, OnActionPerformed onActionPerformed) {
-		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
-		return event -> {
-			int eventModifiers = event.getModifiers();
-			if (eventModifiers == onActionPerformed.modifiers() || anyModifier)
+	private static class Listener implements ActionListener, ControlListener {
+		private Consumer<AWTEvent> eventConsumer;
+		private Predicate<ActionEvent> controlFirePredicate;
+
+		public Listener(Predicate<ActionEvent> eventPredicate, Consumer<AWTEvent> eventConsumer) {
+			this.controlFirePredicate = eventPredicate;
+			this.eventConsumer = eventConsumer;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			if (controlFirePredicate.test(event))
 				eventConsumer.accept(event);
-		};
+		}
+
 	}
 
 }

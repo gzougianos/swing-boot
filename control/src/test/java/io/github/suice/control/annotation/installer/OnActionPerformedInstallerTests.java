@@ -1,5 +1,6 @@
 package io.github.suice.control.annotation.installer;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
+import io.github.suice.control.ControlListeners;
 import io.github.suice.control.annotation.listener.OnActionPerformed;
 import testutils.UiAll;
 import testutils.UiExtension;
@@ -44,6 +47,7 @@ class OnActionPerformedInstallerTests {
 	@Test
 	void anyModifier() throws Exception {
 		installer.installAnnotation(annotationOfField("anyModifierField"), button, eventConsumer);
+		assertNotNull(ControlListeners.get(ActionListener.class, button));
 
 		fireActionListeners(button, 0);
 		verify(eventConsumer).accept(isA(ActionEvent.class));
