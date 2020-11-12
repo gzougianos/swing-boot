@@ -32,8 +32,8 @@ public class ControlDeclaration {
 		checkIfAnnotationCanBeInstalledToTargetElement();
 
 		id = String.valueOf(invokeMethodOfAnnotation("id"));
-		if ("".equals(id))
-			id = annotation.toString() + targetElement.toString();
+		if (id.isEmpty())
+			createIdBasedOnElements();
 
 		parameterSourceId = String.valueOf(invokeMethodOfAnnotation("parameterSource"));
 
@@ -42,6 +42,10 @@ public class ControlDeclaration {
 
 		checkIfParameterSourceGivenWhenNonNullableParameter();
 		checkIfParameterSourceGivenWhenControlTakesNoParameter();
+	}
+
+	private void createIdBasedOnElements() {
+		id = annotation.toString() + targetElement.toString();
 	}
 
 	private void checkIfParameterSourceGivenWhenControlTakesNoParameter() {
