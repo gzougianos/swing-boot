@@ -9,5 +9,5 @@ public interface AnnotationToComponentInstaller {
 
 	boolean supportsAnnotation(Annotation annotation);
 
-	void installAnnotation(Component component, Annotation annotation, Consumer<AWTEvent> eventConsumer);
+	void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer);
 }

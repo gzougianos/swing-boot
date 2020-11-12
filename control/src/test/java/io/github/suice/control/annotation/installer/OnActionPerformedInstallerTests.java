@@ -43,7 +43,7 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void anyModifier() throws Exception {
-		installer.installAnnotation(button, annotationOfField("anyModifierField"), eventConsumer);
+		installer.installAnnotation(annotationOfField("anyModifierField"), button, eventConsumer);
 
 		fireActionListeners(button, 0);
 		verify(eventConsumer).accept(isA(ActionEvent.class));
@@ -55,7 +55,7 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void specificModifier() throws Exception {
-		installer.installAnnotation(button, annotationOfField("specificModifierField"), eventConsumer);
+		installer.installAnnotation(annotationOfField("specificModifierField"), button, eventConsumer);
 
 		fireActionListeners(button, 0);
 		verify(eventConsumer, never()).accept(any());
@@ -68,7 +68,7 @@ class OnActionPerformedInstallerTests {
 	@Test
 	void wrongComponent() throws Exception {
 		assertThrows(Exception.class,
-				() -> installer.installAnnotation(new JPanel(), annotationOfField("specificModifierField"), eventConsumer));
+				() -> installer.installAnnotation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
 	}
 
 	private OnActionPerformed annotationOfField(String name) throws NoSuchFieldException {

@@ -19,7 +19,7 @@ public class OnActionPerformedInstaller implements AnnotationToComponentInstalle
 	}
 
 	@Override
-	public void installAnnotation(Component component, Annotation annotation, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
 		ActionListener listener = createListener(eventConsumer, onActionPerformed);
 

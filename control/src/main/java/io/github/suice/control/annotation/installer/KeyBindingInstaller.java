@@ -22,7 +22,7 @@ public class KeyBindingInstaller implements AnnotationToComponentInstaller {
 	}
 
 	@Override
-	public void installAnnotation(Component component, Annotation annotation, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
 		final KeyBinding binding = (KeyBinding) annotation;
 		final Action action = new KeyBindingAction(eventConsumer);
 

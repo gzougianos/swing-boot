@@ -173,7 +173,8 @@ public class ControlDeclaration {
 			return annotation.annotationType().getMethod(method).invoke(annotation);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
-			throw new InvalidControlDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".", e);
+			throw new InvalidControlDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".",
+					e);
 		}
 	}
 

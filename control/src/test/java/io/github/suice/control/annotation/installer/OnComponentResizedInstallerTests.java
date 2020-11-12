@@ -37,7 +37,7 @@ class OnComponentResizedInstallerTests {
 		JButton button = new JButton();
 		Consumer<AWTEvent> eventConsumer = mock(Consumer.class);
 
-		installer.installAnnotation(button, annotationOfField("field"), eventConsumer);
+		installer.installAnnotation(annotationOfField("field"), button, eventConsumer);
 
 		ComponentEvent event = new ComponentEvent(button, ComponentEvent.COMPONENT_RESIZED);
 		fireListeners(button, ComponentListener.class, l -> l.componentResized(event));

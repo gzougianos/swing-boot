@@ -79,7 +79,7 @@ public class ControlInstaller {
 			if (targetComponent == null)
 				throw new NullPointerException("Component of " + declaration.getTargetComponent() + "is null.");
 
-			installer.installAnnotation(targetComponent, declaration.getAnnotation(), controlPerformer::perform);
+			installer.installAnnotation(declaration.getAnnotation(), targetComponent, controlPerformer::perform);
 		}
 	}
 

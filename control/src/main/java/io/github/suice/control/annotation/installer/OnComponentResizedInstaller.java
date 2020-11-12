@@ -17,7 +17,7 @@ public class OnComponentResizedInstaller implements AnnotationToComponentInstall
 	}
 
 	@Override
-	public void installAnnotation(Component component, Annotation annotation, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
 		component.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
