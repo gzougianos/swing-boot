@@ -17,8 +17,8 @@ import javax.swing.JPanel;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.ParameterSource;
-import io.github.suice.control.annotation.listener.OnActionPerformed;
 
 @SuppressWarnings("unused")
 class ControlDeclarationTests {

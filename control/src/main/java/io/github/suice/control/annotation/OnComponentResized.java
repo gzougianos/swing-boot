@@ -1,4 +1,4 @@
-package io.github.suice.control.annotation.listener;
+package io.github.suice.control.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import io.github.suice.control.Control;
-import io.github.suice.control.annotation.DeclaresControl;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)

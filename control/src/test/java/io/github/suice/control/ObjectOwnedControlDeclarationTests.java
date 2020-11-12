@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.suice.control.annotation.listener.OnComponentResized;
+import io.github.suice.control.annotation.OnComponentResized;
 
 class ObjectOwnedControlDeclarationTests {
 

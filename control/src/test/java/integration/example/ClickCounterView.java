@@ -7,9 +7,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import io.github.suice.control.annotation.InstallControls;
+import io.github.suice.control.annotation.OnActionPerformed;
+import io.github.suice.control.annotation.OnComponentResized;
 import io.github.suice.control.annotation.ParameterSource;
-import io.github.suice.control.annotation.listener.OnActionPerformed;
-import io.github.suice.control.annotation.listener.OnComponentResized;
 
 @InstallControls
 @OnComponentResized(PrintResizeControl.class)

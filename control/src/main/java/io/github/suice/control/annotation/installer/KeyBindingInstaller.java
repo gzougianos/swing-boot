@@ -12,7 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
 
-import io.github.suice.control.annotation.listener.KeyBinding;
+import io.github.suice.control.annotation.KeyBinding;
 
 public class KeyBindingInstaller implements AnnotationToComponentInstaller {
 

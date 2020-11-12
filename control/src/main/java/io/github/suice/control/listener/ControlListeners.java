@@ -1,9 +1,7 @@
-package io.github.suice.control;
+package io.github.suice.control.listener;
 
 import java.awt.Component;
 import java.util.EventListener;
-
-import io.github.suice.control.annotation.installer.ControlListener;
 
 public final class ControlListeners {
 	private ControlListeners() {

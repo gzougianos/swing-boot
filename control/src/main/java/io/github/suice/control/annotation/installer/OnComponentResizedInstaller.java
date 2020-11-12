@@ -7,7 +7,8 @@ import java.awt.event.ComponentEvent;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-import io.github.suice.control.annotation.listener.OnComponentResized;
+import io.github.suice.control.annotation.OnComponentResized;
+import io.github.suice.control.listener.ControlListener;
 
 public class OnComponentResizedInstaller implements AnnotationToComponentInstaller {
 

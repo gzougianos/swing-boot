@@ -1,4 +1,4 @@
-package io.github.suice.control;
+package io.github.suice.control.listener;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -10,13 +10,11 @@ import javax.swing.JButton;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import io.github.suice.control.listener.ControlListener;
-import io.github.suice.control.listener.ControlListeners;
 import testutils.UiExtension;
 import testutils.UiTest;
 
 @ExtendWith(UiExtension.class)
-class ControlListenersTest {
+class ControlListenersTests {
 
 	@UiTest
 	void listenerExists() {

@@ -20,9 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
-import io.github.suice.control.ControlListeners;
-import io.github.suice.control.annotation.listener.OnActionPerformed;
-import io.github.suice.control.annotation.listener.OnComponentResized;
+import io.github.suice.control.annotation.OnActionPerformed;
+import io.github.suice.control.annotation.OnComponentResized;
+import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
+import io.github.suice.control.listener.ControlListeners;
 import testutils.UiAll;
 import testutils.UiExtension;
 

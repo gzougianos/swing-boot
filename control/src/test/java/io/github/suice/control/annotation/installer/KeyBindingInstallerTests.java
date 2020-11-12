@@ -22,7 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
-import io.github.suice.control.annotation.listener.KeyBinding;
+import io.github.suice.control.annotation.KeyBinding;
+import io.github.suice.control.annotation.installer.AnnotationToComponentInstaller;
+import io.github.suice.control.annotation.installer.KeyBindingInstaller;
 import testutils.UiExtension;
 import testutils.UiAll;
 

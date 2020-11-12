@@ -11,7 +11,8 @@ import java.util.function.Predicate;
 import javax.swing.AbstractButton;
 import javax.swing.JTextField;
 
-import io.github.suice.control.annotation.listener.OnActionPerformed;
+import io.github.suice.control.annotation.OnActionPerformed;
+import io.github.suice.control.listener.ControlListener;
 
 public class OnActionPerformedInstaller implements AnnotationToComponentInstaller {
 
