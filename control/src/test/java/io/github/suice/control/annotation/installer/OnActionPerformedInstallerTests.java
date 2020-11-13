@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.OnActionPerformed;
-import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 import io.github.suice.control.listener.ControlListeners;
 import testutils.UiAll;
 import testutils.UiExtension;

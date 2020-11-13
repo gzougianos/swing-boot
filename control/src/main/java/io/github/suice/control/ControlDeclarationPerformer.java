@@ -2,15 +2,12 @@ package io.github.suice.control;
 
 import java.awt.AWTEvent;
 import java.lang.reflect.InvocationTargetException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Optional;
 
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.reflect.ReflectionException;
 
 public class ControlDeclarationPerformer {
-	private static final Logger log = LoggerFactory.getLogger(ControlDeclarationPerformer.class);
 	private Controls controls;
 	private ObjectOwnedControlDeclaration controlDeclaration;
 
@@ -20,8 +17,9 @@ public class ControlDeclarationPerformer {
 	}
 
 	public void perform(AWTEvent event) {
-		if (controlDeclaration.getParameterSource().isPresent()) {
-			executeInvokingSource(controlDeclaration.getParameterSource().get(), event);
+		Optional<ParameterSource> possibleParameterSource = controlDeclaration.getParameterSource();
+		if (possibleParameterSource.isPresent()) {
+			executeInvokingSource(possibleParameterSource.get(), event);
 		} else {
 			controls.perform(controlDeclaration.getControlType());
 		}
