@@ -1,6 +1,7 @@
 package io.github.suice.control;
 
 import java.awt.Component;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,8 +77,11 @@ public class ControlInstaller {
 			ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
 			Component targetComponent = declaration.getTargetComponent();
 
-			if (targetComponent == null)
-				throw new NullPointerException("Component of " + declaration.getTargetComponent() + "is null.");
+			if (targetComponent == null) { //Can happen only to fields
+				Field targetField = (Field) declaration.getTargetElement();
+				throw new NullPointerException("Component value of field '" + targetField.getName() + "' declared in class "
+						+ targetField.getDeclaringClass().getSimpleName() + " is null.");
+			}
 
 			installer.installAnnotation(declaration.getAnnotation(), targetComponent, controlPerformer::perform);
 		}
