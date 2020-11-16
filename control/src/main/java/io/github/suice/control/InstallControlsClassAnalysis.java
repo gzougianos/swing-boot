@@ -2,7 +2,6 @@ package io.github.suice.control;
 
 import static io.github.suice.control.annotation.ParameterSource.THIS;
 
-import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -20,7 +19,6 @@ import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.parameter.SourceOwnerParameterSource;
-import io.github.suice.control.reflect.ReflectionUtils;
 
 public class InstallControlsClassAnalysis {
 	private static final Map<Class<?>, InstallControlsClassAnalysis> cache = new HashMap<>();
@@ -68,7 +66,7 @@ public class InstallControlsClassAnalysis {
 				continue;
 
 			boolean isStaticField = Modifier.isStatic(field.getModifiers());
-			if (isStaticField || !isComponentField(field))
+			if (isStaticField)
 				continue;
 
 			for (Annotation annotation : getDeclaresControlAnnotations(field)) {
@@ -99,8 +97,8 @@ public class InstallControlsClassAnalysis {
 				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
 						.get(expectedParameterSourceId);
 				if (parSource == null) {
-					throw new InvalidControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId + ") found in class "
-							+ clazz.getSimpleName() + " for " + declaration + ".");
+					throw new InvalidControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId
+							+ ") found in class " + clazz.getSimpleName() + " for " + declaration + ".");
 				}
 				declaration.setParameterSource(parSource);
 			}
@@ -158,10 +156,6 @@ public class InstallControlsClassAnalysis {
 
 	private boolean hasAnyAnnotations(AnnotatedElement annotatedElement) {
 		return annotatedElement.getDeclaredAnnotations().length > 0 || annotatedElement.getAnnotations().length > 0;
-	}
-
-	private boolean isComponentField(Field field) {
-		return ReflectionUtils.equalsOrExtends(field.getType(), Component.class);
 	}
 
 	static InstallControlsClassAnalysis of(Class<?> clazz) {

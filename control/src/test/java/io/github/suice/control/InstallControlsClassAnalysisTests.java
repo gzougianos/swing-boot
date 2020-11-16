@@ -9,56 +9,113 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.inject.Inject;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.ParameterSource;
 
-@SuppressWarnings("all")
+@SuppressWarnings({ "serial", "unused" })
 class InstallControlsClassAnalysisTests {
 
-	@Test
-	void exceptionIfItIsNotAnnotatedWithInstallControlsAnnotation() {
-		assertThrows(IllegalArgumentException.class, () -> of(WithoutInstallControlsAnnotation.class));
+	@Nested
+	public class ExceptionWhenInstallControlsAnnotationIsAbsent {
+		@Test
+		void main() {
+			assertThrows(IllegalArgumentException.class, () -> of(AbsentInstallControlls.class));
+		}
+
+		private class AbsentInstallControlls {
+		}
 	}
 
-	@Test
-	void exceptionWhenSameId() {
-		assertThrows(InvalidControlDeclarationException.class, () -> of(DeclaredSameId.class));
+	@Nested
+	public class ExceptionWhenDeclaredSameId {
+		@Test
+		void main() {
+			assertThrows(InvalidControlDeclarationException.class, () -> of(SameId.class));
+		}
+
+		@InstallControls
+		private class SameId {
+			@OnActionPerformed(value = TestControl.class, id = "someid")
+			private JButton button;
+			@OnActionPerformed(value = TestControl.class, id = "someid")
+			private JButton button1;
+		}
 	}
 
-	@Test
-	void declaredParameterSourceDoesNotExist() {
-		assertThrows(InvalidControlDeclarationException.class, () -> of(DeclaresParameterSourceButDoesNotExist.class));
+	@Nested
+	public class ExceptionWhenDeclaredParamaeterSourceIsAbsent {
+		@Test
+		void declaredParameterSourceDoesNotExist() {
+			assertThrows(InvalidControlDeclarationException.class, () -> of(AbsentParameterSource.class));
+		}
+
+		@InstallControls
+		private class AbsentParameterSource {
+			@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "someid")
+			private JButton button;
+		}
 	}
 
-	@Test
-	void normalCaseAnnotationOnType() {
-		Class<?> clazz = AnnotationOnType.class;
-		InstallControlsClassAnalysis analysis = of(clazz);
-		assertEquals(1, analysis.getControlDeclarations().size());
+	@Nested
+	public class DeclarationsOnClass {
+		@Test
+		void normalCaseAnnotationOnType() {
+			Class<?> clazz = AnnotationOnClass.class;
+			InstallControlsClassAnalysis analysis = of(clazz);
+			assertEquals(1, analysis.getControlDeclarations().size());
 
-		String expectedId = clazz.getAnnotation(OnActionPerformed.class) + clazz.toString();
-		ControlDeclaration declaration = analysis.getControlDeclarations().get(expectedId);
-		assertNotNull(declaration);
-		assertEquals(clazz, declaration.getTargetElement());
-		assertEquals(expectedId, declaration.getId());
-		assertTrue(declaration.getParameterSource().isPresent());
-		assertEquals("s", declaration.getParameterSource().get().getValue(new AnnotationOnType(), null));
+			ControlDeclaration declaration = analysis.getControlDeclarations().get("id");
+			assertNotNull(declaration);
+			assertEquals(clazz, declaration.getTargetElement());
+			assertEquals("id", declaration.getId());
+			assertTrue(declaration.getParameterSource().isPresent());
+			assertEquals("s", declaration.getParameterSource().get().getValue(new AnnotationOnClass(), null));
+		}
+
+		@InstallControls
+		@OnActionPerformed(id = "id", value = TestControl.class, parameterSource = "parsource")
+		private class AnnotationOnClass extends JButton {
+			@ParameterSource("parsource")
+			private String parSource() {
+				return "s";
+			}
+		}
 	}
 
-	@Test
-	void normalCaseOnlyAnnotatedField() throws Exception {
-		InstallControlsClassAnalysis analysis = of(NormalCaseWithAnnotatedField.class);
-		assertEquals(1, analysis.getControlDeclarations().size());
+	@Nested
+	class DeclarationsOnFields {
 
-		ControlDeclaration declaration = analysis.getControlDeclarations().get("someid");
-		assertEquals(NormalCaseWithAnnotatedField.class.getDeclaredField("button"), declaration.getTargetElement());
-		assertEquals("someid", declaration.getId());
-		assertTrue(declaration.getParameterSource().isPresent());
-		assertEquals("b", declaration.getParameterSource().get().getValue(null, null));
+		@Test
+		void normalCaseOnlyAnnotatedField() throws Exception {
+			InstallControlsClassAnalysis analysis = of(NormalCaseWithAnnotatedField.class);
+			assertEquals(1, analysis.getControlDeclarations().size());
+
+			ControlDeclaration declaration = analysis.getControlDeclarations().get("someid");
+			assertEquals(NormalCaseWithAnnotatedField.class.getDeclaredField("button"), declaration.getTargetElement());
+			assertEquals("someid", declaration.getId());
+			assertTrue(declaration.getParameterSource().isPresent());
+			assertEquals("b", declaration.getParameterSource().get().getValue(new NormalCaseWithAnnotatedField(), null));
+		}
+
+		@InstallControls
+		private class NormalCaseWithAnnotatedField {
+			@Inject
+			private JButton injectButton; //Even if annotated, it is not a @DeclaresControl annotation
+			@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "someid")
+			private JButton button;
+			private JPanel zeroAnnotations;
+
+			@ParameterSource("parsource")
+			private String parSource() {
+				return "b";
+			}
+		}
 	}
 
 	@Test
@@ -139,43 +196,6 @@ class InstallControlsClassAnalysisTests {
 		assertEquals(0, analysis.getControlDeclarations().size());
 	}
 
-	private static class WithoutInstallControlsAnnotation {
-	}
-
-	@InstallControls
-	private static class DeclaredSameId {
-		@OnActionPerformed(value = TestControl.class, id = "someid")
-		private JButton button;
-		@OnActionPerformed(value = TestControl.class, id = "someid")
-		private JButton button1;
-	}
-
-	@InstallControls
-	private static class NormalCaseWithAnnotatedField {
-		private static JButton staticButton;//checkIfIgnored
-		@Inject
-		private JButton injectButton; //Even if annotated, it is not a @DeclaresControl annotation
-		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "someid")
-		private JButton button;
-
-		@OnActionPerformed(TestControl.class)
-		private int aNoComponentField; //should be ignored
-
-		@ParameterSource("parsource")
-		private static String parSource() {
-			return "b";
-		}
-	}
-
-	@InstallControls
-	@OnActionPerformed(value = TestControl.class, parameterSource = "parsource")
-	private static class AnnotationOnType extends JButton {
-		@ParameterSource("parsource")
-		private String parSource() {
-			return "s";
-		}
-	}
-
 	private static class TestControl implements Control<String> {
 		@Override
 		public void perform(String parameter) {
@@ -183,14 +203,11 @@ class InstallControlsClassAnalysisTests {
 	}
 
 	@InstallControls
-	private static class DeclaresParameterSourceButDoesNotExist {
-		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "someid")
-		private JButton button;
-	}
-
-	@InstallControls
 	@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "onTypeId")
 	private static class BothFieldAndType extends JButton {
+		//Static fields should be ignored
+		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "onFieldId")
+		private static JButton staticButton;
 		@OnActionPerformed(value = TestControl.class, parameterSource = "parsource", id = "onFieldId")
 		private JButton button;
 
