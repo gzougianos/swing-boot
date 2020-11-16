@@ -37,6 +37,11 @@ class ControlInstallerTests {
 	}
 
 	@Test
+	void nullTarget() {
+		assertThrows(NullPointerException.class, () -> installer.installControls(null));
+	}
+
+	@Test
 	void nullComponentToField() {
 		NullComponent nullComponent = new NullComponent();
 		assertThrows(NullPointerException.class, () -> installer.installControls(nullComponent));

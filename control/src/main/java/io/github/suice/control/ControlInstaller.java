@@ -1,9 +1,12 @@
 package io.github.suice.control;
 
+import static java.util.Objects.requireNonNull;
+
 import java.awt.Component;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
@@ -19,7 +22,7 @@ import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
 	private Set<AnnotationToComponentInstaller> installers = new HashSet<>();
-	private final Set<Object> installedObjects = new HashSet<>();
+	private final WeakHashMap<Object, Void> installedObjects = new WeakHashMap<>();
 
 	private Controls controls;
 
@@ -36,12 +39,14 @@ public class ControlInstaller {
 	}
 
 	public void installControls(Object object) {
+		requireNonNull(object, "Cannot install controls to null object.");
+
 		if (alreadyInstalled(object))
 			return;
 
 		warnNonEdtInstallation(object);
 
-		installedObjects.add(object);
+		installedObjects.put(object, null);
 
 		Class<?> objectType = object.getClass();
 
@@ -88,7 +93,7 @@ public class ControlInstaller {
 	}
 
 	private boolean alreadyInstalled(Object object) {
-		return installedObjects.contains(object);
+		return installedObjects.containsKey(object);
 	}
 
 }
