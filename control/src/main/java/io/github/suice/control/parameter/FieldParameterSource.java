@@ -29,13 +29,13 @@ class FieldParameterSource implements ParameterSource {
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `" + field.getName()
-					+ "` of " + field.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `"
+					+ field.getName() + "` of " + field.getDeclaringClass() + ".");
 		}
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException {
+	public Object getValue(Object sourceOwner, AWTEvent event) {
 		ensureAccess();
 		try {
 			return field.get(sourceOwner);

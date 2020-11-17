@@ -8,5 +8,5 @@ public interface ParameterSource {
 
 	Class<?> getValueReturnType();
 
-	Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException;
+	Object getValue(Object sourceOwner, AWTEvent event);
 }

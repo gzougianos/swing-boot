@@ -22,7 +22,7 @@ public class SourceOwnerParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException {
+	public Object getValue(Object sourceOwner, AWTEvent event) {
 		return sourceOwner;
 	}
 

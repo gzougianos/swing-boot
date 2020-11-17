@@ -55,8 +55,8 @@ class MethodParameterSource implements ParameterSource {
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `" + method.getName()
-					+ "` of " + method.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `"
+					+ method.getName() + "` of " + method.getDeclaringClass() + ".");
 		}
 	}
 
@@ -75,7 +75,7 @@ class MethodParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) throws InvalidParameterSourceException {
+	public Object getValue(Object sourceOwner, AWTEvent event) {
 		ensureAccess();
 		try {
 			if (hasNoParameters())
