@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -75,23 +74,6 @@ public class ControlTypeInfo {
 
 	public Class<?> getParameterType() {
 		return parameterType;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(controlClass);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ControlTypeInfo other = (ControlTypeInfo) obj;
-		return Objects.equals(controlClass, other.controlClass);
 	}
 
 	public static ControlTypeInfo of(Class<? extends Control<?>> controlClass) {
