@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import io.github.suice.control.annotation.InstallControls;
+import io.github.suice.control.annotation.KeyBinding;
+import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.OnComponentResized;
 import io.github.suice.control.annotation.ParameterSource;
@@ -20,6 +22,13 @@ public class ClickCounterView extends JPanel {
 	private JLabel clickCountLabel;
 
 	@OnActionPerformed(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
+	@OnComponentResized(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
+	//@formatter:off
+	@MultipleKeyBinding({ 
+			@KeyBinding(keyStroke = "F5", value = IncreaseClickCounterControl.class),
+			@KeyBinding(keyStroke = "F6", value = IncreaseClickCounterControl.class),
+		})
+	//@formatter:on
 	private JButton increaseCounterButton;
 
 	@OnActionPerformed(value = DecreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
