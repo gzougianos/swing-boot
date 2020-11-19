@@ -1,6 +1,7 @@
 package io.github.suice.control.annotation.installer;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -27,12 +28,12 @@ import testutils.UiAll;
 import testutils.UiExtension;
 
 @ExtendWith(UiExtension.class)
+@SuppressWarnings("unchecked")
 @UiAll
 class OnComponentResizedInstallerTests {
 	@OnComponentResized(TestControl.class)
 	private int field;
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void main() throws Exception {
 		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
@@ -47,6 +48,14 @@ class OnComponentResizedInstallerTests {
 
 		verify(eventConsumer).accept(eq(event));
 		verifyNoMoreInteractions(eventConsumer);
+	}
+
+	@Test
+	void wrongTarget() throws Exception {
+		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
+		Consumer<AWTEvent> eventConsumer = mock(Consumer.class);
+		assertThrows(RuntimeException.class,
+				() -> installer.installAnnotation(annotationOfField("field"), new String(), eventConsumer));
 	}
 
 	private <T extends EventListener> void fireListeners(Component c, Class<T> type, Consumer<T> listenerConsumer) {

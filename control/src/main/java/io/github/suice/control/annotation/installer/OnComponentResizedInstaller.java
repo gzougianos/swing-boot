@@ -15,6 +15,9 @@ public class OnComponentResizedInstaller implements AnnotationInstaller {
 	public void installAnnotation(Annotation annotation, Object target, Consumer<AWTEvent> eventConsumer) {
 		if (target instanceof Component)
 			((Component) target).addComponentListener(new Listener(eventConsumer));
+		else
+			throw new UnsupportedOperationException(
+					"@OnComponentResized cannot be installed to target of type " + target.getClass());
 	}
 
 	private static class Listener extends ComponentAdapter implements ControlListener {

@@ -30,7 +30,8 @@ public class OnActionPerformedInstaller implements AnnotationInstaller {
 		} else if (target instanceof JTextField) {
 			((JTextField) target).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else {
-			throw new IllegalArgumentException("Action listener cannot be installed to component of type: " + target.getClass());
+			throw new UnsupportedOperationException(
+					"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
 		}
 	}
 

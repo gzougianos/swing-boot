@@ -67,13 +67,12 @@ class KeyBindingInstallerTests {
 		JFrame frame = new JFrame();
 		frame.setContentPane(new Container());
 
-		assertThrows(UnsupportedOperationException.class, () -> installer.installAnnotation(annotation, frame, eventConsumer));
+		assertThrows(RuntimeException.class, () -> installer.installAnnotation(annotation, frame, eventConsumer));
 	}
 
 	@Test
 	void notSupportedComponent() {
-		assertThrows(UnsupportedOperationException.class,
-				() -> installer.installAnnotation(annotation, new Button(), eventConsumer));
+		assertThrows(RuntimeException.class, () -> installer.installAnnotation(annotation, new Button(), eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")

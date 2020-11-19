@@ -71,7 +71,7 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void wrongComponent() throws Exception {
-		assertThrows(Exception.class,
+		assertThrows(RuntimeException.class,
 				() -> installer.installAnnotation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
 	}
 
