@@ -11,11 +11,12 @@ import java.lang.annotation.Target;
 import javax.swing.AbstractButton;
 
 import io.github.suice.control.Control;
+import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(AbstractButton.class)
+@DeclaresControl(installer = OnActionPerformedInstaller.class, targetTypes = AbstractButton.class)
 public @interface OnActionPerformed {
 	public static final int ANY_MODIFIER = -500;
 

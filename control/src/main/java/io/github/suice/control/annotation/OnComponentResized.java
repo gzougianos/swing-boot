@@ -10,11 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import io.github.suice.control.Control;
+import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(Component.class)
+@DeclaresControl(installer = OnComponentResizedInstaller.class, targetTypes = Component.class)
 public @interface OnComponentResized {
 	Class<? extends Control<?>> value();
 

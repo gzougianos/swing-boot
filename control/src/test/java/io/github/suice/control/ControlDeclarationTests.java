@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.ParameterSource;
+import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
 
 @SuppressWarnings("unused")
 class ControlDeclarationTests {
@@ -85,7 +86,7 @@ class ControlDeclarationTests {
 	}
 
 	@Nested
-	class ExceptionWhenParameterSourceReturnValueMismatchParameterType {
+	class ExceptionWhenParameterSourceReturnValueMismatchControlParameterType {
 		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
 		private JButton field;
 
@@ -212,6 +213,7 @@ class ControlDeclarationTests {
 			assertEquals(IntControl.class, declaration.getControlTypeInfo().getControlType());
 			assertEquals(field, declaration.getTargetElement());
 			assertTrue(declaration.getParameterSource().isPresent());
+			assertEquals(OnActionPerformedInstaller.class, declaration.getInstallerType());
 		}
 	}
 

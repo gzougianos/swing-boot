@@ -3,12 +3,15 @@ package io.github.suice.control.annotation;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.awt.Component;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import io.github.suice.control.annotation.installer.AnnotationInstaller;
 
 @Retention(RUNTIME)
 @Target(ANNOTATION_TYPE)
 public @interface DeclaresControl {
-	Class<? extends Component>[] value();
+	Class<?>[] targetTypes();
+
+	Class<? extends AnnotationInstaller> installer();
 }

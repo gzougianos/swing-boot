@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import io.github.suice.control.annotation.DeclaresControl;
+import io.github.suice.control.annotation.installer.AnnotationInstaller;
 import io.github.suice.control.parameter.ParameterSource;
 
 public class ControlDeclaration {
@@ -21,6 +22,7 @@ public class ControlDeclaration {
 	private Annotation annotation;
 	private AnnotatedElement targetElement;
 	private String parameterSourceId;
+	private Class<? extends AnnotationInstaller> installerType;
 
 	@SuppressWarnings("unchecked")
 	private ControlDeclaration(Annotation annotation, AnnotatedElement targetElement) {
@@ -30,6 +32,8 @@ public class ControlDeclaration {
 		checkIfThisAnnotationIsDeclaredOnThisElement();
 		checkIfAnnotationDeclaresControl();
 		checkIfAnnotationCanBeInstalledToTargetElement();
+
+		installerType = annotation.annotationType().getAnnotation(DeclaresControl.class).installer();
 
 		id = String.valueOf(invokeMethodOfAnnotation("id"));
 		if (id.isEmpty())
@@ -42,6 +46,14 @@ public class ControlDeclaration {
 
 		checkIfParameterSourceGivenWhenNonNullableParameter();
 		checkIfParameterSourceGivenWhenControlTakesNoParameter();
+	}
+
+	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
+		this(annotation, (AnnotatedElement) clazz);
+	}
+
+	public ControlDeclaration(Annotation annotation, Field field) {
+		this(annotation, (AnnotatedElement) field);
 	}
 
 	private void createIdBasedOnElements() {
@@ -76,14 +88,6 @@ public class ControlDeclaration {
 			throw new InvalidControlDeclarationException("The annotation should be declared to target element.");
 	}
 
-	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
-		this(annotation, (AnnotatedElement) clazz);
-	}
-
-	public ControlDeclaration(Annotation annotation, Field field) {
-		this(annotation, (AnnotatedElement) field);
-	}
-
 	private void checkIfAnnotationCanBeInstalledToTargetElement() {
 		DeclaresControl declaresControl = annotation.annotationType().getAnnotation(DeclaresControl.class);
 		Class<?> targetType = getTargetType(targetElement);
@@ -105,7 +109,7 @@ public class ControlDeclaration {
 	}
 
 	private boolean supportsType(DeclaresControl declaresControl, Class<?> type) {
-		for (Class<?> clazz : declaresControl.value()) {
+		for (Class<?> clazz : declaresControl.targetTypes()) {
 			if (equalsOrExtends(type, clazz))
 				return true;
 		}
@@ -126,6 +130,10 @@ public class ControlDeclaration {
 
 	public boolean expectsParameterSource() {
 		return !parameterSourceId.isEmpty();
+	}
+
+	public Class<? extends AnnotationInstaller> getInstallerType() {
+		return installerType;
 	}
 
 	public String getId() {

@@ -2,10 +2,7 @@ package io.github.suice.control;
 
 import static java.util.Objects.requireNonNull;
 
-import java.awt.Component;
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.inject.Inject;
@@ -14,28 +11,17 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.suice.control.annotation.installer.AnnotationToComponentInstaller;
-import io.github.suice.control.annotation.installer.KeyBindingInstaller;
-import io.github.suice.control.annotation.installer.OnActionPerformedInstaller;
-import io.github.suice.control.annotation.installer.OnComponentResizedInstaller;
+import io.github.suice.control.annotation.installer.AnnotationInstaller;
+import io.github.suice.control.annotation.installer.AnnotationInstallerFactory;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private Set<AnnotationToComponentInstaller> installers = new HashSet<>();
 	private final WeakHashMap<Object, Void> installedObjects = new WeakHashMap<>();
-
-	private Controls controls;
+	private final Controls controls;
 
 	@Inject
 	public ControlInstaller(Controls controls) {
 		this.controls = controls;
-		createDefaultInstallers();
-	}
-
-	private void createDefaultInstallers() {
-		installers.add(new OnActionPerformedInstaller());
-		installers.add(new OnComponentResizedInstaller());
-		installers.add(new KeyBindingInstaller());
 	}
 
 	public void installControls(Object object) {
@@ -75,21 +61,18 @@ public class ControlInstaller {
 	}
 
 	private void install(ObjectOwnedControlDeclaration declaration) {
-		for (AnnotationToComponentInstaller installer : installers) {
-			if (!installer.supportsAnnotation(declaration.getAnnotation()))
-				continue;
+		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
 
-			ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
-			Component targetComponent = declaration.getTargetComponent();
+		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
+		Object target = declaration.getTargetObject();
 
-			if (targetComponent == null) { //Can happen only to fields
-				Field targetField = (Field) declaration.getTargetElement();
-				throw new NullPointerException("Component value of field '" + targetField.getName() + "' declared in class "
-						+ targetField.getDeclaringClass().getSimpleName() + " is null.");
-			}
-
-			installer.installAnnotation(declaration.getAnnotation(), targetComponent, controlPerformer::perform);
+		if (target == null) { //Can happen only to fields
+			Field targetField = (Field) declaration.getTargetElement();
+			throw new NullPointerException("Component value of field '" + targetField.getName() + "' declared in class "
+					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
 		}
+
+		installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);
 	}
 
 	private boolean alreadyInstalled(Object object) {

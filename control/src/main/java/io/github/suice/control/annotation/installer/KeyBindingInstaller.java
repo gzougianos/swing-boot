@@ -14,32 +14,27 @@ import javax.swing.RootPaneContainer;
 
 import io.github.suice.control.annotation.KeyBinding;
 
-public class KeyBindingInstaller implements AnnotationToComponentInstaller {
+public class KeyBindingInstaller implements AnnotationInstaller {
 
 	@Override
-	public boolean supportsAnnotation(Annotation annotation) {
-		return annotation.annotationType().equals(KeyBinding.class);
-	}
-
-	@Override
-	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Object target, Consumer<AWTEvent> eventConsumer) {
 		final KeyBinding binding = (KeyBinding) annotation;
 		final Action action = new KeyBindingAction(eventConsumer);
 
-		if (component instanceof JComponent) {
-			installToJComponent((JComponent) component, action, binding);
-		} else if (component instanceof RootPaneContainer) {
-			RootPaneContainer container = (RootPaneContainer) component;
+		if (target instanceof JComponent) {
+			installToJComponent((JComponent) target, action, binding);
+		} else if (target instanceof RootPaneContainer) {
+			RootPaneContainer container = (RootPaneContainer) target;
 			Component contentPane = container.getContentPane();
 			if (contentPane instanceof JComponent) {
 				installToJComponent((JComponent) contentPane, action, binding);
 			} else {
-				throw new UnsupportedOperationException("@KeyBinding cannot only be installed to " + component.getClass()
+				throw new UnsupportedOperationException("@KeyBinding cannot only be installed to " + target.getClass()
 						+ " when the ContentPane is not a JComponent.");
 			}
 		} else {
 			throw new UnsupportedOperationException(
-					"@KeyBinding cannot be installed to components of type: " + component.getClass());
+					"@KeyBinding cannot be installed to components of type: " + target.getClass());
 		}
 	}
 

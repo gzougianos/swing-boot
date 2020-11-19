@@ -1,12 +1,13 @@
 package io.github.suice.control;
 
-import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import io.github.suice.control.annotation.installer.AnnotationInstaller;
 import io.github.suice.control.parameter.ParameterSource;
+import io.github.suice.control.reflect.ReflectionException;
 
 public class ObjectOwnedControlDeclaration {
 
@@ -30,8 +31,8 @@ public class ObjectOwnedControlDeclaration {
 		return declaration.getTargetElement();
 	}
 
-	public String getId() {
-		return declaration.getId();
+	public Class<? extends AnnotationInstaller> getInstallerType() {
+		return declaration.getInstallerType();
 	}
 
 	public Class<?> getControlParameterType() {
@@ -46,17 +47,18 @@ public class ObjectOwnedControlDeclaration {
 		return declaration.getAnnotation();
 	}
 
-	public Component getTargetComponent() {
+	public Object getTargetObject() {
+		AnnotatedElement targetElement = declaration.getTargetElement();
 		try {
-			if (getTargetElement() instanceof Field) {
-				Field targetField = (Field) getTargetElement();
+			if (targetElement instanceof Field) {
+				Field targetField = (Field) targetElement;
 				ensureAccessible(targetField);
-				return (Component) targetField.get(getOwner());
+				return targetField.get(getOwner());
 			} else {
-				return (Component) getOwner();
+				return getOwner();
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException("Error getting value from target element " + getTargetElement(), e);
+			throw new ReflectionException("Error getting value from target element " + targetElement, e);
 		}
 	}
 

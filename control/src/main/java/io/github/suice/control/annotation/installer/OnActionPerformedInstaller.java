@@ -1,7 +1,6 @@
 package io.github.suice.control.annotation.installer;
 
 import java.awt.AWTEvent;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
@@ -14,15 +13,10 @@ import javax.swing.JTextField;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.listener.ControlListener;
 
-public class OnActionPerformedInstaller implements AnnotationToComponentInstaller {
+public class OnActionPerformedInstaller implements AnnotationInstaller {
 
 	@Override
-	public boolean supportsAnnotation(Annotation annotation) {
-		return annotation.annotationType().equals(OnActionPerformed.class);
-	}
-
-	@Override
-	public void installAnnotation(Annotation annotation, Component component, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Object target, Consumer<AWTEvent> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 
@@ -31,13 +25,12 @@ public class OnActionPerformedInstaller implements AnnotationToComponentInstalle
 			return anyModifier || eventModifiers == onActionPerformed.modifiers();
 		};
 
-		if (component instanceof AbstractButton) {
-			((AbstractButton) component).addActionListener(new Listener(eventPredicate, eventConsumer));
-		} else if (component instanceof JTextField) {
-			((JTextField) component).addActionListener(new Listener(eventPredicate, eventConsumer));
+		if (target instanceof AbstractButton) {
+			((AbstractButton) target).addActionListener(new Listener(eventPredicate, eventConsumer));
+		} else if (target instanceof JTextField) {
+			((JTextField) target).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else {
-			throw new IllegalArgumentException(
-					"Action listener cannot be installed to component of type: " + component.getClass());
+			throw new IllegalArgumentException("Action listener cannot be installed to component of type: " + target.getClass());
 		}
 	}
 

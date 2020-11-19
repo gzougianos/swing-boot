@@ -15,11 +15,15 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 
 import io.github.suice.control.Control;
+import io.github.suice.control.annotation.installer.KeyBindingInstaller;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(value = { JComponent.class, JFrame.class, JWindow.class, JDialog.class })
+//@formatter:off
+@DeclaresControl(installer = KeyBindingInstaller.class, 
+		targetTypes = { JComponent.class, JFrame.class, JWindow.class, JDialog.class })
+//@formatter:on
 public @interface KeyBinding {
 	/**
 	 * @see {@link JComponent#WHEN_FOCUSED}

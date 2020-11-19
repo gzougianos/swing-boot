@@ -18,7 +18,7 @@ class ObjectOwnedControlDeclarationTests {
 		AnnotationOnType owner = new AnnotationOnType();
 		ObjectOwnedControlDeclaration declaration = new ObjectOwnedControlDeclaration(owner,
 				new ControlDeclaration(AnnotationOnType.class.getAnnotation(OnComponentResized.class), AnnotationOnType.class));
-		assertEquals(owner, declaration.getTargetComponent());
+		assertEquals(owner, declaration.getTargetObject());
 	}
 
 	@Test
@@ -27,7 +27,7 @@ class ObjectOwnedControlDeclarationTests {
 		Field field = AnnotationOnField.class.getDeclaredField("panel");
 		ObjectOwnedControlDeclaration declaration = new ObjectOwnedControlDeclaration(owner,
 				new ControlDeclaration(field.getAnnotation(OnComponentResized.class), field));
-		assertEquals(owner.panel, declaration.getTargetComponent());
+		assertEquals(owner.panel, declaration.getTargetObject());
 		assertTrue(field.isAccessible());
 	}
 

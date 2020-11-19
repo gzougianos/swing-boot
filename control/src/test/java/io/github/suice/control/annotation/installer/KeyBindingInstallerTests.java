@@ -33,7 +33,7 @@ class KeyBindingInstallerTests {
 	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
 	private int annotationHolder;
 
-	private AnnotationToComponentInstaller installer;
+	private AnnotationInstaller installer;
 	private Consumer<AWTEvent> eventConsumer;
 	private KeyBinding annotation;
 
