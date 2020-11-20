@@ -25,8 +25,8 @@ public class ClickCounterView extends JPanel {
 	@OnComponentResized(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
 	//@formatter:off
 	@MultipleKeyBinding({ 
-			@KeyBinding(keyStroke = "F5", value = IncreaseClickCounterControl.class),
-			@KeyBinding(keyStroke = "F6", value = IncreaseClickCounterControl.class),
+			@KeyBinding(keyStroke = "F5", value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS),
+			@KeyBinding(keyStroke = "F6", value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS),
 		})
 	//@formatter:on
 	private JButton increaseCounterButton;
