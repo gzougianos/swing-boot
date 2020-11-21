@@ -7,7 +7,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
-import java.util.Arrays;
 import java.util.Optional;
 
 import io.github.suice.control.annotation.DeclaresControl;
@@ -29,7 +28,6 @@ public class ControlDeclaration {
 		this.targetElement = targetElement;
 		this.annotation = annotation;
 
-		checkIfThisAnnotationIsDeclaredOnThisElement();
 		checkIfAnnotationDeclaresControl();
 		checkIfAnnotationCanBeInstalledToTargetElement();
 
@@ -45,7 +43,6 @@ public class ControlDeclaration {
 		controlTypeInfo = ControlTypeInfo.of(controlType);
 
 		checkIfParameterSourceGivenWhenNonNullableParameter();
-		checkIfParameterSourceGivenWhenControlTakesNoParameter();
 	}
 
 	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
@@ -58,13 +55,6 @@ public class ControlDeclaration {
 
 	private void createIdBasedOnElements() {
 		id = annotation.toString() + targetElement.toString();
-	}
-
-	private void checkIfParameterSourceGivenWhenControlTakesNoParameter() {
-		if (controlTypeInfo.isParameterless() && !parameterSourceId.isEmpty()) {
-			String format = "%s declares a non parameterized control but parameter source was given. Remove parameterSource value.";
-			throw new InvalidControlDeclarationException(String.format(format, this.toString()));
-		}
 	}
 
 	private void checkIfParameterSourceGivenWhenNonNullableParameter() {
@@ -81,11 +71,6 @@ public class ControlDeclaration {
 	private void checkIfAnnotationDeclaresControl() {
 		if (!annotation.annotationType().isAnnotationPresent(DeclaresControl.class))
 			throw new InvalidControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
-	}
-
-	private void checkIfThisAnnotationIsDeclaredOnThisElement() {
-		if (!Arrays.asList(targetElement.getDeclaredAnnotations()).stream().anyMatch(a -> a == annotation))
-			throw new InvalidControlDeclarationException("The annotation should be declared to target element.");
 	}
 
 	private void checkIfAnnotationCanBeInstalledToTargetElement() {
@@ -129,7 +114,7 @@ public class ControlDeclaration {
 	}
 
 	public boolean expectsParameterSource() {
-		return !parameterSourceId.isEmpty();
+		return !parameterSourceId.isEmpty() && !controlTypeInfo.isParameterless();
 	}
 
 	public Class<? extends AnnotationInstaller> getInstallerType() {

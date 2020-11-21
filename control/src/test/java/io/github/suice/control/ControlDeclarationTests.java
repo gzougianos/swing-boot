@@ -1,5 +1,6 @@
 package io.github.suice.control;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,8 +65,8 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+			ControlDeclaration controlDeclaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			assertFalse(controlDeclaration.expectsParameterSource());
 		}
 	}
 
@@ -130,28 +131,6 @@ class ControlDeclarationTests {
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
 			assertDoesNotThrow(() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
-		}
-	}
-
-	@Nested
-	class AnnotationIsNotDeclaredOnTheTargetElement {
-		@OnActionPerformed(value = VoidControl.class)
-		private JButton field;
-
-		@OnActionPerformed(value = VoidControl.class)
-		private JButton field2;
-
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			OnActionPerformed annotation = field.getAnnotation(OnActionPerformed.class);
-
-			//declared on field, but targets a class
-			assertThrows(InvalidControlDeclarationException.class, () -> new ControlDeclaration(annotation, getClass()));
-
-			//declared on field, but targets a different field
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(annotation, getClass().getDeclaredField("field2")));
 		}
 	}
 

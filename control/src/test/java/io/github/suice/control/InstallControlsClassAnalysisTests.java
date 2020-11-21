@@ -14,7 +14,10 @@ import javax.swing.JPanel;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import io.github.suice.control.InstallControlsClassAnalysisTests.findsMultipleControlDeclaration.VoidControl;
 import io.github.suice.control.annotation.InstallControls;
+import io.github.suice.control.annotation.KeyBinding;
+import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.ParameterSource;
 
@@ -41,9 +44,9 @@ class InstallControlsClassAnalysisTests {
 
 		@InstallControls
 		private class SameId {
-			@OnActionPerformed(value = TestControl.class, id = "someid")
+			@OnActionPerformed(value = VoidControl.class, id = "someid")
 			private JButton button;
-			@OnActionPerformed(value = TestControl.class, id = "someid")
+			@OnActionPerformed(value = VoidControl.class, id = "someid")
 			private JButton button1;
 		}
 	}
@@ -84,6 +87,36 @@ class InstallControlsClassAnalysisTests {
 			@ParameterSource("parsource")
 			private String parSource() {
 				return "s";
+			}
+		}
+	}
+
+	@Nested
+	@InstallControls
+	class findsMultipleControlDeclaration {
+		@OnActionPerformed(value = VoidControl.class, parameterSource = "parsource", id = "someid")
+		//@formatter:off
+		@MultipleKeyBinding({ 
+				@KeyBinding(keyStroke = "F2", value = VoidControl.class, parameterSource = "parsource"),
+				@KeyBinding(keyStroke = "F3", value = VoidControl.class, parameterSource = "parsource")
+		})
+		//@formatter:on
+		private JButton button;
+
+		@Test
+		void main() {
+			InstallControlsClassAnalysis classAnalysis = of(getClass());
+			assertEquals(3, classAnalysis.getControlDeclarations().size());
+		}
+
+		@ParameterSource("parsource")
+		private String parSource() {
+			return "b";
+		}
+
+		class VoidControl implements Control<Void> {
+			@Override
+			public void perform(Void parameter) {
 			}
 		}
 	}

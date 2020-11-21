@@ -8,7 +8,8 @@ public class IncreaseClickCounterControl implements Control<ClickCounterView> {
 
 	@Override
 	public void perform(@Nullable ClickCounterView parameter) {
-		parameter.increaseClickCount();
+		if (parameter != null)
+			parameter.increaseClickCount();
 	}
 
 }

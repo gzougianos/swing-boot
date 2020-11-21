@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import io.github.suice.control.annotation.DeclaresControl;
 import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
 import io.github.suice.control.parameter.ParameterSource;
@@ -50,7 +48,8 @@ public class InstallControlsClassAnalysis {
 	}
 
 	private void scanControlDeclarationsOnType() {
-		for (Annotation annotation : getDeclaresControlAnnotations(clazz)) {
+		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotationsFinder.find(clazz);
+		for (Annotation annotation : declaresControlAnnotations) {
 			ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, clazz);
 			checkIfNotAlreadyExists(controlDeclaration.getId());
 			controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);
@@ -69,7 +68,9 @@ public class InstallControlsClassAnalysis {
 			if (isStaticField)
 				continue;
 
-			for (Annotation annotation : getDeclaresControlAnnotations(field)) {
+			Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotationsFinder.find(field);
+
+			for (Annotation annotation : declaresControlAnnotations) {
 				ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, field);
 
 				checkIfNotAlreadyExists(controlDeclaration.getId());
@@ -137,21 +138,6 @@ public class InstallControlsClassAnalysis {
 	private Set<String> getIgnoredIds(Class<?> clazz) {
 		InstallControls installControls = clazz.getAnnotation(InstallControls.class);
 		return new HashSet<>(Arrays.asList(installControls.ignoreIdsFromParent()));
-	}
-
-	private Set<Annotation> getDeclaresControlAnnotations(AnnotatedElement annotatedElement) {
-		//@formatter:off
-		return getAllAnnotations(annotatedElement).stream()
-				.filter(a -> a.annotationType().isAnnotationPresent(DeclaresControl.class))
-				.collect(Collectors.toSet());
-		//@formatter:on
-	}
-
-	private Set<Annotation> getAllAnnotations(AnnotatedElement annotatedElement) {
-		Set<Annotation> annotations = new HashSet<>();
-		annotations.addAll(Arrays.asList(annotatedElement.getAnnotations()));
-		annotations.addAll(Arrays.asList(annotatedElement.getDeclaredAnnotations()));
-		return annotations;
 	}
 
 	private boolean hasAnyAnnotations(AnnotatedElement annotatedElement) {
