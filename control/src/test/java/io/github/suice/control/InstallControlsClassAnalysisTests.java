@@ -92,20 +92,22 @@ class InstallControlsClassAnalysisTests {
 	}
 
 	@Nested
-	@InstallControls
 	class findsMultipleControlDeclaration {
-		@OnActionPerformed(value = VoidControl.class, parameterSource = "parsource", id = "someid")
-		//@formatter:off
-		@MultipleKeyBinding({ 
-				@KeyBinding(keyStroke = "F2", value = VoidControl.class, parameterSource = "parsource"),
-				@KeyBinding(keyStroke = "F3", value = VoidControl.class, parameterSource = "parsource")
-		})
-		//@formatter:on
-		private JButton button;
+		@InstallControls
+		private class MultipleControlDeclarations {
+			@OnActionPerformed(value = VoidControl.class, parameterSource = "parsource", id = "someid")
+			//@formatter:off
+			@MultipleKeyBinding({ 
+					@KeyBinding(keyStroke = "F2", value = VoidControl.class, parameterSource = "parsource"),
+					@KeyBinding(keyStroke = "F3", value = VoidControl.class, parameterSource = "parsource")
+			})
+			//@formatter:on
+			private JButton button;
+		}
 
 		@Test
 		void main() {
-			InstallControlsClassAnalysis classAnalysis = of(getClass());
+			InstallControlsClassAnalysis classAnalysis = of(MultipleControlDeclarations.class);
 			assertEquals(3, classAnalysis.getControlDeclarations().size());
 		}
 
