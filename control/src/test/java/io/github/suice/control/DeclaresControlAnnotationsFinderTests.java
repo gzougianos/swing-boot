@@ -11,24 +11,23 @@ import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import integration.example.IncreaseClickCounterControl;
 import io.github.suice.control.annotation.KeyBinding;
 import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.OnComponentResized;
-import io.github.suice.control.annotation.ParameterSource;
 
 class DeclaresControlAnnotationsFinderTests {
 
 	@Nested
 	class FlattensAnnotation {
 		//@formatter:off
-		@OnActionPerformed(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
-		@OnComponentResized(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
+		@OnActionPerformed(value = VoidControl.class)
+		@OnComponentResized(value = VoidControl.class)
 		@MultipleKeyBinding({ 
-				@KeyBinding(keyStroke = "F4", value = IncreaseClickCounterControl.class),
-				@KeyBinding(keyStroke = "F3", value = IncreaseClickCounterControl.class),
+				@KeyBinding(keyStroke = "F4", value = VoidControl.class),
+				@KeyBinding(keyStroke = "F3", value = VoidControl.class),
 			})
+		@KeyBinding(keyStroke = "F5", value = VoidControl.class)
 		//@formatter:on
 		private int x;
 
@@ -36,23 +35,24 @@ class DeclaresControlAnnotationsFinderTests {
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("x");
 			Set<Annotation> result = find(field);
-			assertEquals(4, result.size());
+			assertEquals(5, result.size());
 			KeyBinding[] bindings = field.getAnnotationsByType(KeyBinding.class);
 			assertTrue(result.contains(bindings[0]));
 			assertTrue(result.contains(bindings[1]));
 			assertTrue(result.contains(field.getAnnotation(OnActionPerformed.class)));
 			assertTrue(result.contains(field.getAnnotation(OnComponentResized.class)));
+			assertTrue(result.contains(field.getAnnotation(KeyBinding.class)));
 		}
 	}
 
 	@Nested
 	class EliminatesDuplicates {
 		//@formatter:off
-		@OnActionPerformed(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
-		@OnComponentResized(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
+		@OnActionPerformed(value = VoidControl.class)
+		@OnComponentResized(value = VoidControl.class)
 		@MultipleKeyBinding({ 
-				@KeyBinding(keyStroke = "F3", value = IncreaseClickCounterControl.class),
-				@KeyBinding(keyStroke = "F3", value = IncreaseClickCounterControl.class),
+				@KeyBinding(keyStroke = "F3", value = VoidControl.class),
+				@KeyBinding(keyStroke = "F3", value = VoidControl.class),
 			})
 		//@formatter:on
 		private int y;
@@ -66,10 +66,10 @@ class DeclaresControlAnnotationsFinderTests {
 	}
 
 	//@formatter:off
-	@OnActionPerformed(value = IncreaseClickCounterControl.class)
+	@OnActionPerformed(value = VoidControl.class)
 	@MultipleKeyBinding({ 
-			@KeyBinding(keyStroke = "F4", value = IncreaseClickCounterControl.class),
-			@KeyBinding(keyStroke = "F3", value = IncreaseClickCounterControl.class),
+			@KeyBinding(keyStroke = "F4", value = VoidControl.class),
+			@KeyBinding(keyStroke = "F3", value = VoidControl.class),
 		})
 	//@formatter:on
 	@Nested
@@ -79,6 +79,13 @@ class DeclaresControlAnnotationsFinderTests {
 			Set<Annotation> result = find(getClass());
 			assertEquals(3, result.size());
 		}
+	}
+
+	private static class VoidControl implements Control<Void> {
+		@Override
+		public void perform(Void parameter) {
+		}
+
 	}
 
 }
