@@ -1,6 +1,6 @@
 package io.github.suice.control;
 
-import static io.github.suice.control.DeclaresControlAnnotationsFinder.find;
+import static io.github.suice.control.DeclaresControlAnnotations.ofElement;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,7 +16,7 @@ import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.OnComponentResized;
 import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 
-class DeclaresControlAnnotationsFinderTests {
+class DeclaresControlAnnotationsTests {
 
 	@Nested
 	class FlattensAnnotation {
@@ -34,7 +34,7 @@ class DeclaresControlAnnotationsFinderTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("x");
-			Set<Annotation> result = find(field);
+			Set<Annotation> result = ofElement(field);
 			assertEquals(5, result.size());
 			KeyBinding[] bindings = field.getAnnotationsByType(KeyBinding.class);
 			assertTrue(result.contains(bindings[0]));
@@ -60,7 +60,7 @@ class DeclaresControlAnnotationsFinderTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("y");
-			Set<Annotation> result = find(field);
+			Set<Annotation> result = ofElement(field);
 			assertEquals(3, result.size());
 		}
 	}
@@ -76,7 +76,7 @@ class DeclaresControlAnnotationsFinderTests {
 	class WorksWhenIsClass {
 		@Test
 		void main() throws Exception {
-			Set<Annotation> result = find(getClass());
+			Set<Annotation> result = ofElement(getClass());
 			assertEquals(3, result.size());
 		}
 	}

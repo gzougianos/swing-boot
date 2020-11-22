@@ -48,7 +48,7 @@ public class InstallControlsClassAnalysis {
 	}
 
 	private void scanControlDeclarationsOnType() {
-		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotationsFinder.find(clazz);
+		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(clazz);
 		for (Annotation annotation : declaresControlAnnotations) {
 			ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, clazz);
 			checkIfNotAlreadyExists(controlDeclaration.getId());
@@ -68,7 +68,7 @@ public class InstallControlsClassAnalysis {
 			if (isStaticField)
 				continue;
 
-			Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotationsFinder.find(field);
+			Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(field);
 
 			for (Annotation annotation : declaresControlAnnotations) {
 				ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, field);

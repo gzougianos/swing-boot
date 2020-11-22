@@ -10,11 +10,11 @@ import java.util.Set;
 import io.github.suice.control.annotation.DeclaresControl;
 import io.github.suice.control.annotation.multiple.DeclaresMultipleControls;
 
-final class DeclaresControlAnnotationsFinder {
-	private DeclaresControlAnnotationsFinder() {
+final class DeclaresControlAnnotations {
+	private DeclaresControlAnnotations() {
 	}
 
-	public static Set<Annotation> find(AnnotatedElement annotatedElement) {
+	public static Set<Annotation> ofElement(AnnotatedElement annotatedElement) {
 		Set<Annotation> result = new HashSet<>();
 
 		for (Annotation annotation : getAllAnnotations(annotatedElement)) {
