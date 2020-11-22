@@ -1,4 +1,4 @@
-package io.github.suice.control.annotation;
+package io.github.suice.control.annotation.multiple;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

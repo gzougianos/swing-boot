@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 
 import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.KeyBinding;
-import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.OnComponentResized;
 import io.github.suice.control.annotation.ParameterSource;
+import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 
 @InstallControls
 @OnComponentResized(PrintResizeControl.class)

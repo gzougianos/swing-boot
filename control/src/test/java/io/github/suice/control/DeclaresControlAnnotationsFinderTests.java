@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.suice.control.annotation.KeyBinding;
-import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.OnComponentResized;
+import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 
 class DeclaresControlAnnotationsFinderTests {
 

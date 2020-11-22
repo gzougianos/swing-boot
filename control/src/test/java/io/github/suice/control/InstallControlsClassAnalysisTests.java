@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import io.github.suice.control.InstallControlsClassAnalysisTests.findsMultipleControlDeclaration.VoidControl;
 import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.annotation.KeyBinding;
-import io.github.suice.control.annotation.MultipleKeyBinding;
 import io.github.suice.control.annotation.OnActionPerformed;
 import io.github.suice.control.annotation.ParameterSource;
+import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 
 @SuppressWarnings({ "serial", "unused" })
 class InstallControlsClassAnalysisTests {

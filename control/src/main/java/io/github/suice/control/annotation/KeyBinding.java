@@ -17,6 +17,7 @@ import javax.swing.KeyStroke;
 
 import io.github.suice.control.Control;
 import io.github.suice.control.annotation.installer.KeyBindingInstaller;
+import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
