@@ -20,9 +20,8 @@ import testutils.UiExtension;
 @ExtendWith(UiExtension.class)
 @UiAll
 class ControlInstallerTests {
-	private static boolean additionalsInstalled = false;
 	private ControlInstaller installer;
-	private Controls executor;
+	private Controls controls;
 
 	@Test
 	void main() {
@@ -31,9 +30,17 @@ class ControlInstallerTests {
 		installer.installControls(obj); //try to install again
 		obj.button.doClick();
 
-		verify(executor).perform(TestControl.class);
-		verifyNoMoreInteractions(executor);
-		assertTrue(additionalsInstalled);
+		verify(controls).perform(TestControl.class);
+		verifyNoMoreInteractions(controls);
+	}
+
+	@Test
+	void callsAdditionalInstallation() {
+		AdditionalControlInstallationImpl obj = new AdditionalControlInstallationImpl();
+		installer.installControls(obj);
+
+		assertTrue(obj.beforeCalled);
+		assertTrue(obj.afterCalled);
 	}
 
 	@Test
@@ -49,20 +56,31 @@ class ControlInstallerTests {
 
 	@BeforeEach
 	private void extracted() {
-		additionalsInstalled = false;
-		executor = mock(Controls.class);
-		installer = new ControlInstaller(executor);
+		controls = mock(Controls.class);
+		installer = new ControlInstaller(controls);
 	}
 
 	@InstallControls
-	private static class EverythingOk implements AdditionalControlInstallation {
+	private static class EverythingOk {
 
 		@OnActionPerformed(TestControl.class)
 		private JButton button = new JButton();
 
+	}
+
+	@InstallControls
+	private static class AdditionalControlInstallationImpl implements AdditionalControlInstallation {
+		private boolean beforeCalled;
+		private boolean afterCalled;
+
 		@Override
-		public void installAdditionalControls(Controls controls) {
-			additionalsInstalled = true;
+		public void afterAllControlsInstalled(Controls controls) {
+			afterCalled = beforeCalled;
+		}
+
+		@Override
+		public void beforeAnyControlInstalled(Controls controls) {
+			beforeCalled = !afterCalled;
 		}
 	}
 

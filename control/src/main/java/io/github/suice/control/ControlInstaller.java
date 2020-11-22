@@ -27,8 +27,9 @@ public class ControlInstaller {
 	public void installControls(Object object) {
 		requireNonNull(object, "Cannot install controls to null object.");
 
-		if (alreadyInstalled(object))
+		if (alreadyInstalled(object)) {
 			return;
+		}
 
 		warnNonEdtInstallation(object);
 
@@ -36,10 +37,14 @@ public class ControlInstaller {
 
 		Class<?> objectType = object.getClass();
 
+		if (object instanceof AdditionalControlInstallation) {
+			((AdditionalControlInstallation) object).beforeAnyControlInstalled(controls);
+		}
+
 		installControls(object, InstallControlsClassAnalysis.of(objectType));
 
 		if (object instanceof AdditionalControlInstallation) {
-			((AdditionalControlInstallation) object).installAdditionalControls(controls);
+			((AdditionalControlInstallation) object).afterAllControlsInstalled(controls);
 		}
 
 	}

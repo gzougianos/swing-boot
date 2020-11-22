@@ -2,5 +2,9 @@ package io.github.suice.control;
 
 public interface AdditionalControlInstallation {
 
-	void installAdditionalControls(Controls controls);
+	default void beforeAnyControlInstalled(Controls controls) {
+	};
+
+	default void afterAllControlsInstalled(Controls controls) {
+	};
 }
