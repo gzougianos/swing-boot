@@ -16,7 +16,7 @@ import io.github.suice.control.annotation.installer.AnnotationInstallerFactory;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private final WeakHashMap<Object, Void> installedObjects = new WeakHashMap<>();
+	private static final WeakHashMap<Object, Void> installedObjects = new WeakHashMap<>();
 	private final Controls controls;
 
 	@Inject
