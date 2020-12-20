@@ -1,6 +1,5 @@
-# suice
+# Swing Boot
 
-[![Build Status](https://travis-ci.com/gzougianos/suice.svg?token=RPL2mFZzxw8dqRziSkpP&branch=main)](https://travis-ci.com/gzougianos/suice)
-[![BCH compliance](https://bettercodehub.com/edge/badge/gzougianos/suice?branch=main&token=71266c1cec87fcceac3e971f29f5e929af755ee7)](https://bettercodehub.com/)
+[![Build Status](https://travis-ci.com/gzougianos/swing-boot.svg?token=RPL2mFZzxw8dqRziSkpP&branch=main)](https://travis-ci.com/gzougianos/swing-boot)
+[![BCH compliance](https://bettercodehub.com/edge/badge/gzougianos/swing-boot?branch=main&token=4b59f470c9cd6b639cb3b27d83522d676b0d6375)](https://bettercodehub.com/)
 
-Suice is a set of Guice modules aiming to provide simplicity and scalibity to Swing desktop apps.
