@@ -39,7 +39,8 @@ public class ControlDeclaration {
 
 		parameterSourceId = String.valueOf(invokeMethodOfAnnotation("parameterSource"));
 
-		Class<? extends Control<?>> controlType = (Class<? extends Control<?>>) invokeMethodOfAnnotation("value");
+		Class<? extends Control<?>> controlType = (Class<? extends Control<?>>) invokeMethodOfAnnotation(
+				"value");
 		controlTypeInfo = ControlTypeInfo.of(controlType);
 
 		checkIfParameterSourceGivenWhenNonNullableParameter();
@@ -63,14 +64,15 @@ public class ControlDeclaration {
 
 		if (!controlTypeInfo.isParameterNullable() && parameterSourceId.isEmpty()) {
 			String format = "%s declares a parameterized control with non-nullable %s parameter but no parameter source was declared.";
-			throw new InvalidControlDeclarationException(
-					String.format(format, this.toString(), controlTypeInfo.getParameterType().getSimpleName()));
+			throw new InvalidControlDeclarationException(String.format(format, this.toString(),
+					controlTypeInfo.getParameterType().getSimpleName()));
 		}
 	}
 
 	private void checkIfAnnotationDeclaresControl() {
 		if (!annotation.annotationType().isAnnotationPresent(DeclaresControl.class))
-			throw new InvalidControlDeclarationException(annotation.annotationType() + " is not a @DeclaresControl annotation.");
+			throw new InvalidControlDeclarationException(
+					annotation.annotationType() + " is not a @DeclaresControl annotation.");
 	}
 
 	private void checkIfAnnotationCanBeInstalledToTargetElement() {
@@ -79,8 +81,8 @@ public class ControlDeclaration {
 
 		if (!supportsType(declaresControl, targetType)) {
 			Class<?> declaringClass = getTargetElementDeclaringClass();
-			throw new InvalidControlDeclarationException(
-					annotation + " declared in " + declaringClass + " cannot be installed to objects of type " + targetType);
+			throw new InvalidControlDeclarationException(annotation + " declared in " + declaringClass
+					+ " cannot be installed to objects of type " + targetType);
 		}
 	}
 
@@ -135,8 +137,8 @@ public class ControlDeclaration {
 
 	void setParameterSource(ParameterSource parameterSource) {
 		if (controlTypeInfo.isParameterless())
-			throw new InvalidControlDeclarationException(
-					this.getAnnotation() + " does not support parameter source. Control's generic parameter is Void.");
+			throw new InvalidControlDeclarationException(this.getAnnotation()
+					+ " does not support parameter source. Control's generic parameter is Void.");
 
 		if (!parameterSource.getId().equals(parameterSourceId))
 			throw new InvalidControlDeclarationException(
@@ -146,7 +148,8 @@ public class ControlDeclaration {
 		this.parameterSource = parameterSource;
 	}
 
-	private void checkIfParameterSourceReturnTypeMatchesControlParameterType(ParameterSource parameterSource) {
+	private void checkIfParameterSourceReturnTypeMatchesControlParameterType(
+			ParameterSource parameterSource) {
 		Class<?> parameterSourceReturnType = parameterSource.getValueReturnType();
 
 		if (!equalsOrExtends(parameterSourceReturnType, controlTypeInfo.getParameterType())) {
@@ -162,16 +165,17 @@ public class ControlDeclaration {
 		if (targetElement instanceof Member)
 			return ((Member) targetElement).getDeclaringClass();
 
-		throw new UnsupportedOperationException("Error finding declaring class of target element: " + targetElement);
+		throw new UnsupportedOperationException(
+				"Error finding declaring class of target element: " + targetElement);
 	}
 
 	private Object invokeMethodOfAnnotation(String method) {
 		try {
 			return annotation.annotationType().getMethod(method).invoke(annotation);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			throw new InvalidControlDeclarationException("Cannot invoke method " + method + " of annotation " + annotation + ".",
-					e);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			throw new InvalidControlDeclarationException(
+					"Cannot invoke method " + method + " of annotation " + annotation + ".", e);
 		}
 	}
 

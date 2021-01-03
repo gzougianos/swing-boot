@@ -42,7 +42,9 @@ class KeyBindingInstallerTests {
 		JPanel panel = new JPanel();
 		installer.installAnnotation(annotation, panel, eventConsumer);
 
-		assertNotNull(panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke())));
+		Object binding = panel.getInputMap(annotation.when())
+				.get(KeyStroke.getKeyStroke(annotation.keyStroke()));
+		assertNotNull(binding);
 
 		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
 		panel.getActionMap().get("id").actionPerformed(event);
@@ -55,7 +57,10 @@ class KeyBindingInstallerTests {
 		installer.installAnnotation(annotation, frame, eventConsumer);
 
 		JComponent panel = (JComponent) frame.getContentPane();
-		assertNotNull(panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke())));
+
+		Object binding = panel.getInputMap(annotation.when())
+				.get(KeyStroke.getKeyStroke(annotation.keyStroke()));
+		assertNotNull(binding);
 
 		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
 		panel.getActionMap().get("id").actionPerformed(event);
@@ -67,12 +72,14 @@ class KeyBindingInstallerTests {
 		JFrame frame = new JFrame();
 		frame.setContentPane(new Container());
 
-		assertThrows(RuntimeException.class, () -> installer.installAnnotation(annotation, frame, eventConsumer));
+		assertThrows(RuntimeException.class,
+				() -> installer.installAnnotation(annotation, frame, eventConsumer));
 	}
 
 	@Test
 	void notSupportedComponent() {
-		assertThrows(RuntimeException.class, () -> installer.installAnnotation(annotation, new Button(), eventConsumer));
+		assertThrows(RuntimeException.class,
+				() -> installer.installAnnotation(annotation, new Button(), eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")

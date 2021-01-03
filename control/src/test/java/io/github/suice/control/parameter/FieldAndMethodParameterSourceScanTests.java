@@ -23,7 +23,8 @@ class FieldAndMethodParameterSourceScanTests {
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(StaticField.class);
 		assertEquals(1, scan.getParameterSources().size());
 
-		FieldParameterSource expected = new FieldParameterSource("id", StaticField.class.getDeclaredField("x"));
+		FieldParameterSource expected = new FieldParameterSource("id",
+				StaticField.class.getDeclaredField("x"));
 		assertEquals(expected, scan.getParameterSources().get("id"));
 	}
 
@@ -32,7 +33,8 @@ class FieldAndMethodParameterSourceScanTests {
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(StaticMethod.class);
 		assertEquals(1, scan.getParameterSources().size());
 
-		MethodParameterSource expected = new MethodParameterSource("id", StaticMethod.class.getDeclaredMethod("x"));
+		MethodParameterSource expected = new MethodParameterSource("id",
+				StaticMethod.class.getDeclaredMethod("x"));
 		assertEquals(expected, scan.getParameterSources().get("id"));
 	}
 
@@ -41,16 +43,19 @@ class FieldAndMethodParameterSourceScanTests {
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(MethodAndField.class);
 		assertEquals(2, scan.getParameterSources().size());
 
-		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod", MethodAndField.class.getDeclaredMethod("x"));
+		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod",
+				MethodAndField.class.getDeclaredMethod("x"));
 		assertEquals(expectedMethod, scan.getParameterSources().get("idmethod"));
 
-		FieldParameterSource expectedField = new FieldParameterSource("idfield", MethodAndField.class.getDeclaredField("x"));
+		FieldParameterSource expectedField = new FieldParameterSource("idfield",
+				MethodAndField.class.getDeclaredField("x"));
 		assertEquals(expectedField, scan.getParameterSources().get("idfield"));
 	}
 
 	@Test
 	void exceptionWhenMultipleSourcesSameId() throws Exception {
-		assertThrows(InvalidParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(MultipleSourcesSameId.class));
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new FieldAndMethodParameterSourceScan(MultipleSourcesSameId.class));
 	}
 
 	@Test
@@ -67,12 +72,14 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void emptyStringId() throws Exception {
-		assertThrows(InvalidParameterSourceException.class, () -> new FieldAndMethodParameterSourceScan(EmptyStringAsId.class));
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new FieldAndMethodParameterSourceScan(EmptyStringAsId.class));
 	}
 
 	@Test
 	void methodWithOneAwtParameter() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(MethodWithOneAwtEventParameter.class);
+		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(
+				MethodWithOneAwtEventParameter.class);
 		assertEquals(1, scan.getParameterSources().size());
 
 		MethodParameterSource expectedMethod = new MethodParameterSource("id",
@@ -85,23 +92,27 @@ class FieldAndMethodParameterSourceScanTests {
 		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(ChildWithAll.class);
 		assertEquals(3, scan.getParameterSources().size());
 
-		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod", MethodAndField.class.getDeclaredMethod("x"));
+		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod",
+				MethodAndField.class.getDeclaredMethod("x"));
 		assertEquals(expectedMethod, scan.getParameterSources().get("idmethod"));
 
 		FieldParameterSource expectedFieldParent = new FieldParameterSource("idfield",
 				MethodAndField.class.getDeclaredField("x"));
 		assertEquals(expectedFieldParent, scan.getParameterSources().get("idfield"));
 
-		FieldParameterSource expectedField = new FieldParameterSource("extra", ChildWithAll.class.getDeclaredField("x"));
+		FieldParameterSource expectedField = new FieldParameterSource("extra",
+				ChildWithAll.class.getDeclaredField("x"));
 		assertEquals(expectedField, scan.getParameterSources().get("extra"));
 	}
 
 	@Test
 	void inheritButIgnoreOne() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(ChildIgnoringOne.class);
+		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(
+				ChildIgnoringOne.class);
 		assertEquals(1, scan.getParameterSources().size());
 
-		FieldParameterSource expected = new FieldParameterSource("idfield", MethodAndField.class.getDeclaredField("x"));
+		FieldParameterSource expected = new FieldParameterSource("idfield",
+				MethodAndField.class.getDeclaredField("x"));
 		assertEquals(expected, scan.getParameterSources().get("idfield"));
 	}
 
@@ -120,7 +131,8 @@ class FieldAndMethodParameterSourceScanTests {
 				MethodAndField.class.getDeclaredField("x"));
 		assertEquals(expectedMethodParent, scan.getParameterSources().get("idfield"));
 
-		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod", MethodOverride.class.getDeclaredMethod("x"));
+		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod",
+				MethodOverride.class.getDeclaredMethod("x"));
 		assertEquals(expectedMethod, scan.getParameterSources().get("idmethod"));
 	}
 
@@ -133,7 +145,8 @@ class FieldAndMethodParameterSourceScanTests {
 				MethodAndField.class.getDeclaredMethod("x"));
 		assertEquals(expectedMethodParent, scan.getParameterSources().get("idmethod"));
 
-		MethodParameterSource expectedMethod = new MethodParameterSource("idfield", FieldOverride.class.getDeclaredMethod("x"));
+		MethodParameterSource expectedMethod = new MethodParameterSource("idfield",
+				FieldOverride.class.getDeclaredMethod("x"));
 		assertEquals(expectedMethod, scan.getParameterSources().get("idfield"));
 	}
 

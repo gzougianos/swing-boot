@@ -73,8 +73,8 @@ public class ControlInstaller {
 
 		if (target == null) { //Can happen only to fields
 			Field targetField = (Field) declaration.getTargetElement();
-			throw new NullPointerException("Component value of field '" + targetField.getName() + "' declared in class "
-					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
+			throw new NullPointerException("Component value of field '" + targetField.getName()
+					+ "' declared in class " + targetField.getDeclaringClass().getSimpleName() + " is null.");
 		}
 
 		installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);

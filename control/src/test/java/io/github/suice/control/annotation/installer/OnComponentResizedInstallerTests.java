@@ -58,7 +58,8 @@ class OnComponentResizedInstallerTests {
 				() -> installer.installAnnotation(annotationOfField("field"), new String(), eventConsumer));
 	}
 
-	private <T extends EventListener> void fireListeners(Component c, Class<T> type, Consumer<T> listenerConsumer) {
+	private <T extends EventListener> void fireListeners(Component c, Class<T> type,
+			Consumer<T> listenerConsumer) {
 		Arrays.asList(c.getListeners(type)).forEach(listenerConsumer);
 	}
 

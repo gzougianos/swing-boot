@@ -94,6 +94,7 @@ public class FieldAndMethodParameterSourceScan {
 	}
 
 	private boolean hasAnyAnnotations(AnnotatedElement annotatedElement) {
-		return annotatedElement.getDeclaredAnnotations().length > 0 || annotatedElement.getAnnotations().length > 0;
+		return annotatedElement.getDeclaredAnnotations().length > 0
+				|| annotatedElement.getAnnotations().length > 0;
 	}
 }

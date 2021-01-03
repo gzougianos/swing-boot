@@ -69,7 +69,8 @@ public class ControlModule extends AbstractModule {
 
 	@SuppressWarnings("unchecked")
 	private void bindControls() {
-		ImmutableSet<ClassInfo> topLevelClasses = includeSubpackages ? classpath.getTopLevelClassesRecursive(controlsPackage)
+		ImmutableSet<ClassInfo> topLevelClasses = includeSubpackages
+				? classpath.getTopLevelClassesRecursive(controlsPackage)
 				: classpath.getTopLevelClasses(controlsPackage);
 
 		for (ClassInfo classInfo : topLevelClasses) {

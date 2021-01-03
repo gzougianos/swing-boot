@@ -42,7 +42,8 @@ public class InBackgroundMethodInterceptor implements MethodInterceptor {
 			try {
 				return invocation.proceed();
 			} catch (Throwable e) {
-				final String errorMessage = "Error executing in a background thread " + methodDescription + ".";
+				final String errorMessage = "Error executing in a background thread " + methodDescription
+						+ ".";
 				throw new InBackgroundThreadMethodExecutionException(errorMessage, e);
 			}
 		});
@@ -50,7 +51,8 @@ public class InBackgroundMethodInterceptor implements MethodInterceptor {
 	}
 
 	private void warnIfMethodIsNotVoid(final Method method, final String methodDescription) {
-		boolean isVoid = method.getReturnType().equals(Void.TYPE) || method.getReturnType().equals(Void.class);
+		boolean isVoid = method.getReturnType().equals(Void.TYPE)
+				|| method.getReturnType().equals(Void.class);
 		if (!isVoid) {
 			log.warn(methodDescription + " returns a value. @InBackground methods should be void.");
 		}

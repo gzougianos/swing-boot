@@ -81,7 +81,8 @@ public class InstallControlsClassAnalysis {
 
 	private void checkIfNotAlreadyExists(String id) {
 		if (controlDeclarations.containsKey(id)) {
-			throw new InvalidControlDeclarationException("More than 2 controls declared with id `" + id + "` in " + clazz + ".");
+			throw new InvalidControlDeclarationException(
+					"More than 2 controls declared with id `" + id + "` in " + clazz + ".");
 		}
 	}
 
@@ -90,20 +91,22 @@ public class InstallControlsClassAnalysis {
 	}
 
 	private void bindParameterSourcesToControlDeclarations() {
-		controlDeclarations.values().stream().filter(ControlDeclaration::expectsParameterSource).forEach(declaration -> {
-			String expectedParameterSourceId = declaration.getParameterSourceId();
-			if (expectedParameterSourceId.equals(THIS)) {
-				declaration.setParameterSource(new SourceOwnerParameterSource(clazz));
-			} else {
-				ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
-						.get(expectedParameterSourceId);
-				if (parSource == null) {
-					throw new InvalidControlDeclarationException("No @ParameterSource(" + expectedParameterSourceId
-							+ ") found in class " + clazz.getSimpleName() + " for " + declaration + ".");
-				}
-				declaration.setParameterSource(parSource);
-			}
-		});
+		controlDeclarations.values().stream().filter(ControlDeclaration::expectsParameterSource)
+				.forEach(declaration -> {
+					String expectedParameterSourceId = declaration.getParameterSourceId();
+					if (expectedParameterSourceId.equals(THIS)) {
+						declaration.setParameterSource(new SourceOwnerParameterSource(clazz));
+					} else {
+						ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
+								.get(expectedParameterSourceId);
+						if (parSource == null) {
+							throw new InvalidControlDeclarationException(
+									"No @ParameterSource(" + expectedParameterSourceId + ") found in class "
+											+ clazz.getSimpleName() + " for " + declaration + ".");
+						}
+						declaration.setParameterSource(parSource);
+					}
+				});
 	}
 
 	private void inheritControlDeclarationsFromParents() {
@@ -122,8 +125,8 @@ public class InstallControlsClassAnalysis {
 				return;
 
 			if (controlDeclarations.containsKey(id))
-				throw new InvalidControlDeclarationException(
-						"Control with id '" + id + "' in " + clazz + " is already declared in parent " + parentScan.clazz + ".");
+				throw new InvalidControlDeclarationException("Control with id '" + id + "' in " + clazz
+						+ " is already declared in parent " + parentScan.clazz + ".");
 
 			controlDeclarations.put(id, declaration);
 		});
@@ -141,7 +144,8 @@ public class InstallControlsClassAnalysis {
 	}
 
 	private boolean hasAnyAnnotations(AnnotatedElement annotatedElement) {
-		return annotatedElement.getDeclaredAnnotations().length > 0 || annotatedElement.getAnnotations().length > 0;
+		return annotatedElement.getDeclaredAnnotations().length > 0
+				|| annotatedElement.getAnnotations().length > 0;
 	}
 
 	static InstallControlsClassAnalysis of(Class<?> clazz) {

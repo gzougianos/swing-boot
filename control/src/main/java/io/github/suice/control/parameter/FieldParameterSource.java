@@ -22,15 +22,17 @@ class FieldParameterSource implements ParameterSource {
 
 	private void checkIdNotEmpty() {
 		if (id == null || id.isEmpty()) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have empty string as id. Found in field `"
-					+ field.getName() + "` of " + field.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException(
+					"@ParameterSource cannot have empty string as id. Found in field `" + field.getName()
+							+ "` of " + field.getDeclaringClass() + ".");
 		}
 	}
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in field `"
-					+ field.getName() + "` of " + field.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException(
+					"@ParameterSource cannot have `this` as id. Found in field `" + field.getName() + "` of "
+							+ field.getDeclaringClass() + ".");
 		}
 	}
 
@@ -40,7 +42,8 @@ class FieldParameterSource implements ParameterSource {
 		try {
 			return field.get(sourceOwner);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			throw new ReflectionException("Error getting value from field paramater source: " + toString(), e);
+			throw new ReflectionException("Error getting value from field paramater source: " + toString(),
+					e);
 		}
 	}
 
@@ -65,7 +68,8 @@ class FieldParameterSource implements ParameterSource {
 
 	@Override
 	public String toString() {
-		return "FieldParameterSource [id=" + id + ", field=" + field.getName() + ", class=" + field.getDeclaringClass() + "]";
+		return "FieldParameterSource [id=" + id + ", field=" + field.getName() + ", class="
+				+ field.getDeclaringClass() + "]";
 	}
 
 	@Override

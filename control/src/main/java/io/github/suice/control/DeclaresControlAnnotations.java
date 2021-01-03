@@ -20,8 +20,12 @@ final class DeclaresControlAnnotations {
 		for (Annotation annotation : getAllAnnotations(annotatedElement)) {
 			Class<? extends Annotation> annotationType = annotation.annotationType();
 			if (declaresMultipleControls(annotation)) {
-				Class<? extends Annotation> typeOfControls = annotationType.getAnnotation(DeclaresMultipleControls.class).value();
-				Annotation[] nestedDeclaresControlAnnotations = annotatedElement.getAnnotationsByType(typeOfControls);
+				Class<? extends Annotation> typeOfControls = annotationType
+						.getAnnotation(DeclaresMultipleControls.class).value();
+
+				Annotation[] nestedDeclaresControlAnnotations = annotatedElement
+						.getAnnotationsByType(typeOfControls);
+
 				addToResult(result, nestedDeclaresControlAnnotations);
 			} else if (annotationType.isAnnotationPresent(DeclaresControl.class)) {
 				addToResult(result, annotation);

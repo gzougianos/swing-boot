@@ -71,8 +71,8 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void wrongComponent() throws Exception {
-		assertThrows(RuntimeException.class,
-				() -> installer.installAnnotation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
+		assertThrows(RuntimeException.class, () -> installer
+				.installAnnotation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
 	}
 
 	private OnActionPerformed annotationOfField(String name) throws NoSuchFieldException {

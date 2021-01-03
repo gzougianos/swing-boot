@@ -26,19 +26,23 @@ class MethodParameterSourceTests {
 		Method method = this.getClass().getDeclaredMethod("y");
 		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource(null, method));
 		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("", method));
-		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource(ParameterSource.THIS, method));
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new MethodParameterSource(ParameterSource.THIS, method));
 	}
 
 	@Test
 	void wrongSignature() throws Exception {
-		Method moreThan1Parameter = this.getClass().getDeclaredMethod("moreThan1Parameter", AWTEvent.class, int.class);
-		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", moreThan1Parameter));
+		Method moreThan1Parameter = this.getClass().getDeclaredMethod("moreThan1Parameter", AWTEvent.class,
+				int.class);
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new MethodParameterSource("id", moreThan1Parameter));
 
 		Method aVoid = this.getClass().getDeclaredMethod("aVoid");
 		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", aVoid));
 
 		Method oneWrongParameter = this.getClass().getDeclaredMethod("oneWrongParameter", String.class);
-		assertThrows(InvalidParameterSourceException.class, () -> new MethodParameterSource("id", oneWrongParameter));
+		assertThrows(InvalidParameterSourceException.class,
+				() -> new MethodParameterSource("id", oneWrongParameter));
 	}
 
 	@Test
@@ -58,7 +62,8 @@ class MethodParameterSourceTests {
 
 	@Test
 	void oneAwtEventParameterOk() throws Exception {
-		Method oneAwtEventParameter = this.getClass().getDeclaredMethod("oneAwtEventParameter", ComponentEvent.class);
+		Method oneAwtEventParameter = this.getClass().getDeclaredMethod("oneAwtEventParameter",
+				ComponentEvent.class);
 		MethodParameterSource source = new MethodParameterSource("id", oneAwtEventParameter);
 		assertEquals(String.class, source.getValueReturnType());
 
@@ -79,7 +84,8 @@ class MethodParameterSourceTests {
 
 	@Test
 	void equalsAndHashcode() throws Exception {
-		Method oneAwtEventParameter = this.getClass().getDeclaredMethod("oneAwtEventParameter", ComponentEvent.class);
+		Method oneAwtEventParameter = this.getClass().getDeclaredMethod("oneAwtEventParameter",
+				ComponentEvent.class);
 		MethodParameterSource source1 = new MethodParameterSource("id", oneAwtEventParameter);
 		MethodParameterSource source2 = new MethodParameterSource("id", oneAwtEventParameter);
 		assertEquals(source1, source2);

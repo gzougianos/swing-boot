@@ -132,10 +132,12 @@ class InstallControlsClassAnalysisTests {
 			assertEquals(1, analysis.getControlDeclarations().size());
 
 			ControlDeclaration declaration = analysis.getControlDeclarations().get("someid");
-			assertEquals(NormalCaseWithAnnotatedField.class.getDeclaredField("button"), declaration.getTargetElement());
+			assertEquals(NormalCaseWithAnnotatedField.class.getDeclaredField("button"),
+					declaration.getTargetElement());
 			assertEquals("someid", declaration.getId());
 			assertTrue(declaration.getParameterSource().isPresent());
-			assertEquals("b", declaration.getParameterSource().get().getValue(new NormalCaseWithAnnotatedField(), null));
+			assertEquals("b", declaration.getParameterSource().get()
+					.getValue(new NormalCaseWithAnnotatedField(), null));
 		}
 
 		@InstallControls
@@ -172,7 +174,8 @@ class InstallControlsClassAnalysisTests {
 
 	@Test
 	void childDeclaresIdThatExistInParent() throws Exception {
-		assertThrows(InvalidControlDeclarationException.class, () -> of(ChildDeclaresIdThatExistsOnParent.class));
+		assertThrows(InvalidControlDeclarationException.class,
+				() -> of(ChildDeclaresIdThatExistsOnParent.class));
 	}
 
 	@Test
@@ -204,7 +207,8 @@ class InstallControlsClassAnalysisTests {
 		assertTrue(declaration.getParameterSource().isPresent());
 
 		ThisParameterSource thisParameterSource = new ThisParameterSource();
-		assertEquals(thisParameterSource, declaration.getParameterSource().get().getValue(thisParameterSource, null));
+		assertEquals(thisParameterSource,
+				declaration.getParameterSource().get().getValue(thisParameterSource, null));
 	}
 
 	@Test

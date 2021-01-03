@@ -17,7 +17,8 @@ class ObjectOwnedControlDeclarationTests {
 	void targetsType() {
 		AnnotationOnType owner = new AnnotationOnType();
 		ObjectOwnedControlDeclaration declaration = new ObjectOwnedControlDeclaration(owner,
-				new ControlDeclaration(AnnotationOnType.class.getAnnotation(OnComponentResized.class), AnnotationOnType.class));
+				new ControlDeclaration(AnnotationOnType.class.getAnnotation(OnComponentResized.class),
+						AnnotationOnType.class));
 		assertEquals(owner, declaration.getTargetObject());
 	}
 

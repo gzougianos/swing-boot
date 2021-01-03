@@ -32,10 +32,10 @@ public class ControlDeclarationPerformer {
 		try {
 			controls.getClass().getMethod("perform", Class.class, Object.class).invoke(controls, controlType,
 					parameterSourceValue);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			throw new ReflectionException(
-					"Error performing control type " + controlType + " with parameter source " + parameterSource + ".", e);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			throw new ReflectionException("Error performing control type " + controlType
+					+ " with parameter source " + parameterSource + ".", e);
 		}
 	}
 

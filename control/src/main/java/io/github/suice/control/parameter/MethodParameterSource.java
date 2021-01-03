@@ -27,8 +27,9 @@ class MethodParameterSource implements ParameterSource {
 
 	private void checkNotVoid() {
 		if (method.getReturnType().equals(Void.TYPE)) {
-			throw new InvalidParameterSourceException("ParameterSource method " + method.getName() + " in class"
-					+ method.getDeclaringClass().getSimpleName() + " is void. Method parameter sources cannot be void.");
+			throw new InvalidParameterSourceException("ParameterSource method " + method.getName()
+					+ " in class" + method.getDeclaringClass().getSimpleName()
+					+ " is void. Method parameter sources cannot be void.");
 		}
 	}
 
@@ -43,20 +44,23 @@ class MethodParameterSource implements ParameterSource {
 			}
 		}
 		throw new InvalidParameterSourceException("ParameterSource method " + method.getName() + " in class"
-				+ method.getDeclaringClass().getSimpleName() + " can have zero or only one AWTEvent parameter.");
+				+ method.getDeclaringClass().getSimpleName()
+				+ " can have zero or only one AWTEvent parameter.");
 	}
 
 	private void checkIdNotEmpty() {
 		if (id == null || id.isEmpty()) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have empty string as id. Found in method `"
-					+ method.getName() + "` of " + method.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException(
+					"@ParameterSource cannot have empty string as id. Found in method `" + method.getName()
+							+ "` of " + method.getDeclaringClass() + ".");
 		}
 	}
 
 	private void checkIdNotThis() {
 		if (THIS.equals(id)) {
-			throw new InvalidParameterSourceException("@ParameterSource cannot have `this` as id. Found in method `"
-					+ method.getName() + "` of " + method.getDeclaringClass() + ".");
+			throw new InvalidParameterSourceException(
+					"@ParameterSource cannot have `this` as id. Found in method `" + method.getName()
+							+ "` of " + method.getDeclaringClass() + ".");
 		}
 	}
 
@@ -86,8 +90,8 @@ class MethodParameterSource implements ParameterSource {
 
 			return method.invoke(sourceOwner, (AWTEvent) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new ReflectionException("Error invoking method " + method.getName() + " of " + method.getDeclaringClass()
-					+ " with event parameter " + event + ".", e);
+			throw new ReflectionException("Error invoking method " + method.getName() + " of "
+					+ method.getDeclaringClass() + " with event parameter " + event + ".", e);
 		}
 	}
 
@@ -107,7 +111,8 @@ class MethodParameterSource implements ParameterSource {
 
 	@Override
 	public String toString() {
-		return "MethodParameterSource [id=" + id + ", method=" + method.getName() + ", class=" + method.getDeclaringClass() + "]";
+		return "MethodParameterSource [id=" + id + ", method=" + method.getName() + ", class="
+				+ method.getDeclaringClass() + "]";
 	}
 
 	@Override

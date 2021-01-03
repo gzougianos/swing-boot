@@ -23,9 +23,13 @@ public class ConcurrencyModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bindInterceptor(any(), annotatedWith(AssertUi.class), new AssertUiMethodInterceptor());
-		bindInterceptor(any(), annotatedWith(AssertBackground.class), new AssertBackgroundMethodInterceptor());
+
+		bindInterceptor(any(), annotatedWith(AssertBackground.class),
+				new AssertBackgroundMethodInterceptor());
+
 		bindInterceptor(any(), annotatedWith(InBackground.class),
 				new InBackgroundMethodInterceptor(backgroundThreadPoolSize));
+
 		bindInterceptor(any(), annotatedWith(InUi.class), new InUiMethodInterceptor());
 	}
 }

@@ -22,7 +22,8 @@ public class CompleteExample {
 				}
 			};
 
-			Injector injector = Guice.createInjector(viewModule, new ControlModule(IncreaseClickCounterControl.class));
+			Injector injector = Guice.createInjector(viewModule,
+					new ControlModule(IncreaseClickCounterControl.class));
 
 			MainView mainView = injector.getInstance(MainView.class);
 			mainView.setVisible(true);

@@ -36,7 +36,8 @@ public class AssertUiMethodInterceptorIntegrationTests {
 		new LogFieldValueChanger(AssertUiMethodInterceptor.class).replaceWith(testLogger);
 
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
-		AssertorThatDoesNotThrowException instance = injector.getInstance(AssertorThatDoesNotThrowException.class);
+		AssertorThatDoesNotThrowException instance = injector
+				.getInstance(AssertorThatDoesNotThrowException.class);
 		assertDoesNotThrow(instance::run);
 
 		verify(testLogger).warn(any());
@@ -53,7 +54,8 @@ public class AssertUiMethodInterceptorIntegrationTests {
 	@UiTest
 	void inEdt2() {
 		Injector injector = Guice.createInjector(new ConcurrencyModule());
-		AssertorThatDoesNotThrowException instance = injector.getInstance(AssertorThatDoesNotThrowException.class);
+		AssertorThatDoesNotThrowException instance = injector
+				.getInstance(AssertorThatDoesNotThrowException.class);
 		assertDoesNotThrow(instance::run);
 	}
 

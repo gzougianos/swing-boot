@@ -32,7 +32,8 @@ public class ControlTypeInfo {
 					TypeLiteral<?> typeLiteral = TypeLiteral.get(typeToken.getType());
 					Method performMethod = rawType.getMethod("perform", Object.class);
 
-					TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(performMethod).get(0);
+					TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(performMethod)
+							.get(0);
 					parameterType = methodParameterTypeLiteral.getRawType();
 
 					checkNullableParameter();

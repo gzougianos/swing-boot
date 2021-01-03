@@ -53,7 +53,8 @@ class ControlDeclarationTests {
 					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 
 			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class), getClass()));
+					() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class),
+							getClass()));
 		}
 	}
 
@@ -65,7 +66,8 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration controlDeclaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			ControlDeclaration controlDeclaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
 			assertFalse(controlDeclaration.expectsParameterSource());
 		}
 	}
@@ -81,8 +83,10 @@ class ControlDeclarationTests {
 			io.github.suice.control.parameter.ParameterSource source = mock(
 					io.github.suice.control.parameter.ParameterSource.class);
 
-			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
-			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			ControlDeclaration declaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
+			assertThrows(InvalidControlDeclarationException.class,
+					() -> declaration.setParameterSource(source));
 		}
 	}
 
@@ -94,13 +98,15 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			ControlDeclaration declaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
 
 			io.github.suice.control.parameter.ParameterSource source = mock(
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(String.class).when(source).getValueReturnType();
 			doReturn("parsource").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class,
+					() -> declaration.setParameterSource(source));
 		}
 
 		@ParameterSource("parsource")
@@ -130,7 +136,8 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			assertDoesNotThrow(() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+			assertDoesNotThrow(
+					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 		}
 	}
 
@@ -142,13 +149,15 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			ControlDeclaration declaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
 
 			io.github.suice.control.parameter.ParameterSource source = mock(
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(Void.class).when(source).getValueReturnType();
 			doReturn("parsource").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class,
+					() -> declaration.setParameterSource(source));
 		}
 	}
 
@@ -160,13 +169,15 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			ControlDeclaration declaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
 
 			io.github.suice.control.parameter.ParameterSource source = mock(
 					io.github.suice.control.parameter.ParameterSource.class);
 			doReturn(Integer.class).when(source).getValueReturnType();
 			doReturn("A MISMATCHED ID").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class, () -> declaration.setParameterSource(source));
+			assertThrows(InvalidControlDeclarationException.class,
+					() -> declaration.setParameterSource(source));
 		}
 	}
 
@@ -178,7 +189,8 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field);
+			ControlDeclaration declaration = new ControlDeclaration(
+					field.getAnnotation(OnActionPerformed.class), field);
 
 			io.github.suice.control.parameter.ParameterSource source = mock(
 					io.github.suice.control.parameter.ParameterSource.class);
