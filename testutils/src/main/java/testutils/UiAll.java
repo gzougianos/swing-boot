@@ -20,6 +20,7 @@ import org.junit.platform.commons.annotation.Testable;
  * When used on a test class among {@code @ExtendWith(UiExtension.class)}
  * annotation, all test methods will run in the <b>Event Dispatch Thread</b>.
  * The supported methods are:
+ * </p>
  * <ul>
  * <li>{@link BeforeAll}</li>
  * <li>{@link AfterAll}</li>
@@ -28,15 +29,14 @@ import org.junit.platform.commons.annotation.Testable;
  * <li>{@link Test}</li>
  * <li>{@link TestTemplate}</li>
  * </ul>
- * </p>
  * 
  * <p>
  * In order to exclude some annotated methods, add use the {@link #exclude()}
  * method.
  * </p>
  * 
- * @see {@link UiExtension}
- * @see {@link UiTest}
+ * @see UiExtension
+ * @see UiTest
  * 
  */
 @Retention(RUNTIME)

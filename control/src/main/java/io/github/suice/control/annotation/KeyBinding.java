@@ -29,17 +29,17 @@ import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 //@formatter:on
 public @interface KeyBinding {
 	/**
-	 * @see {@link JComponent#WHEN_FOCUSED}
+	 * @see JComponent#WHEN_FOCUSED
 	 */
 	public static final int WHEN_FOCUSED = JComponent.WHEN_FOCUSED;
 
 	/**
-	 * @see {@link JComponent#WHEN_ANCESTOR_OF_FOCUSED_COMPONENT}
+	 * @see JComponent#WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
 	 */
 	public static final int WHEN_ANCESTOR_OF_FOCUSED_COMPONENT = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 	/**
-	 * @see {@link JComponent#WHEN_IN_FOCUSED_WINDOW}
+	 * @see JComponent#WHEN_IN_FOCUSED_WINDOW
 	 */
 	public static final int WHEN_IN_FOCUSED_WINDOW = JComponent.WHEN_IN_FOCUSED_WINDOW;
 
@@ -50,13 +50,13 @@ public @interface KeyBinding {
 	String parameterSource() default "";
 
 	/** One of {@link #WHEN_ANCESTOR_OF_FOCUSED_COMPONENT}, {@link #WHEN_FOCUSED} and {@link #WHEN_IN_FOCUSED_WINDOW}
-	 * @see {@link JComponent#getInputMap(int)}
+	 * @see JComponent#getInputMap(int)
 	 * @return The condition of the input map.
 	 */
 	int when() default WHEN_FOCUSED;
 
 	/**
-	 * @see {@link KeyStroke#getKeyStroke(String)}
+	 * @see KeyStroke#getKeyStroke(String)
 	 * @return The keystroke described as a String.
 	 */
 	String keyStroke();
