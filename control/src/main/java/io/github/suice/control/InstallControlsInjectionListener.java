@@ -2,10 +2,10 @@ package io.github.suice.control;
 
 import com.google.inject.spi.InjectionListener;
 
-public class InstallControlsInjectionListener implements InjectionListener<Object> {
+class InstallControlsInjectionListener implements InjectionListener<Object> {
 	private ControlInstaller controlInstaller;
 
-	public InstallControlsInjectionListener() {
+	InstallControlsInjectionListener() {
 	}
 
 	@Override

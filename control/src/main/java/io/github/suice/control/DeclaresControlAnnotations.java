@@ -14,7 +14,7 @@ final class DeclaresControlAnnotations {
 	private DeclaresControlAnnotations() {
 	}
 
-	public static Set<Annotation> ofElement(AnnotatedElement annotatedElement) {
+	static Set<Annotation> ofElement(AnnotatedElement annotatedElement) {
 		Set<Annotation> result = new HashSet<>();
 
 		for (Annotation annotation : getAllAnnotations(annotatedElement)) {

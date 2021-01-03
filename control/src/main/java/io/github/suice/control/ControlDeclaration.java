@@ -13,7 +13,7 @@ import io.github.suice.control.annotation.DeclaresControl;
 import io.github.suice.control.annotation.installer.AnnotationInstaller;
 import io.github.suice.control.parameter.ParameterSource;
 
-public class ControlDeclaration {
+class ControlDeclaration {
 
 	private ParameterSource parameterSource;
 	private String id;

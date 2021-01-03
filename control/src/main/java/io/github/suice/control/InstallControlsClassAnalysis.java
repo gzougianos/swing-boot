@@ -19,7 +19,7 @@ import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.parameter.SourceOwnerParameterSource;
 
-public class InstallControlsClassAnalysis {
+class InstallControlsClassAnalysis {
 	private static final Map<Class<?>, InstallControlsClassAnalysis> cache = new HashMap<>();
 	private final Class<?> clazz;
 	private Map<String, ControlDeclaration> controlDeclarations;

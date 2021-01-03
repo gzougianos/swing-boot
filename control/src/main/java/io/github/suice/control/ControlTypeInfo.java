@@ -12,7 +12,7 @@ import com.google.inject.TypeLiteral;
 
 import io.github.suice.control.reflect.ReflectionException;
 
-public class ControlTypeInfo {
+class ControlTypeInfo {
 	private static final String CONTROL_PERFORM_METHOD_NAME = "perform";
 	private static final Map<Class<? extends Control<?>>, ControlTypeInfo> cache = new HashMap<>();
 	private Class<? extends Control<?>> controlClass;
@@ -77,7 +77,7 @@ public class ControlTypeInfo {
 		return parameterType;
 	}
 
-	public static ControlTypeInfo of(Class<? extends Control<?>> controlClass) {
+	static ControlTypeInfo of(Class<? extends Control<?>> controlClass) {
 		return fromCacheOrNew(controlClass);
 	}
 

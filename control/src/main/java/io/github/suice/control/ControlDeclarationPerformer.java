@@ -7,11 +7,11 @@ import java.util.Optional;
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.reflect.ReflectionException;
 
-public class ControlDeclarationPerformer {
+class ControlDeclarationPerformer {
 	private Controls controls;
 	private ObjectOwnedControlDeclaration controlDeclaration;
 
-	public ControlDeclarationPerformer(Controls controls, ObjectOwnedControlDeclaration controlDeclaration) {
+	ControlDeclarationPerformer(Controls controls, ObjectOwnedControlDeclaration controlDeclaration) {
 		this.controls = controls;
 		this.controlDeclaration = controlDeclaration;
 	}

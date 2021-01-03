@@ -9,12 +9,12 @@ import io.github.suice.control.annotation.installer.AnnotationInstaller;
 import io.github.suice.control.parameter.ParameterSource;
 import io.github.suice.control.reflect.ReflectionException;
 
-public class ObjectOwnedControlDeclaration {
+class ObjectOwnedControlDeclaration {
 
 	private Object owner;
 	private ControlDeclaration declaration;
 
-	public ObjectOwnedControlDeclaration(Object owner, ControlDeclaration declaration) {
+	ObjectOwnedControlDeclaration(Object owner, ControlDeclaration declaration) {
 		this.owner = owner;
 		this.declaration = declaration;
 	}
