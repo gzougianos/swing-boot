@@ -3,12 +3,14 @@ package io.github.suice.control;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import javax.swing.JButton;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,6 +34,76 @@ class ControlInstallerTests {
 
 		verify(controls).perform(TestControl.class);
 		verifyNoMoreInteractions(controls);
+	}
+
+	@Nested
+	@UiAll
+	class WithNestedFields {
+		@Test
+		void main() {
+			NestedFieldOnwer nestedFieldOnwer = new NestedFieldOnwer();
+			installer.installControls(nestedFieldOnwer);
+
+			nestedFieldOnwer.button.doClick();
+			verify(controls, times(1)).perform(TestControl.class);
+
+			nestedFieldOnwer.acceptee.button.doClick();
+			verify(controls, times(2)).perform(TestControl.class);
+			verifyNoMoreInteractions(controls);
+		}
+
+		class NestedFieldOnwer {
+			@InstallControls
+			private Acceptee acceptee = new Acceptee();
+
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
+
+		class Acceptee {
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
+	}
+
+	@Nested
+	@UiAll
+	class TwoLevelsNesting {
+		@Test
+		void main() {
+			NestedFieldOnwer nestedFieldOnwer = new NestedFieldOnwer();
+			installer.installControls(nestedFieldOnwer);
+
+			nestedFieldOnwer.button.doClick();
+			verify(controls, times(1)).perform(TestControl.class);
+
+			nestedFieldOnwer.acceptee.button.doClick();
+			verify(controls, times(2)).perform(TestControl.class);
+
+			nestedFieldOnwer.acceptee.deeper.button.doClick();
+			verify(controls, times(3)).perform(TestControl.class);
+			verifyNoMoreInteractions(controls);
+		}
+
+		class NestedFieldOnwer {
+			@InstallControls
+			private Acceptee acceptee = new Acceptee();
+
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
+
+		class Acceptee {
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+			@InstallControls
+			private DeeperAcceptee deeper = new DeeperAcceptee();
+		}
+
+		class DeeperAcceptee {
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
 	}
 
 	@Test

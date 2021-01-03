@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import io.github.suice.control.annotation.installer.AnnotationInstaller;
 import io.github.suice.control.annotation.installer.AnnotationInstallerFactory;
+import io.github.suice.control.reflect.ReflectionException;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
@@ -41,12 +42,27 @@ public class ControlInstaller {
 			((AdditionalControlInstallation) object).beforeAnyControlInstalled(controls);
 		}
 
-		installControls(object, InstallControlsClassAnalysis.of(objectType));
+		InstallControlsClassAnalysis classAnalysis = InstallControlsClassAnalysis.of(objectType);
+		installControls(object, classAnalysis);
 
 		if (object instanceof AdditionalControlInstallation) {
 			((AdditionalControlInstallation) object).afterAllControlsInstalled(controls);
 		}
 
+		classAnalysis.getNestedInstallControlsFields().forEach(field -> installNestedControls(object, field));
+	}
+
+	private void installNestedControls(Object object, Field field) {
+		try {
+			field.setAccessible(true);
+			Object target = field.get(object);
+			checkFieldValueNotNull(target, field);
+			installControls(target);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			String msg = "Error accessing nested @InstallControls field %s of %s.";
+			msg = String.format(msg, field.getName(), field.getDeclaringClass());
+			throw new ReflectionException(msg, e);
+		}
 	}
 
 	private void warnNonEdtInstallation(Object object) {
@@ -71,13 +87,18 @@ public class ControlInstaller {
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
 		Object target = declaration.getTargetObject();
 
-		if (target == null) { //Can happen only to fields
-			Field targetField = (Field) declaration.getTargetElement();
-			throw new NullPointerException("Component value of field '" + targetField.getName()
-					+ "' declared in class " + targetField.getDeclaringClass().getSimpleName() + " is null.");
-		}
+		//A null value occurs only in annotated fields
+		if (declaration.getTargetElement() instanceof Field)
+			checkFieldValueNotNull(target, (Field) declaration.getTargetElement());
 
 		installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);
+	}
+
+	private void checkFieldValueNotNull(Object target, Field targetField) {
+		if (target == null) {
+			throw new NullPointerException("Value of field '" + targetField.getName() + "' declared in class "
+					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
+		}
 	}
 
 	private boolean alreadyInstalled(Object object) {
