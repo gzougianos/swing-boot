@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -25,17 +28,6 @@ import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
 class InstallControlsClassAnalysisTests {
 
 	@Nested
-	public class ExceptionWhenInstallControlsAnnotationIsAbsent {
-		@Test
-		void main() {
-			assertThrows(IllegalArgumentException.class, () -> of(AbsentInstallControlls.class));
-		}
-
-		private class AbsentInstallControlls {
-		}
-	}
-
-	@Nested
 	public class ExceptionWhenDeclaredSameId {
 		@Test
 		void main() {
@@ -47,6 +39,39 @@ class InstallControlsClassAnalysisTests {
 			@OnActionPerformed(value = VoidControl.class, id = "someid")
 			private JButton button;
 			@OnActionPerformed(value = VoidControl.class, id = "someid")
+			private JButton button1;
+		}
+	}
+
+	@Nested
+	public class FindsInstallControlFields {
+		@Test
+		void main() throws Exception {
+			InstallControlsClassAnalysis analysis = of(WithNestedInstallControlFields.class);
+
+			Set<Field> nestedFields = analysis.getNestedInstallControlsFields();
+			assertEquals(2, nestedFields.size());
+
+			Field targetField1 = WithNestedInstallControlFields.class.getDeclaredField("acceptee");
+			Field targetField2 = WithNestedInstallControlFields.class.getDeclaredField("acceptee2");
+			assertTrue(nestedFields.contains(targetField1));
+			assertTrue(nestedFields.contains(targetField2));
+
+			//Test unmodifiable set
+			assertThrows(RuntimeException.class, () -> nestedFields.add(targetField2));
+		}
+
+		private class WithNestedInstallControlFields {
+			@InstallControls
+			private ClassThatDeclaresControls acceptee;
+			@InstallControls
+			private ClassThatDeclaresControls acceptee2;
+		}
+
+		private class ClassThatDeclaresControls {
+			@OnActionPerformed(value = VoidControl.class, id = "someid")
+			private JButton button;
+			@OnActionPerformed(value = VoidControl.class, id = "someid2")
 			private JButton button1;
 		}
 	}

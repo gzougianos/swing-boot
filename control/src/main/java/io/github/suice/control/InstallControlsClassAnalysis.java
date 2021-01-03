@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.github.suice.control.annotation.InstallControls;
 import io.github.suice.control.parameter.FieldAndMethodParameterSourceScan;
@@ -23,59 +24,59 @@ public class InstallControlsClassAnalysis {
 	private final Class<?> clazz;
 	private Map<String, ControlDeclaration> controlDeclarations;
 	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
+	private Set<Field> nestedInstallControlsFields;
 
 	private InstallControlsClassAnalysis(Class<?> clazz) {
 		this.clazz = clazz;
 
-		checkInstallControlsAnnotationIsPresent();
-
 		controlDeclarations = new HashMap<>();
-		scanControlDeclarationsOnFields();
-		scanControlDeclarationsOnType();
+
+		Set<Field> nonStaticFieldsWithAtLeastOneAnnotation = getNonStaticFieldsWithAtLeastOneAnnotation();
+		nonStaticFieldsWithAtLeastOneAnnotation.forEach(this::putControlDeclarationsOfElement);
+		putControlDeclarationsOfElement(clazz);
+
+		nestedInstallControlsFields = getNestedInstallControlFields(nonStaticFieldsWithAtLeastOneAnnotation);
+		nestedInstallControlsFields = Collections.unmodifiableSet(nestedInstallControlsFields);
 
 		fieldAndMethodParameterSourceScan = new FieldAndMethodParameterSourceScan(clazz);
 
-		inheritControlDeclarationsFromParents();
+		if (clazz.isAnnotationPresent(InstallControls.class))
+			inheritControlDeclarationsFromParents();
 
 		bindParameterSourcesToControlDeclarations();
 
 		controlDeclarations = Collections.unmodifiableMap(controlDeclarations);
 	}
 
-	private void checkInstallControlsAnnotationIsPresent() {
-		if (!clazz.isAnnotationPresent(InstallControls.class))
-			throw new IllegalArgumentException(clazz + " is not annonated with @InstallControls.");
+	private Set<Field> getNestedInstallControlFields(Set<Field> nonStaticFieldsWithAtLeastOneAnnotation) {
+		//@formatter:off
+		return nonStaticFieldsWithAtLeastOneAnnotation.stream()
+				.filter(f -> f.isAnnotationPresent(InstallControls.class))
+				.collect(Collectors.toSet());
+		//@formatter:on
 	}
 
-	private void scanControlDeclarationsOnType() {
-		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(clazz);
-		for (Annotation annotation : declaresControlAnnotations) {
-			ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, clazz);
-			checkIfNotAlreadyExists(controlDeclaration.getId());
-			controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);
-		}
-	}
-
-	private void scanControlDeclarationsOnFields() {
+	private Set<Field> getNonStaticFieldsWithAtLeastOneAnnotation() {
+		Set<Field> result = new HashSet<>();
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.isSynthetic()) //added by compiler
 				continue;
 
-			if (!hasAnyAnnotations(field))
+			if (!hasAnyAnnotations(field) || Modifier.isStatic(field.getModifiers()))
 				continue;
 
-			boolean isStaticField = Modifier.isStatic(field.getModifiers());
-			if (isStaticField)
-				continue;
+			result.add(field);
+		}
+		return result;
+	}
 
-			Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(field);
+	private void putControlDeclarationsOfElement(AnnotatedElement element) {
+		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(element);
+		for (Annotation annotation : declaresControlAnnotations) {
+			ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, element);
 
-			for (Annotation annotation : declaresControlAnnotations) {
-				ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, field);
-
-				checkIfNotAlreadyExists(controlDeclaration.getId());
-				controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);
-			}
+			checkIfNotAlreadyExists(controlDeclaration.getId());
+			controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);
 		}
 	}
 
@@ -88,6 +89,10 @@ public class InstallControlsClassAnalysis {
 
 	public Map<String, ControlDeclaration> getControlDeclarations() {
 		return controlDeclarations;
+	}
+
+	public Set<Field> getNestedInstallControlsFields() {
+		return nestedInstallControlsFields;
 	}
 
 	private void bindParameterSourcesToControlDeclarations() {

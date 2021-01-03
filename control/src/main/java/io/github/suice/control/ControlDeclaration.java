@@ -24,7 +24,7 @@ public class ControlDeclaration {
 	private Class<? extends AnnotationInstaller> installerType;
 
 	@SuppressWarnings("unchecked")
-	private ControlDeclaration(Annotation annotation, AnnotatedElement targetElement) {
+	ControlDeclaration(Annotation annotation, AnnotatedElement targetElement) {
 		this.targetElement = targetElement;
 		this.annotation = annotation;
 
@@ -44,14 +44,6 @@ public class ControlDeclaration {
 		controlTypeInfo = ControlTypeInfo.of(controlType);
 
 		checkIfParameterSourceGivenWhenNonNullableParameter();
-	}
-
-	public ControlDeclaration(Annotation annotation, Class<?> clazz) {
-		this(annotation, (AnnotatedElement) clazz);
-	}
-
-	public ControlDeclaration(Annotation annotation, Field field) {
-		this(annotation, (AnnotatedElement) field);
 	}
 
 	private void createIdBasedOnElements() {
