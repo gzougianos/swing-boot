@@ -2,7 +2,7 @@ package integration.example;
 
 import javax.inject.Inject;
 
-import io.github.suice.control.Control;
+import io.github.swingboot.control.Control;
 
 public class MoveMainViewRightControl implements Control<Void> {
 	private MainView mainView;

@@ -1,6 +1,6 @@
 package integration.example;
 
-import io.github.suice.control.Control;
+import io.github.swingboot.control.Control;
 
 public class DecreaseClickCounterControl implements Control<ClickCounterView> {
 

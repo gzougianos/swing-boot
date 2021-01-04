@@ -6,12 +6,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.github.suice.control.annotation.InstallControls;
-import io.github.suice.control.annotation.KeyBinding;
-import io.github.suice.control.annotation.OnActionPerformed;
-import io.github.suice.control.annotation.OnComponentResized;
-import io.github.suice.control.annotation.ParameterSource;
-import io.github.suice.control.annotation.multiple.MultipleKeyBinding;
+import io.github.swingboot.control.annotation.InstallControls;
+import io.github.swingboot.control.annotation.KeyBinding;
+import io.github.swingboot.control.annotation.OnActionPerformed;
+import io.github.swingboot.control.annotation.OnComponentResized;
+import io.github.swingboot.control.annotation.ParameterSource;
+import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
 
 @InstallControls
 @OnComponentResized(PrintResizeControl.class)

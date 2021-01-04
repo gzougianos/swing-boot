@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.JFrame;
 
-import io.github.suice.control.annotation.InstallControls;
-import io.github.suice.control.annotation.KeyBinding;
+import io.github.swingboot.control.annotation.InstallControls;
+import io.github.swingboot.control.annotation.KeyBinding;
 
 @SuppressWarnings("serial")
 @Singleton

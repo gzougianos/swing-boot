@@ -2,7 +2,7 @@ package integration.example;
 
 import javax.annotation.Nullable;
 
-import io.github.suice.control.Control;
+import io.github.swingboot.control.Control;
 
 public class IncreaseClickCounterControl implements Control<ClickCounterView> {
 
