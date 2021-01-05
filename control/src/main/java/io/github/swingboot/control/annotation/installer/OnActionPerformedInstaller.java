@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.swing.AbstractButton;
+import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import io.github.swingboot.control.annotation.OnActionPerformed;
@@ -27,6 +28,8 @@ public class OnActionPerformedInstaller implements AnnotationInstaller {
 
 		if (target instanceof AbstractButton) {
 			((AbstractButton) target).addActionListener(new Listener(eventPredicate, eventConsumer));
+		} else if (target instanceof JComboBox<?>) {
+			((JComboBox<?>) target).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else if (target instanceof JTextField) {
 			((JTextField) target).addActionListener(new Listener(eventPredicate, eventConsumer));
 		} else {
