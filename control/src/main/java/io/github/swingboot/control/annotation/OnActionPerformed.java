@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.swing.AbstractButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.annotation.installer.OnActionPerformedInstaller;
@@ -16,7 +18,8 @@ import io.github.swingboot.control.annotation.installer.OnActionPerformedInstall
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(installer = OnActionPerformedInstaller.class, targetTypes = AbstractButton.class)
+@DeclaresControl(installer = OnActionPerformedInstaller.class, targetTypes = { AbstractButton.class,
+		JTextField.class, JComboBox.class })
 public @interface OnActionPerformed {
 	public static final int ANY_MODIFIER = -500;
 
