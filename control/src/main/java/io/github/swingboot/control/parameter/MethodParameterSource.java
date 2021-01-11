@@ -3,10 +3,10 @@ package io.github.swingboot.control.parameter;
 import static io.github.swingboot.control.annotation.ParameterSource.THIS;
 import static io.github.swingboot.control.reflect.ReflectionUtils.equalsOrExtends;
 
-import java.awt.AWTEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.EventObject;
 import java.util.Objects;
 
 import io.github.swingboot.control.reflect.ReflectionException;
@@ -22,7 +22,7 @@ class MethodParameterSource implements ParameterSource {
 		checkIdNotThis();
 		checkIdNotEmpty();
 		checkNotVoid();
-		checkZeroOrOneAwtEventParameter();
+		checkZeroOrOneEventObjectParameter();
 	}
 
 	private void checkNotVoid() {
@@ -33,19 +33,19 @@ class MethodParameterSource implements ParameterSource {
 		}
 	}
 
-	private void checkZeroOrOneAwtEventParameter() {
+	private void checkZeroOrOneEventObjectParameter() {
 		if (hasNoParameters())
 			return;
 
 		if (method.getParameterCount() == 1) {
 			Parameter parameter = method.getParameters()[0];
-			if (equalsOrExtends(parameter.getType(), AWTEvent.class)) {
+			if (equalsOrExtends(parameter.getType(), EventObject.class)) {
 				return;
 			}
 		}
 		throw new InvalidParameterSourceException("ParameterSource method " + method.getName() + " in class"
 				+ method.getDeclaringClass().getSimpleName()
-				+ " can have zero or only one AWTEvent parameter.");
+				+ " can have zero or only one java.util.EventObject parameter.");
 	}
 
 	private void checkIdNotEmpty() {
@@ -79,7 +79,7 @@ class MethodParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) {
+	public Object getValue(Object sourceOwner, EventObject event) {
 		ensureAccess();
 		try {
 			if (hasNoParameters())
@@ -88,14 +88,14 @@ class MethodParameterSource implements ParameterSource {
 			if (event != null && eventTypeMatchesParameterType(event))
 				return method.invoke(sourceOwner, event);
 
-			return method.invoke(sourceOwner, (AWTEvent) null);
+			return method.invoke(sourceOwner, (EventObject) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new ReflectionException("Error invoking method " + method.getName() + " of "
 					+ method.getDeclaringClass() + " with event parameter " + event + ".", e);
 		}
 	}
 
-	private boolean eventTypeMatchesParameterType(AWTEvent event) {
+	private boolean eventTypeMatchesParameterType(EventObject event) {
 		Class<?> parameterType = method.getParameters()[0].getType();
 		return equalsOrExtends(event.getClass(), parameterType);
 	}

@@ -7,12 +7,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Arrays;
 import java.util.EventListener;
+import java.util.EventObject;
 import java.util.function.Consumer;
 
 import javax.swing.JButton;
@@ -38,7 +38,7 @@ class OnComponentResizedInstallerTests {
 	void main() throws Exception {
 		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
 		JButton button = new JButton();
-		Consumer<AWTEvent> eventConsumer = mock(Consumer.class);
+		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 
 		installer.installAnnotation(annotationOfField("field"), button, eventConsumer);
 		assertNotNull(ControlListeners.get(ComponentListener.class, button));
@@ -53,7 +53,7 @@ class OnComponentResizedInstallerTests {
 	@Test
 	void wrongTarget() throws Exception {
 		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
-		Consumer<AWTEvent> eventConsumer = mock(Consumer.class);
+		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 		assertThrows(RuntimeException.class,
 				() -> installer.installAnnotation(annotationOfField("field"), new String(), eventConsumer));
 	}

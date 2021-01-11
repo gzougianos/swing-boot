@@ -2,7 +2,7 @@ package io.github.swingboot.control.parameter;
 
 import static io.github.swingboot.control.annotation.ParameterSource.THIS;
 
-import java.awt.AWTEvent;
+import java.util.EventObject;
 
 public class SourceOwnerParameterSource implements ParameterSource {
 	private Class<?> clazz;
@@ -22,7 +22,7 @@ public class SourceOwnerParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) {
+	public Object getValue(Object sourceOwner, EventObject event) {
 		return sourceOwner;
 	}
 

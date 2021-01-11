@@ -1,9 +1,9 @@
 package io.github.swingboot.control.annotation.installer;
 
-import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Annotation;
+import java.util.EventObject;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -17,7 +17,7 @@ import io.github.swingboot.control.listener.ControlListener;
 public class OnActionPerformedInstaller implements AnnotationInstaller {
 
 	@Override
-	public void installAnnotation(Annotation annotation, Object target, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 
@@ -39,10 +39,10 @@ public class OnActionPerformedInstaller implements AnnotationInstaller {
 	}
 
 	private static class Listener implements ActionListener, ControlListener {
-		private Consumer<AWTEvent> eventConsumer;
+		private Consumer<EventObject> eventConsumer;
 		private Predicate<ActionEvent> controlFirePredicate;
 
-		public Listener(Predicate<ActionEvent> eventPredicate, Consumer<AWTEvent> eventConsumer) {
+		public Listener(Predicate<ActionEvent> eventPredicate, Consumer<EventObject> eventConsumer) {
 			this.controlFirePredicate = eventPredicate;
 			this.eventConsumer = eventConsumer;
 		}

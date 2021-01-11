@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 
 public final class PassiveComponents {
 	private static final Map<Component, Void> components = new WeakHashMap<>();
@@ -38,6 +39,12 @@ public final class PassiveComponents {
 	public static final void whilePassive(Component component, Runnable r) {
 		put(component);
 		r.run();
+		remove(component);
+	}
+
+	public static final <T extends Component> void whilePassive(T component, Consumer<T> consumer) {
+		put(component);
+		consumer.accept(component);
 		remove(component);
 	}
 

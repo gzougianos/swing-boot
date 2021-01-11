@@ -2,8 +2,8 @@ package io.github.swingboot.control.parameter;
 
 import static io.github.swingboot.control.annotation.ParameterSource.THIS;
 
-import java.awt.AWTEvent;
 import java.lang.reflect.Field;
+import java.util.EventObject;
 import java.util.Objects;
 
 import io.github.swingboot.control.reflect.ReflectionException;
@@ -37,7 +37,7 @@ class FieldParameterSource implements ParameterSource {
 	}
 
 	@Override
-	public Object getValue(Object sourceOwner, AWTEvent event) {
+	public Object getValue(Object sourceOwner, EventObject event) {
 		ensureAccess();
 		try {
 			return field.get(sourceOwner);

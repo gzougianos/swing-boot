@@ -10,10 +10,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.EventObject;
 import java.util.function.Consumer;
 
 import javax.swing.AbstractButton;
@@ -40,7 +40,7 @@ class OnActionPerformedInstallerTests {
 	@OnActionPerformed(value = TestControl.class, modifiers = ActionEvent.ALT_MASK)
 	private int specificModifierField;
 
-	private Consumer<AWTEvent> eventConsumer;
+	private Consumer<EventObject> eventConsumer;
 	private JButton button;
 	private OnActionPerformedInstaller installer;
 

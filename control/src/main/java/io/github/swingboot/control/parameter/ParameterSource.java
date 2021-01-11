@@ -1,6 +1,6 @@
 package io.github.swingboot.control.parameter;
 
-import java.awt.AWTEvent;
+import java.util.EventObject;
 
 public interface ParameterSource {
 
@@ -8,5 +8,5 @@ public interface ParameterSource {
 
 	Class<?> getValueReturnType();
 
-	Object getValue(Object sourceOwner, AWTEvent event);
+	Object getValue(Object sourceOwner, EventObject event);
 }

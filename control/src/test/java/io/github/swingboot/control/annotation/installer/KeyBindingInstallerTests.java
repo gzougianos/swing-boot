@@ -6,10 +6,10 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.awt.AWTEvent;
 import java.awt.Button;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
+import java.util.EventObject;
 import java.util.function.Consumer;
 
 import javax.swing.JComponent;
@@ -34,7 +34,7 @@ class KeyBindingInstallerTests {
 	private int annotationHolder;
 
 	private AnnotationInstaller installer;
-	private Consumer<AWTEvent> eventConsumer;
+	private Consumer<EventObject> eventConsumer;
 	private KeyBinding annotation;
 
 	@Test

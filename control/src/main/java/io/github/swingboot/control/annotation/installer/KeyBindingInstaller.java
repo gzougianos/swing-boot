@@ -1,9 +1,9 @@
 package io.github.swingboot.control.annotation.installer;
 
-import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.lang.annotation.Annotation;
+import java.util.EventObject;
 import java.util.function.Consumer;
 
 import javax.swing.AbstractAction;
@@ -17,7 +17,7 @@ import io.github.swingboot.control.annotation.KeyBinding;
 public class KeyBindingInstaller implements AnnotationInstaller {
 
 	@Override
-	public void installAnnotation(Annotation annotation, Object target, Consumer<AWTEvent> eventConsumer) {
+	public void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer) {
 		final KeyBinding binding = (KeyBinding) annotation;
 		final Action action = new KeyBindingAction(eventConsumer);
 
@@ -49,9 +49,9 @@ public class KeyBindingInstaller implements AnnotationInstaller {
 
 	private static class KeyBindingAction extends AbstractAction {
 		private static final long serialVersionUID = -3628694774864195152L;
-		private Consumer<AWTEvent> eventConsumer;
+		private Consumer<EventObject> eventConsumer;
 
-		public KeyBindingAction(Consumer<AWTEvent> eventConsumer) {
+		public KeyBindingAction(Consumer<EventObject> eventConsumer) {
 			this.eventConsumer = eventConsumer;
 		}
 
