@@ -1,6 +1,7 @@
 package io.github.swingboot.control;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
@@ -17,12 +18,23 @@ class ControlDeclarationPerformer {
 	}
 
 	public void perform(AWTEvent event) {
+		if (isPassive(event.getSource()))
+			return;
+
 		Optional<ParameterSource> possibleParameterSource = controlDeclaration.getParameterSource();
 		if (possibleParameterSource.isPresent()) {
 			executeInvokingSource(possibleParameterSource.get(), event);
 		} else {
 			controls.perform(controlDeclaration.getControlType());
 		}
+	}
+
+	private boolean isPassive(Object source) {
+		boolean isComponent = source instanceof Component;
+		if (!isComponent)
+			return false;
+
+		return PassiveComponents.contains((Component) source);
 	}
 
 	private void executeInvokingSource(ParameterSource parameterSource, AWTEvent event) {

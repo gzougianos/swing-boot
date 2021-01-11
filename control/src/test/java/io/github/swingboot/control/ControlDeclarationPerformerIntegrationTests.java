@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
@@ -34,6 +35,27 @@ public class ControlDeclarationPerformerIntegrationTests {
 		void main() {
 			Controls controls = mock(Controls.class);
 			new ControlInstaller(controls).installControls(this);
+			button.doClick();
+			verify(controls).perform(eq(VoidControl.class));
+			verifyNoMoreInteractions(controls);
+		}
+	}
+
+	@Nested
+	class TakesPassiveViewsInConsideration {
+		@OnActionPerformed(VoidControl.class)
+		private JButton button = new JButton();
+
+		@UiTest
+		void main() {
+			Controls controls = mock(Controls.class);
+			new ControlInstaller(controls).installControls(this);
+			PassiveComponents.put(button);
+			button.doClick();
+			verifyZeroInteractions(controls);
+
+			PassiveComponents.remove(button);
+
 			button.doClick();
 			verify(controls).perform(eq(VoidControl.class));
 			verifyNoMoreInteractions(controls);
