@@ -12,12 +12,12 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.listener.ControlListener;
 
 public class OnActionPerformedInstaller implements AnnotationInstaller {
 
 	@Override
-	public void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer) {
+	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+			Consumer<EventObject> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 
@@ -25,20 +25,34 @@ public class OnActionPerformedInstaller implements AnnotationInstaller {
 			int eventModifiers = event.getModifiers();
 			return anyModifier || eventModifiers == onActionPerformed.modifiers();
 		};
+		ControlInstallation installation;
+		Listener listener = new Listener(eventPredicate, eventConsumer);
 
 		if (target instanceof AbstractButton) {
-			((AbstractButton) target).addActionListener(new Listener(eventPredicate, eventConsumer));
+			AbstractButton button = (AbstractButton) target;
+
+			installation = new ControlInstallation(() -> button.addActionListener(listener),
+					() -> button.removeActionListener(listener));
+
 		} else if (target instanceof JComboBox<?>) {
-			((JComboBox<?>) target).addActionListener(new Listener(eventPredicate, eventConsumer));
+			JComboBox<?> comboBox = (JComboBox<?>) target;
+
+			installation = new ControlInstallation(() -> comboBox.addActionListener(listener),
+					() -> comboBox.removeActionListener(listener));
+
 		} else if (target instanceof JTextField) {
-			((JTextField) target).addActionListener(new Listener(eventPredicate, eventConsumer));
+			JTextField field = (JTextField) target;
+
+			installation = new ControlInstallation(() -> field.addActionListener(listener),
+					() -> field.removeActionListener(listener));
 		} else {
 			throw new UnsupportedOperationException(
 					"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
 		}
+		return installation;
 	}
 
-	private static class Listener implements ActionListener, ControlListener {
+	private static class Listener implements ActionListener {
 		private Consumer<EventObject> eventConsumer;
 		private Predicate<ActionEvent> controlFirePredicate;
 

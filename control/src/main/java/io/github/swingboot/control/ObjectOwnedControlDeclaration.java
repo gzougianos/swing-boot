@@ -49,13 +49,15 @@ class ObjectOwnedControlDeclaration {
 
 	public Object getTargetObject() {
 		AnnotatedElement targetElement = declaration.getTargetElement();
+		Object owner = getOwner();
+
 		try {
 			if (targetElement instanceof Field) {
 				Field targetField = (Field) targetElement;
 				ensureAccessible(targetField);
-				return targetField.get(getOwner());
+				return targetField.get(owner);
 			} else {
-				return getOwner();
+				return owner;
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			throw new ReflectionException("Error getting value from target element " + targetElement, e);

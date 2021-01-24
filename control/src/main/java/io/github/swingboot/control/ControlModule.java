@@ -1,6 +1,10 @@
 package io.github.swingboot.control;
 
+import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.not;
+
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import javax.inject.Inject;
@@ -13,7 +17,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
@@ -21,11 +24,12 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import io.github.swingboot.control.annotation.InstallControls;
+import io.github.swingboot.control.annotation.PassiveView;
 
 public class ControlModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(ControlModule.class);
 	private static final Matcher<TypeLiteral<?>> INSTALL_CONTROLS_MATCHER = new InstallControlsMatcher();
-	private ClassPath classpath;
+	private static ClassPath classpath;
 	private final String controlsPackage;
 	private InstallControlsInjectionListener installControlsInjectionListener;
 	private boolean includeSubpackages;
@@ -65,6 +69,12 @@ public class ControlModule extends AbstractModule {
 
 		bindControls();
 
+		PassiveViewMethodInterceptor passiveViewInterceptor = new PassiveViewMethodInterceptor(
+				getProvider(ControlInstaller.class));
+		bindInterceptor(annotatedWith(PassiveView.class), new PassiveViewDeclaredMethodMatcher(),
+				passiveViewInterceptor);
+		bindInterceptor(not(annotatedWith(PassiveView.class)), annotatedWith(PassiveView.class),
+				passiveViewInterceptor);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,11 +105,14 @@ public class ControlModule extends AbstractModule {
 	}
 
 	@Inject
-	private void initListener(ControlInstaller controlInstaller, Injector injector) {
+	private void initListener(ControlInstaller controlInstaller) {
 		installControlsInjectionListener.setControlInstaller(controlInstaller);
 	}
 
 	private void initClassPath() {
+		if (classpath != null)
+			return;
+
 		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		try {
 			classpath = ClassPath.from(loader);
@@ -115,5 +128,20 @@ public class ControlModule extends AbstractModule {
 			return t.getRawType().isAnnotationPresent(InstallControls.class);
 		}
 
+	}
+
+	private static class PassiveViewDeclaredMethodMatcher extends AbstractMatcher<Method> {
+
+		@Override
+		public boolean matches(Method candidate) {
+			if (candidate.getDeclaringClass().isAnnotationPresent(PassiveView.class)) {
+				for (Method m : candidate.getDeclaringClass().getDeclaredMethods()) {
+					if (m.equals(candidate)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 	}
 }

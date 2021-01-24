@@ -7,20 +7,28 @@ import java.lang.annotation.Annotation;
 import java.util.EventObject;
 import java.util.function.Consumer;
 
-import io.github.swingboot.control.listener.ControlListener;
-
 public class OnComponentResizedInstaller implements AnnotationInstaller {
 
 	@Override
-	public void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer) {
-		if (target instanceof Component)
-			((Component) target).addComponentListener(new Listener(eventConsumer));
-		else
+	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+			Consumer<EventObject> eventConsumer) {
+		final Component component;
+		if (target instanceof Component) {
+			component = (Component) target;
+		} else
 			throw new UnsupportedOperationException(
 					"@OnComponentResized cannot be installed to target of type " + target.getClass());
+
+		final Listener listener = new Listener(eventConsumer);
+
+		return new ControlInstallation(() -> {
+			component.addComponentListener(listener);
+		}, () -> {
+			component.removeComponentListener(listener);
+		});
 	}
 
-	private static class Listener extends ComponentAdapter implements ControlListener {
+	private static class Listener extends ComponentAdapter {
 		private Consumer<EventObject> eventConsumer;
 
 		public Listener(Consumer<EventObject> eventConsumer) {

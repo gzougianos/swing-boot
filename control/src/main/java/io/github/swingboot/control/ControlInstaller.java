@@ -2,8 +2,12 @@ package io.github.swingboot.control;
 
 import static java.util.Objects.requireNonNull;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.WeakHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
@@ -13,11 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import io.github.swingboot.control.annotation.installer.AnnotationInstaller;
 import io.github.swingboot.control.annotation.installer.AnnotationInstallerFactory;
+import io.github.swingboot.control.annotation.installer.ControlInstallation;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private static final WeakHashMap<Object, Void> installedObjects = new WeakHashMap<>();
+	private Map<Object, List<ControlInstallation>> installedObjects = new HashMap<>();
 	private final Controls controls;
 
 	@Inject
@@ -34,7 +39,7 @@ public class ControlInstaller {
 
 		warnNonEdtInstallation(object);
 
-		installedObjects.put(object, null);
+		installedObjects.put(object, new ArrayList<>());
 
 		Class<?> objectType = object.getClass();
 
@@ -43,7 +48,7 @@ public class ControlInstaller {
 		}
 
 		InstallControlsClassAnalysis classAnalysis = InstallControlsClassAnalysis.of(objectType);
-		installControls(object, classAnalysis);
+		createInstallationsAndInstall(object, classAnalysis);
 
 		if (object instanceof AdditionalControlInstallation) {
 			((AdditionalControlInstallation) object).afterAllControlsInstalled(controls);
@@ -52,16 +57,70 @@ public class ControlInstaller {
 		classAnalysis.getNestedInstallControlsFields().forEach(field -> installNestedControls(object, field));
 	}
 
+	public void uninstallFrom(Object obj) {
+		getInstallationsOrThrow(obj).forEach(ControlInstallation::uninstall);
+	}
+
+	public void reinstallTo(Object obj) {
+		getInstallationsOrThrow(obj).forEach(ControlInstallation::install);
+	}
+
+	private List<ControlInstallation> getInstallationsOrThrow(Object obj) {
+		List<ControlInstallation> list = installedObjects.get(obj);
+		if (list == null)
+			throw new ControlsWereNeverInstalledException("Controls were never installed to object: " + obj);
+
+		return list;
+	}
+
 	private void installNestedControls(Object object, Field field) {
 		try {
 			field.setAccessible(true);
 			Object target = field.get(object);
-			checkFieldValueNotNull(target, field);
+			ensureNotNullTargetIfItCameFromField(target, field);
 			installControls(target);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			String msg = "Error accessing nested @InstallControls field %s of %s.";
 			msg = String.format(msg, field.getName(), field.getDeclaringClass());
 			throw new ReflectionException(msg, e);
+		}
+	}
+
+	private void createInstallationsAndInstall(Object owner, InstallControlsClassAnalysis classAnalysis) {
+		//@formatter:off
+		classAnalysis.getControlDeclarations().values().stream()
+				.map(controlDeclaration-> new ObjectOwnedControlDeclaration(owner, controlDeclaration))
+				.map(this::createInstallation)
+				.forEach(installation -> addInstallationToObject(owner, installation));
+		//@formatter:on
+
+		installedObjects.get(owner).forEach(ControlInstallation::install);
+	}
+
+	private void addInstallationToObject(Object owner, ControlInstallation installation) {
+		installedObjects.get(owner).add(installation);
+	}
+
+	private ControlInstallation createInstallation(ObjectOwnedControlDeclaration declaration) {
+		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
+
+		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
+		Object target = declaration.getTargetObject();
+
+		ensureNotNullTargetIfItCameFromField(target, declaration.getTargetElement());
+
+		return installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);
+	}
+
+	private void ensureNotNullTargetIfItCameFromField(Object target, AnnotatedElement element) {
+		if (!(element instanceof Field))
+			return;
+
+		Field targetField = (Field) element;
+
+		if (target == null) {
+			throw new NullPointerException("Value of field '" + targetField.getName() + "' declared in class "
+					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
 		}
 	}
 
@@ -73,36 +132,16 @@ public class ControlInstaller {
 		}
 	}
 
-	private void installControls(Object object, InstallControlsClassAnalysis classAnalysis) {
-		//@formatter:off
-		classAnalysis.getControlDeclarations().values().stream()
-				.map(controlDeclaration-> new ObjectOwnedControlDeclaration(object, controlDeclaration))
-				.forEach(this::install);
-		//@formatter:on
-	}
-
-	private void install(ObjectOwnedControlDeclaration declaration) {
-		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
-
-		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
-		Object target = declaration.getTargetObject();
-
-		//A null value occurs only in annotated fields
-		if (declaration.getTargetElement() instanceof Field)
-			checkFieldValueNotNull(target, (Field) declaration.getTargetElement());
-
-		installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);
-	}
-
-	private void checkFieldValueNotNull(Object target, Field targetField) {
-		if (target == null) {
-			throw new NullPointerException("Value of field '" + targetField.getName() + "' declared in class "
-					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
-		}
-	}
-
 	private boolean alreadyInstalled(Object object) {
 		return installedObjects.containsKey(object);
 	}
 
+	public static class ControlsWereNeverInstalledException extends RuntimeException {
+		private static final long serialVersionUID = -420040964800757920L;
+
+		private ControlsWereNeverInstalledException(String message) {
+			super(message);
+		}
+
+	}
 }

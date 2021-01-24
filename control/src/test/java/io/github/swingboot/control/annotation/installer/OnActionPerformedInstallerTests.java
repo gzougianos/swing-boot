@@ -1,6 +1,5 @@
 package io.github.swingboot.control.annotation.installer;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isA;
@@ -11,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.function.Consumer;
@@ -26,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.listener.ControlListeners;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
 
@@ -46,8 +43,9 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void anyModifier() throws Exception {
-		installer.installAnnotation(annotationOfField("anyModifierField"), button, eventConsumer);
-		assertNotNull(ControlListeners.get(ActionListener.class, button));
+		ControlInstallation installation = installer.installAnnotation(annotationOfField("anyModifierField"),
+				button, eventConsumer);
+		installation.install();
 
 		fireActionListeners(button, 0);
 		verify(eventConsumer).accept(isA(ActionEvent.class));
@@ -55,17 +53,27 @@ class OnActionPerformedInstallerTests {
 		fireActionListeners(button, 1);
 		verify(eventConsumer, times(2)).accept(isA(ActionEvent.class));
 		verifyNoMoreInteractions(eventConsumer);
+
+		installation.uninstall();
+		fireActionListeners(button, 1);
+		verifyNoMoreInteractions(eventConsumer);
 	}
 
 	@Test
 	void specificModifier() throws Exception {
-		installer.installAnnotation(annotationOfField("specificModifierField"), button, eventConsumer);
+		ControlInstallation installation = installer
+				.installAnnotation(annotationOfField("specificModifierField"), button, eventConsumer);
+		installation.install();
 
 		fireActionListeners(button, 0);
 		verify(eventConsumer, never()).accept(any());
 
 		fireActionListeners(button, ActionEvent.ALT_MASK);
 		verify(eventConsumer).accept(isA(ActionEvent.class));
+		verifyNoMoreInteractions(eventConsumer);
+
+		installation.uninstall();
+		fireActionListeners(button, ActionEvent.ALT_MASK);
 		verifyNoMoreInteractions(eventConsumer);
 	}
 

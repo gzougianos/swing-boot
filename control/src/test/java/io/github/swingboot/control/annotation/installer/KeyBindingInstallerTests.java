@@ -1,6 +1,7 @@
 package io.github.swingboot.control.annotation.installer;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -40,7 +41,8 @@ class KeyBindingInstallerTests {
 	@Test
 	void toJComponent() {
 		JPanel panel = new JPanel();
-		installer.installAnnotation(annotation, panel, eventConsumer);
+		ControlInstallation installation = installer.installAnnotation(annotation, panel, eventConsumer);
+		installation.install();
 
 		Object binding = panel.getInputMap(annotation.when())
 				.get(KeyStroke.getKeyStroke(annotation.keyStroke()));
@@ -49,12 +51,17 @@ class KeyBindingInstallerTests {
 		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
 		panel.getActionMap().get("id").actionPerformed(event);
 		verify(eventConsumer).accept(eq(event));
+
+		installation.uninstall();
+		binding = panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke()));
+		assertNull(binding);
 	}
 
 	@Test
 	void toContentPaneContainer() {
 		JFrame frame = new JFrame();
-		installer.installAnnotation(annotation, frame, eventConsumer);
+		ControlInstallation installation = installer.installAnnotation(annotation, frame, eventConsumer);
+		installation.install();
 
 		JComponent panel = (JComponent) frame.getContentPane();
 
@@ -65,6 +72,10 @@ class KeyBindingInstallerTests {
 		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
 		panel.getActionMap().get("id").actionPerformed(event);
 		verify(eventConsumer).accept(eq(event));
+
+		installation.uninstall();
+		binding = panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke()));
+		assertNull(binding);
 	}
 
 	@Test

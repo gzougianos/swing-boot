@@ -2,6 +2,7 @@ package io.github.swingboot.control.module.correctbinding;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.Map;
 
@@ -43,6 +44,8 @@ class ControlModuleBindingTests {
 	void correctBindingsWithSubpackageScan() {
 		ControlModule module = new ControlModule(PublicControl.class, true);
 		Injector injector = Guice.createInjector(module);
+
+		assertSame(injector.getInstance(PublicControl.class), injector.getInstance(PublicControl.class));
 
 		Map<Key<?>, Binding<?>> allBindings = injector.getAllBindings();
 

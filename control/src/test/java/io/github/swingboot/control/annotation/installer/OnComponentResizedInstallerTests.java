@@ -1,6 +1,5 @@
 package io.github.swingboot.control.annotation.installer;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.annotation.OnActionPerformed;
 import io.github.swingboot.control.annotation.OnComponentResized;
-import io.github.swingboot.control.listener.ControlListeners;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
 
@@ -40,13 +38,19 @@ class OnComponentResizedInstallerTests {
 		JButton button = new JButton();
 		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 
-		installer.installAnnotation(annotationOfField("field"), button, eventConsumer);
-		assertNotNull(ControlListeners.get(ComponentListener.class, button));
+		ControlInstallation installation = installer.installAnnotation(annotationOfField("field"), button,
+				eventConsumer);
+		installation.install();
 
 		ComponentEvent event = new ComponentEvent(button, ComponentEvent.COMPONENT_RESIZED);
 		fireListeners(button, ComponentListener.class, l -> l.componentResized(event));
 
 		verify(eventConsumer).accept(eq(event));
+		verifyNoMoreInteractions(eventConsumer);
+
+		installation.uninstall();
+
+		fireListeners(button, ComponentListener.class, l -> l.componentResized(event));
 		verifyNoMoreInteractions(eventConsumer);
 	}
 

@@ -6,5 +6,6 @@ import java.util.function.Consumer;
 
 public interface AnnotationInstaller {
 
-	void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer);
+	ControlInstallation installAnnotation(Annotation annotation, Object target,
+			Consumer<EventObject> eventConsumer);
 }

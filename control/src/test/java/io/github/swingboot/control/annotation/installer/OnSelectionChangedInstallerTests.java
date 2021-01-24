@@ -2,6 +2,7 @@ package io.github.swingboot.control.annotation.installer;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -34,14 +35,23 @@ class OnSelectionChangedInstallerTests {
 		OnSelectionChanged annotation = getClass().getDeclaredField("field")
 				.getAnnotation(OnSelectionChanged.class);
 
-		new OnSelectionChangedInstaller().installAnnotation(annotation, list, consumer);
+		ControlInstallation installation = new OnSelectionChangedInstaller().installAnnotation(annotation,
+				list, consumer);
 
+		installation.install();
 		list.setSelectedValue("world", false);
 		verifyZeroInteractions(consumer);
 
 		list.setValueIsAdjusting(true);
 		list.setSelectedValue("hello", false);
 		verify(consumer).accept(isA(ListSelectionEvent.class));
+
+		reset(consumer);
+
+		installation.uninstall();
+		list.setSelectedValue("world", false);
+		list.setSelectedValue("hello", false);
+		verifyZeroInteractions(consumer);
 	}
 
 	private static class TestControl implements Control<Integer> {

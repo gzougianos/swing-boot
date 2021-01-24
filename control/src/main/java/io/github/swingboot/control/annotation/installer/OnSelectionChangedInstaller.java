@@ -12,12 +12,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import io.github.swingboot.control.annotation.OnSelectionChanged;
-import io.github.swingboot.control.listener.ControlListener;
 
 public class OnSelectionChangedInstaller implements AnnotationInstaller {
 
 	@Override
-	public void installAnnotation(Annotation annotation, Object target, Consumer<EventObject> eventConsumer) {
+	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+			Consumer<EventObject> eventConsumer) {
 		OnSelectionChanged onSelectionChanged = (OnSelectionChanged) annotation;
 		ListSelectionModel selectionModel;
 		if (target instanceof JList<?>)
@@ -32,10 +32,16 @@ public class OnSelectionChangedInstaller implements AnnotationInstaller {
 
 		Predicate<ListSelectionEvent> predicate = event -> onSelectionChanged.valueIsAdjusting()
 				.matches(event.getValueIsAdjusting());
-		selectionModel.addListSelectionListener(new Listener(eventConsumer, predicate));
+
+		Listener listener = new Listener(eventConsumer, predicate);
+		return new ControlInstallation(() -> {
+			selectionModel.addListSelectionListener(listener);
+		}, () -> {
+			selectionModel.removeListSelectionListener(listener);
+		});
 	}
 
-	private static class Listener implements ListSelectionListener, ControlListener {
+	private static class Listener implements ListSelectionListener {
 		private Consumer<EventObject> eventConsumer;
 		private Predicate<ListSelectionEvent> predicate;
 
