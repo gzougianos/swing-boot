@@ -26,13 +26,16 @@ class PassiveViewMethodInterceptor implements MethodInterceptor {
 		ControlInstaller controlInstaller = installerProvider.get();
 		controlInstaller.uninstallFrom(obj);
 
-		Object o = invocation.proceed();
+		Object invocationResult;
+		try {
+			invocationResult = invocation.proceed();
+		} finally {
+			waitUntilAllEventsAreDispatched();
 
-		waitUntilAllEventsAreDispatched();
+			controlInstaller.reinstallTo(obj);
+		}
 
-		controlInstaller.reinstallTo(obj);
-
-		return o;
+		return invocationResult;
 	}
 
 	private EventQueue eventQueue() {

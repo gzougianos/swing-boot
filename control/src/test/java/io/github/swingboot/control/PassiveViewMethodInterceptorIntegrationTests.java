@@ -73,6 +73,33 @@ class PassiveViewMethodInterceptorIntegrationTests {
 		assertEquals(2, buttonControl2.timesFired);
 	}
 
+	@Test
+	void exceptionInInvocation() {
+		Injector injector = Guice.createInjector(new ControlModule(ButtonControl.class));
+		ButtonControl buttonControl = injector.getInstance(ButtonControl.class);
+		ButtonControl2 buttonControl2 = injector.getInstance(ButtonControl2.class);
+		OnMethod view = injector.getInstance(OnMethod.class);
+
+		view.activeClicks();
+
+		assertEquals(1, buttonControl.timesFired);
+		assertEquals(1, buttonControl2.timesFired);
+
+		view.throwException = true;
+		try {
+			view.passiveClicks();
+		} catch (RuntimeException e) {
+
+		}
+
+		assertEquals(1, buttonControl.timesFired);
+		assertEquals(1, buttonControl2.timesFired);
+
+		view.activeClicks();
+		assertEquals(2, buttonControl.timesFired);
+		assertEquals(2, buttonControl2.timesFired);
+	}
+
 	@InstallControls
 	@PassiveView
 	@Singleton
@@ -98,9 +125,12 @@ class PassiveViewMethodInterceptorIntegrationTests {
 
 		@OnActionPerformed(ButtonControl2.class)
 		private JButton button2 = new JButton();
+		boolean throwException = false;
 
 		@PassiveView
 		void passiveClicks() {
+			if (throwException)
+				throw new RuntimeException();
 			button.doClick();
 			button2.doClick();
 		}
