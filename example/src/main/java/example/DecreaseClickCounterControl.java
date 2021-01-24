@@ -1,4 +1,4 @@
-package integration.example;
+package example;
 
 import io.github.swingboot.control.Control;
 

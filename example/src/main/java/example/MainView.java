@@ -1,4 +1,4 @@
-package integration.example;
+package example;
 
 import java.awt.BorderLayout;
 

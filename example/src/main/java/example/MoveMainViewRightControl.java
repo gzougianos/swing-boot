@@ -1,4 +1,4 @@
-package integration.example;
+package example;
 
 import javax.inject.Inject;
 

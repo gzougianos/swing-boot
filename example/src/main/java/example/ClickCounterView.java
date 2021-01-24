@@ -1,4 +1,4 @@
-package integration.example;
+package example;
 
 import java.awt.FlowLayout;
 
@@ -22,7 +22,6 @@ public class ClickCounterView extends JPanel {
 	private JLabel clickCountLabel;
 
 	@OnActionPerformed(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
-	@OnComponentResized(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
 	//@formatter:off
 	@MultipleKeyBinding({ 
 			@KeyBinding(keyStroke = "F5", value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS),
