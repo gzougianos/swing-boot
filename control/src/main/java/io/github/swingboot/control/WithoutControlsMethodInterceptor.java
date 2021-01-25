@@ -9,11 +9,11 @@ import javax.inject.Provider;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-class PassiveViewMethodInterceptor implements MethodInterceptor {
+class WithoutControlsMethodInterceptor implements MethodInterceptor {
 
 	private Provider<ControlInstaller> installerProvider;
 
-	PassiveViewMethodInterceptor(Provider<ControlInstaller> installerProvider) {
+	WithoutControlsMethodInterceptor(Provider<ControlInstaller> installerProvider) {
 		this.installerProvider = installerProvider;
 	}
 

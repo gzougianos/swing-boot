@@ -20,6 +20,7 @@
 		<module>control</module>
 		<module>testutils</module>
 		<module>concurrency</module>
+		<module>processor</module>
 	</modules>
 	
 	<build>

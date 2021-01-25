@@ -1,10 +1,8 @@
 package io.github.swingboot.control;
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
-import static com.google.inject.matcher.Matchers.not;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import javax.inject.Inject;
@@ -24,7 +22,7 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import io.github.swingboot.control.annotation.InstallControls;
-import io.github.swingboot.control.annotation.PassiveView;
+import io.github.swingboot.control.annotation.WithoutControls;
 
 public class ControlModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(ControlModule.class);
@@ -69,12 +67,15 @@ public class ControlModule extends AbstractModule {
 
 		bindControls();
 
-		PassiveViewMethodInterceptor passiveViewInterceptor = new PassiveViewMethodInterceptor(
+		WithoutControlsMethodInterceptor passiveViewInterceptor = new WithoutControlsMethodInterceptor(
 				getProvider(ControlInstaller.class));
-		bindInterceptor(annotatedWith(PassiveView.class), new PassiveViewDeclaredMethodMatcher(),
+		bindInterceptor(annotatedWith(InstallControls.class), annotatedWith(WithoutControls.class),
 				passiveViewInterceptor);
-		bindInterceptor(not(annotatedWith(PassiveView.class)), annotatedWith(PassiveView.class),
-				passiveViewInterceptor);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		System.out.println("EQWEQWMODULE");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,20 +129,5 @@ public class ControlModule extends AbstractModule {
 			return t.getRawType().isAnnotationPresent(InstallControls.class);
 		}
 
-	}
-
-	private static class PassiveViewDeclaredMethodMatcher extends AbstractMatcher<Method> {
-
-		@Override
-		public boolean matches(Method candidate) {
-			if (candidate.getDeclaringClass().isAnnotationPresent(PassiveView.class)) {
-				for (Method m : candidate.getDeclaringClass().getDeclaredMethods()) {
-					if (m.equals(candidate)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
 	}
 }
