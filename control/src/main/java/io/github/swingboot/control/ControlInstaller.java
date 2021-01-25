@@ -2,14 +2,13 @@ package io.github.swingboot.control;
 
 import static java.util.Objects.requireNonNull;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
@@ -24,7 +23,7 @@ import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private Map<Object, List<WeakReference<ControlInstallation>>> installedObjects = new WeakHashMap<>();
+	private Map<Object, List<ControlInstallation>> installationsByObject = new WeakHashMap<>();
 	private final Controls controls;
 
 	@Inject
@@ -40,8 +39,6 @@ public class ControlInstaller {
 		}
 
 		warnNonEdtInstallation(object);
-
-		installedObjects.put(object, new ArrayList<>());
 
 		Class<?> objectType = object.getClass();
 
@@ -60,17 +57,15 @@ public class ControlInstaller {
 	}
 
 	public void uninstallFrom(Object obj) {
-		getInstallationsOrThrow(obj).stream().map(WeakReference::get).filter(Objects::nonNull)
-				.forEach(ControlInstallation::uninstall);
+		getInstallationsOrThrow(obj).forEach(ControlInstallation::uninstall);
 	}
 
 	public void reinstallTo(Object obj) {
-		getInstallationsOrThrow(obj).stream().map(WeakReference::get).filter(Objects::nonNull)
-				.forEach(ControlInstallation::install);
+		getInstallationsOrThrow(obj).forEach(ControlInstallation::install);
 	}
 
-	private List<WeakReference<ControlInstallation>> getInstallationsOrThrow(Object obj) {
-		List<WeakReference<ControlInstallation>> list = installedObjects.get(obj);
+	private List<ControlInstallation> getInstallationsOrThrow(Object obj) {
+		List<ControlInstallation> list = installationsByObject.get(obj);
 		if (list == null)
 			throw new ControlsWereNeverInstalledException("Controls were never installed to object: " + obj);
 
@@ -92,17 +87,15 @@ public class ControlInstaller {
 
 	private void createInstallationsAndInstall(Object owner, InstallControlsClassAnalysis classAnalysis) {
 		//@formatter:off
-		classAnalysis.getControlDeclarations().values().stream()
+		List<ControlInstallation> installations = classAnalysis.getControlDeclarations()
+				.values().stream()
 				.map(controlDeclaration-> new ObjectOwnedControlDeclaration(owner, controlDeclaration))
 				.map(this::createInstallation)
-				.forEach(installation -> addInstallationToObject(owner, installation));
+				.collect(Collectors.toList());
 		//@formatter:on
 
+		installationsByObject.put(owner, Collections.unmodifiableList(installations));
 		reinstallTo(owner); //actually the first installation
-	}
-
-	private void addInstallationToObject(Object owner, ControlInstallation installation) {
-		installedObjects.get(owner).add(new WeakReference<>(installation));
 	}
 
 	private ControlInstallation createInstallation(ObjectOwnedControlDeclaration declaration) {
@@ -137,7 +130,7 @@ public class ControlInstaller {
 	}
 
 	private boolean alreadyInstalled(Object object) {
-		return installedObjects.containsKey(object);
+		return installationsByObject.containsKey(object);
 	}
 
 	public static class ControlsWereNeverInstalledException extends RuntimeException {

@@ -11,6 +11,7 @@ import io.github.swingboot.control.annotation.KeyBinding;
 import io.github.swingboot.control.annotation.OnActionPerformed;
 import io.github.swingboot.control.annotation.OnComponentResized;
 import io.github.swingboot.control.annotation.ParameterSource;
+import io.github.swingboot.control.annotation.WithoutControls;
 import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
 
 @InstallControls
@@ -49,6 +50,12 @@ public class ClickCounterView extends JPanel {
 	public void increaseClickCount() {
 		clickCount++;
 		updateLabel();
+	}
+
+	@WithoutControls
+	public void clickButtonsPassively() {
+		increaseCounterButton.doClick();
+		decreaseCounterButton.doClick();
 	}
 
 	public void decreaseClickCount() {

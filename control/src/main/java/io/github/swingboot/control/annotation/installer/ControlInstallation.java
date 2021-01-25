@@ -12,6 +12,9 @@ public class ControlInstallation {
 	}
 
 	public void uninstall() {
+		if (!installed)
+			return;
+
 		uninstallation.run();
 		installed = false;
 	}

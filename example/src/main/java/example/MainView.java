@@ -18,9 +18,12 @@ import io.github.swingboot.control.annotation.WithoutControls;
 @KeyBinding(id = "bind", value = MoveMainViewRightControl.class, keyStroke = "F2", when = KeyBinding.WHEN_IN_FOCUSED_WINDOW)
 public class MainView extends JFrame {
 
+	private ClickCounterView topCounterView;
+
 	@Inject
 	public MainView(ClickCounterView topCounterView, ClickCounterView bottomCounterView) {
 		super("Example");
+		this.topCounterView = topCounterView;
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -34,7 +37,8 @@ public class MainView extends JFrame {
 	void doWithControlsUninstalled() {
 		JComponent contentPane = (JComponent) getContentPane();
 		Object input = contentPane.getInputMap().get(KeyStroke.getKeyStroke("F2"));
-		System.out.println("F2 Keybinding is installed:" + input == null);
+		System.out.println("F2 Keybinding is installed:" + !(input == null));
+		topCounterView.clickButtonsPassively();
 	}
 
 }

@@ -73,11 +73,6 @@ public class ControlModule extends AbstractModule {
 				passiveViewInterceptor);
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		System.out.println("EQWEQWMODULE");
-	}
-
 	@SuppressWarnings("unchecked")
 	private void bindControls() {
 		ImmutableSet<ClassInfo> topLevelClasses = includeSubpackages
