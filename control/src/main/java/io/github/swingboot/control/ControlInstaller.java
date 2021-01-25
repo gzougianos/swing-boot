@@ -2,12 +2,14 @@ package io.github.swingboot.control;
 
 import static java.util.Objects.requireNonNull;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.WeakHashMap;
 
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
@@ -22,7 +24,7 @@ import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private Map<Object, List<ControlInstallation>> installedObjects = new HashMap<>();
+	private Map<Object, List<WeakReference<ControlInstallation>>> installedObjects = new WeakHashMap<>();
 	private final Controls controls;
 
 	@Inject
@@ -58,15 +60,17 @@ public class ControlInstaller {
 	}
 
 	public void uninstallFrom(Object obj) {
-		getInstallationsOrThrow(obj).forEach(ControlInstallation::uninstall);
+		getInstallationsOrThrow(obj).stream().map(WeakReference::get).filter(Objects::nonNull)
+				.forEach(ControlInstallation::uninstall);
 	}
 
 	public void reinstallTo(Object obj) {
-		getInstallationsOrThrow(obj).forEach(ControlInstallation::install);
+		getInstallationsOrThrow(obj).stream().map(WeakReference::get).filter(Objects::nonNull)
+				.forEach(ControlInstallation::install);
 	}
 
-	private List<ControlInstallation> getInstallationsOrThrow(Object obj) {
-		List<ControlInstallation> list = installedObjects.get(obj);
+	private List<WeakReference<ControlInstallation>> getInstallationsOrThrow(Object obj) {
+		List<WeakReference<ControlInstallation>> list = installedObjects.get(obj);
 		if (list == null)
 			throw new ControlsWereNeverInstalledException("Controls were never installed to object: " + obj);
 
@@ -94,11 +98,11 @@ public class ControlInstaller {
 				.forEach(installation -> addInstallationToObject(owner, installation));
 		//@formatter:on
 
-		installedObjects.get(owner).forEach(ControlInstallation::install);
+		reinstallTo(owner); //actually the first installation
 	}
 
 	private void addInstallationToObject(Object owner, ControlInstallation installation) {
-		installedObjects.get(owner).add(installation);
+		installedObjects.get(owner).add(new WeakReference<>(installation));
 	}
 
 	private ControlInstallation createInstallation(ObjectOwnedControlDeclaration declaration) {
