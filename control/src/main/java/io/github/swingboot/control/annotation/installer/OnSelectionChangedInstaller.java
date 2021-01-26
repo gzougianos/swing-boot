@@ -16,7 +16,7 @@ import io.github.swingboot.control.annotation.OnSelectionChanged;
 public class OnSelectionChangedInstaller implements AnnotationInstaller {
 
 	@Override
-	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+	public ControlInstallation createInstallation(Annotation annotation, Object target,
 			Consumer<EventObject> eventConsumer) {
 		OnSelectionChanged onSelectionChanged = (OnSelectionChanged) annotation;
 		ListSelectionModel selectionModel;

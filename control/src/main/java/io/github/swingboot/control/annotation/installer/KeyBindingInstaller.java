@@ -17,7 +17,7 @@ import io.github.swingboot.control.annotation.KeyBinding;
 public class KeyBindingInstaller implements AnnotationInstaller {
 
 	@Override
-	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+	public ControlInstallation createInstallation(Annotation annotation, Object target,
 			Consumer<EventObject> eventConsumer) {
 		final KeyBinding binding = (KeyBinding) annotation;
 		final Action action = new KeyBindingAction(eventConsumer);

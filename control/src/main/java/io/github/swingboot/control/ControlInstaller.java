@@ -106,7 +106,7 @@ public class ControlInstaller {
 
 		ensureNotNullTargetIfItCameFromField(target, declaration.getTargetElement());
 
-		return installer.installAnnotation(declaration.getAnnotation(), target, controlPerformer::perform);
+		return installer.createInstallation(declaration.getAnnotation(), target, controlPerformer::perform);
 	}
 
 	private void ensureNotNullTargetIfItCameFromField(Object target, AnnotatedElement element) {

@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public class OnComponentResizedInstaller implements AnnotationInstaller {
 
 	@Override
-	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+	public ControlInstallation createInstallation(Annotation annotation, Object target,
 			Consumer<EventObject> eventConsumer) {
 		final Component component;
 		if (target instanceof Component) {

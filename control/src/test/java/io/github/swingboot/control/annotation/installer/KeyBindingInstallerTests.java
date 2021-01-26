@@ -41,7 +41,7 @@ class KeyBindingInstallerTests {
 	@Test
 	void toJComponent() {
 		JPanel panel = new JPanel();
-		ControlInstallation installation = installer.installAnnotation(annotation, panel, eventConsumer);
+		ControlInstallation installation = installer.createInstallation(annotation, panel, eventConsumer);
 		installation.install();
 
 		Object binding = panel.getInputMap(annotation.when())
@@ -60,7 +60,7 @@ class KeyBindingInstallerTests {
 	@Test
 	void toContentPaneContainer() {
 		JFrame frame = new JFrame();
-		ControlInstallation installation = installer.installAnnotation(annotation, frame, eventConsumer);
+		ControlInstallation installation = installer.createInstallation(annotation, frame, eventConsumer);
 		installation.install();
 
 		JComponent panel = (JComponent) frame.getContentPane();
@@ -84,13 +84,13 @@ class KeyBindingInstallerTests {
 		frame.setContentPane(new Container());
 
 		assertThrows(RuntimeException.class,
-				() -> installer.installAnnotation(annotation, frame, eventConsumer));
+				() -> installer.createInstallation(annotation, frame, eventConsumer));
 	}
 
 	@Test
 	void notSupportedComponent() {
 		assertThrows(RuntimeException.class,
-				() -> installer.installAnnotation(annotation, new Button(), eventConsumer));
+				() -> installer.createInstallation(annotation, new Button(), eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")

@@ -16,7 +16,7 @@ import io.github.swingboot.control.annotation.OnActionPerformed;
 public class OnActionPerformedInstaller implements AnnotationInstaller {
 
 	@Override
-	public ControlInstallation installAnnotation(Annotation annotation, Object target,
+	public ControlInstallation createInstallation(Annotation annotation, Object target,
 			Consumer<EventObject> eventConsumer) {
 		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;

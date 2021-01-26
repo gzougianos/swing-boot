@@ -38,7 +38,7 @@ class OnComponentResizedInstallerTests {
 		JButton button = new JButton();
 		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 
-		ControlInstallation installation = installer.installAnnotation(annotationOfField("field"), button,
+		ControlInstallation installation = installer.createInstallation(annotationOfField("field"), button,
 				eventConsumer);
 		installation.install();
 
@@ -59,7 +59,7 @@ class OnComponentResizedInstallerTests {
 		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
 		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 		assertThrows(RuntimeException.class,
-				() -> installer.installAnnotation(annotationOfField("field"), new String(), eventConsumer));
+				() -> installer.createInstallation(annotationOfField("field"), new String(), eventConsumer));
 	}
 
 	private <T extends EventListener> void fireListeners(Component c, Class<T> type,

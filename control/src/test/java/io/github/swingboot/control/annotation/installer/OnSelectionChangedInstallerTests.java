@@ -35,7 +35,7 @@ class OnSelectionChangedInstallerTests {
 		OnSelectionChanged annotation = getClass().getDeclaredField("field")
 				.getAnnotation(OnSelectionChanged.class);
 
-		ControlInstallation installation = new OnSelectionChangedInstaller().installAnnotation(annotation,
+		ControlInstallation installation = new OnSelectionChangedInstaller().createInstallation(annotation,
 				list, consumer);
 
 		installation.install();
