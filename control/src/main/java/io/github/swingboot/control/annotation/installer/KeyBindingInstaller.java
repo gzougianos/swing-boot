@@ -31,7 +31,7 @@ public class KeyBindingInstaller implements AnnotationInstaller {
 			if (contentPane instanceof JComponent) {
 				jComponent = (JComponent) contentPane;
 			} else {
-				throw new UnsupportedOperationException("@KeyBinding cannot only be installed to "
+				throw new UnsupportedOperationException("@KeyBinding cannot be installed to "
 						+ target.getClass() + " when the ContentPane is not a JComponent.");
 			}
 		} else {
