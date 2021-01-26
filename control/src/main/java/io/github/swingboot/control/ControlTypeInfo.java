@@ -30,7 +30,7 @@ class ControlTypeInfo {
 			if (rawType == Control.class) {
 				try {
 					TypeLiteral<?> typeLiteral = TypeLiteral.get(typeToken.getType());
-					Method performMethod = rawType.getMethod("perform", Object.class);
+					Method performMethod = rawType.getMethod(CONTROL_PERFORM_METHOD_NAME, Object.class);
 
 					TypeLiteral<?> methodParameterTypeLiteral = typeLiteral.getParameterTypes(performMethod)
 							.get(0);
