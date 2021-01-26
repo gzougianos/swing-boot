@@ -12,7 +12,7 @@ import io.github.swingboot.control.annotation.KeyBinding;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
-@DeclaresMultipleControls(KeyBinding.class)
+@DeclaresMultipleControls
 @Documented
 public @interface MultipleKeyBinding {
 	KeyBinding[] value();

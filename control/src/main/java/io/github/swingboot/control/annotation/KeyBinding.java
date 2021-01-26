@@ -5,7 +5,6 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -17,12 +16,10 @@ import javax.swing.KeyStroke;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.annotation.installer.KeyBindingInstaller;
-import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@Repeatable(MultipleKeyBinding.class)
 //@formatter:off
 @DeclaresControl(installer = KeyBindingInstaller.class, 
 		targetTypes = { JComponent.class, JFrame.class, JWindow.class, JDialog.class })
@@ -49,7 +46,10 @@ public @interface KeyBinding {
 
 	String parameterSource() default "";
 
-	/** One of {@link #WHEN_ANCESTOR_OF_FOCUSED_COMPONENT}, {@link #WHEN_FOCUSED} and {@link #WHEN_IN_FOCUSED_WINDOW}
+	/**
+	 * One of {@link #WHEN_ANCESTOR_OF_FOCUSED_COMPONENT}, {@link #WHEN_FOCUSED} and
+	 * {@link #WHEN_IN_FOCUSED_WINDOW}
+	 * 
 	 * @see JComponent#getInputMap(int)
 	 * @return The condition of the input map.
 	 */
