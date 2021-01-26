@@ -2,7 +2,6 @@ package io.github.swingboot.control;
 
 import static java.util.Objects.requireNonNull;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
@@ -76,7 +75,9 @@ public class ControlInstaller {
 		try {
 			field.setAccessible(true);
 			Object target = field.get(object);
-			ensureNotNullTargetIfItCameFromField(target, field);
+
+			checkFieldValueNotNull(target, field);
+
 			installControls(target);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			String msg = "Error accessing nested @InstallControls field %s of %s.";
@@ -89,8 +90,7 @@ public class ControlInstaller {
 		//@formatter:off
 		List<ControlInstallation> installations = classAnalysis.getControlDeclarations()
 				.values().stream()
-				.map(controlDeclaration-> new ObjectOwnedControlDeclaration(owner, controlDeclaration))
-				.map(this::createInstallation)
+				.map(declaration->createInstallation(owner, declaration))
 				.collect(Collectors.toList());
 		//@formatter:on
 
@@ -98,26 +98,22 @@ public class ControlInstaller {
 		reinstallTo(owner); //actually the first installation
 	}
 
-	private ControlInstallation createInstallation(ObjectOwnedControlDeclaration declaration) {
+	private ControlInstallation createInstallation(Object owner, ControlDeclaration declaration) {
 		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
 
-		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration);
-		Object target = declaration.getTargetObject();
+		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls,
+				declaration.getControlTypeInfo().getControlType(),
+				declaration.getParameterSource().orElse(null), owner);
 
-		ensureNotNullTargetIfItCameFromField(target, declaration.getTargetElement());
+		Object target = declaration.getInstallationTargetFor(owner);
 
 		return installer.createInstallation(declaration.getAnnotation(), target, controlPerformer::perform);
 	}
 
-	private void ensureNotNullTargetIfItCameFromField(Object target, AnnotatedElement element) {
-		if (!(element instanceof Field))
-			return;
-
-		Field targetField = (Field) element;
-
-		if (target == null) {
-			throw new NullPointerException("Value of field '" + targetField.getName() + "' declared in class "
-					+ targetField.getDeclaringClass().getSimpleName() + " is null.");
+	private void checkFieldValueNotNull(Object value, Field field) {
+		if (value == null) {
+			throw new NullPointerException("Value of field '" + field.getName() + "' declared in class "
+					+ field.getDeclaringClass().getSimpleName() + " is null.");
 		}
 	}
 

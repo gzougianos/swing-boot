@@ -12,16 +12,16 @@ import java.util.Optional;
 import io.github.swingboot.control.annotation.DeclaresControl;
 import io.github.swingboot.control.annotation.installer.AnnotationInstaller;
 import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.reflect.ReflectionException;
 
 class ControlDeclaration {
 
-	private ParameterSource parameterSource;
 	private String id;
-	private ControlTypeInfo controlTypeInfo;
-	private Annotation annotation;
-	private AnnotatedElement targetElement;
-	private String parameterSourceId;
-	private Class<? extends AnnotationInstaller> installerType;
+	private final Annotation annotation;
+	private final AnnotatedElement targetElement;
+	private final Class<? extends AnnotationInstaller> installerType;
+	private final ParameterSourceContext parameterSourceContext;
+	private final ControlTypeInfo controlTypeInfo;
 
 	@SuppressWarnings("unchecked")
 	ControlDeclaration(Annotation annotation, AnnotatedElement targetElement) {
@@ -37,28 +37,18 @@ class ControlDeclaration {
 		if (id.isEmpty())
 			createIdBasedOnElements();
 
-		parameterSourceId = String.valueOf(invokeMethodOfAnnotation("parameterSource"));
-
+		String parameterSourceId = String.valueOf(invokeMethodOfAnnotation("parameterSource"));
 		Class<? extends Control<?>> controlType = (Class<? extends Control<?>>) invokeMethodOfAnnotation(
 				"value");
-		controlTypeInfo = ControlTypeInfo.of(controlType);
 
-		checkIfParameterSourceGivenWhenNonNullableParameter();
+		controlTypeInfo = ControlTypeInfo.of(controlType);
+		parameterSourceContext = new ParameterSourceContext(controlTypeInfo, parameterSourceId, this);
+		parameterSourceContext.checkIfParameterSourceGivenWhenNonNullableParameter();
+
 	}
 
 	private void createIdBasedOnElements() {
 		id = annotation.toString() + targetElement.toString();
-	}
-
-	private void checkIfParameterSourceGivenWhenNonNullableParameter() {
-		if (controlTypeInfo.isParameterless())
-			return;
-
-		if (!controlTypeInfo.isParameterNullable() && parameterSourceId.isEmpty()) {
-			String format = "%s declares a parameterized control with non-nullable %s parameter but no parameter source was declared.";
-			throw new InvalidControlDeclarationException(String.format(format, this.toString(),
-					controlTypeInfo.getParameterType().getSimpleName()));
-		}
 	}
 
 	private void checkIfAnnotationDeclaresControl() {
@@ -87,6 +77,10 @@ class ControlDeclaration {
 		throw new InvalidControlDeclarationException("Unsupported target element:" + targetElement);
 	}
 
+	AnnotatedElement getTargetElement() {
+		return targetElement;
+	}
+
 	private boolean supportsType(DeclaresControl declaresControl, Class<?> type) {
 		for (Class<?> clazz : declaresControl.targetTypes()) {
 			if (equalsOrExtends(type, clazz))
@@ -96,19 +90,19 @@ class ControlDeclaration {
 	}
 
 	public Optional<ParameterSource> getParameterSource() {
-		return Optional.ofNullable(parameterSource);
-	}
-
-	public AnnotatedElement getTargetElement() {
-		return targetElement;
-	}
-
-	public String getParameterSourceId() {
-		return parameterSourceId;
+		return parameterSourceContext.getParameterSource();
 	}
 
 	public boolean expectsParameterSource() {
-		return !parameterSourceId.isEmpty() && !controlTypeInfo.isParameterless();
+		return parameterSourceContext.expectsParameterSource();
+	}
+
+	public void setParameterSource(ParameterSource parameterSource) {
+		parameterSourceContext.setParameterSource(parameterSource);
+	}
+
+	public String getParameterSourceId() {
+		return parameterSourceContext.getId();
 	}
 
 	public Class<? extends AnnotationInstaller> getInstallerType() {
@@ -125,30 +119,6 @@ class ControlDeclaration {
 
 	public Annotation getAnnotation() {
 		return annotation;
-	}
-
-	void setParameterSource(ParameterSource parameterSource) {
-		if (controlTypeInfo.isParameterless())
-			throw new InvalidControlDeclarationException(this.getAnnotation()
-					+ " does not support parameter source. Control's generic parameter is Void.");
-
-		if (!parameterSource.getId().equals(parameterSourceId))
-			throw new InvalidControlDeclarationException(
-					this + " does not a support a parameter source with id " + parameterSource.getId() + "");
-
-		checkIfParameterSourceReturnTypeMatchesControlParameterType(parameterSource);
-		this.parameterSource = parameterSource;
-	}
-
-	private void checkIfParameterSourceReturnTypeMatchesControlParameterType(
-			ParameterSource parameterSource) {
-		Class<?> parameterSourceReturnType = parameterSource.getValueReturnType();
-
-		if (!equalsOrExtends(parameterSourceReturnType, controlTypeInfo.getParameterType())) {
-			throw new InvalidControlDeclarationException(this + " declares a parameter source that returns "
-					+ parameterSourceReturnType.getSimpleName() + " values while control takes "
-					+ controlTypeInfo.getParameterType().getSimpleName() + " parameter.");
-		}
 	}
 
 	private Class<?> getTargetElementDeclaringClass() {
@@ -171,6 +141,30 @@ class ControlDeclaration {
 		}
 	}
 
+	public Object getInstallationTargetFor(Object owner) {
+		if (targetElement instanceof Class<?>)
+			return owner;
+
+		return fromField(owner);
+	}
+
+	private Object fromField(Object owner) {
+		Field targetField = (Field) targetElement;
+		try {
+			targetField.setAccessible(true);
+
+			Object target = targetField.get(owner);
+			if (target == null) {
+				throw new NullPointerException(
+						"Value of field '" + targetField.getName() + "' declared in class "
+								+ targetField.getDeclaringClass().getSimpleName() + " is null.");
+			}
+			return target;
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new ReflectionException("Error getting value from target element " + targetElement, e);
+		}
+	}
+
 	@Override
 	public String toString() {
 		final String format = "ControlDeclaration @%s(id=%s, parameterSource=%s, control=%s.class) on %s";
@@ -180,7 +174,7 @@ class ControlDeclaration {
 		return String.format(format,
 				annotation.annotationType().getSimpleName(),
 				isAutoGeneratedId ? "<AUTO_GENERATED>" : id,
-				parameterSourceId.isEmpty() ? "<NONE>" : parameterSourceId,
+				parameterSourceContext.getId().isEmpty() ? "<NONE>" : parameterSourceContext.getId(),
 				controlTypeInfo.getControlType().getSimpleName(),
 				targetElement instanceof Field ? "field '"+ ((Field)targetElement).getName() + "' of class " + clazzName : clazzName );
 		//@formatter:on

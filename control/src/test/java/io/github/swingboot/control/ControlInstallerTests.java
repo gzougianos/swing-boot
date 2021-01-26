@@ -41,6 +41,9 @@ class ControlInstallerTests {
 	void reinstallButTheyWereNeverInstalled() {
 		assertThrows(ControlsWereNeverInstalledException.class,
 				() -> installer.reinstallTo(new EverythingOk()));
+
+		assertThrows(ControlsWereNeverInstalledException.class,
+				() -> installer.uninstallFrom(new EverythingOk()));
 	}
 
 	@Nested
@@ -62,6 +65,29 @@ class ControlInstallerTests {
 		class NestedFieldOnwer {
 			@InstallControls
 			private Acceptee acceptee = new Acceptee();
+
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
+
+		class Acceptee {
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
+		}
+	}
+
+	@Nested
+	@UiAll
+	class NullNestedField {
+		@Test
+		void main() {
+			NullNestedFieldOnwer nestedFieldOnwer = new NullNestedFieldOnwer();
+			assertThrows(NullPointerException.class, () -> installer.installControls(nestedFieldOnwer));
+		}
+
+		class NullNestedFieldOnwer {
+			@InstallControls
+			private Acceptee acceptee;
 
 			@OnActionPerformed(TestControl.class)
 			private JButton button = new JButton();

@@ -1,8 +1,7 @@
 package io.github.swingboot.control;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,8 +17,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.annotation.ParameterSource;
 import io.github.swingboot.control.annotation.installer.OnActionPerformedInstaller;
+import io.github.swingboot.control.parameter.ParameterSource;
 
 @SuppressWarnings("unused")
 class ControlDeclarationTests {
@@ -59,125 +57,38 @@ class ControlDeclarationTests {
 	}
 
 	@Nested
-	class ExceptionWhenParameterSourceGivenOnParameterlessControl {
-		@OnActionPerformed(value = VoidControl.class, parameterSource = "parsource")
-		private JButton field;
-
+	class InstallationTarget {
 		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration controlDeclaration = new ControlDeclaration(
-					field.getAnnotation(OnActionPerformed.class), field);
-			assertFalse(controlDeclaration.expectsParameterSource());
-		}
-	}
-
-	@Nested
-	class ExceptionWhenSettingParameterSourceOnParameterlessControl {
-		@OnActionPerformed(value = VoidControl.class)
-		private JButton field;
-
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			io.github.swingboot.control.parameter.ParameterSource source = mock(
-					io.github.swingboot.control.parameter.ParameterSource.class);
-
-			ControlDeclaration declaration = new ControlDeclaration(
-					field.getAnnotation(OnActionPerformed.class), field);
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> declaration.setParameterSource(source));
-		}
-	}
-
-	@Nested
-	class ExceptionWhenParameterSourceReturnValueMismatchControlParameterType {
-		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
-		private JButton field;
-
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
+		void fieldTarget() throws Exception {
+			Field field = HasAnnotationOnField.class.getDeclaredField("button");
 			ControlDeclaration declaration = new ControlDeclaration(
 					field.getAnnotation(OnActionPerformed.class), field);
 
-			io.github.swingboot.control.parameter.ParameterSource source = mock(
-					io.github.swingboot.control.parameter.ParameterSource.class);
-			doReturn(String.class).when(source).getValueReturnType();
-			doReturn("parsource").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> declaration.setParameterSource(source));
-		}
+			HasAnnotationOnField fieldOwner = new HasAnnotationOnField();
+			assertSame(fieldOwner.button, declaration.getInstallationTargetFor(fieldOwner));
 
-		@ParameterSource("parsource")
-		public String wrongReturnValue() {
-			return null;
+			fieldOwner.button = null;
+			assertThrows(NullPointerException.class, () -> declaration.getInstallationTargetFor(fieldOwner));
 		}
-	}
-
-	@Nested
-	class ExceptionWhenParameterSourceNotGivenOnNonNullableParameterControl {
-		@OnActionPerformed(value = IntControl.class)
-		private JButton field;
 
 		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
-		}
-	}
-
-	@Nested
-	class NoExceptionWhenParameterSourceNotGivenOnNullableParameterControl {
-		@OnActionPerformed(value = IntNullableControl.class)
-		private JButton field;
-
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			assertDoesNotThrow(
-					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
-		}
-	}
-
-	@Nested
-	class settingAParameterSourceThatReturnsVoid {
-		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
-		private JButton field;
-
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
+		void classTarget() throws Exception {
 			ControlDeclaration declaration = new ControlDeclaration(
-					field.getAnnotation(OnActionPerformed.class), field);
+					HasAnnotationOnClass.class.getAnnotation(OnActionPerformed.class),
+					HasAnnotationOnClass.class);
 
-			io.github.swingboot.control.parameter.ParameterSource source = mock(
-					io.github.swingboot.control.parameter.ParameterSource.class);
-			doReturn(Void.class).when(source).getValueReturnType();
-			doReturn("parsource").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> declaration.setParameterSource(source));
+			HasAnnotationOnClass hasAnnotationOnClass = new HasAnnotationOnClass();
+			assertSame(hasAnnotationOnClass, declaration.getInstallationTargetFor(hasAnnotationOnClass));
 		}
-	}
 
-	@Nested
-	class ParameterSourceIdMismatch {
-		@OnActionPerformed(value = IntControl.class, parameterSource = "parsource")
-		private JButton field;
+		class HasAnnotationOnField {
+			@OnActionPerformed(value = IntControl.class, id = "the_id", parameterSource = "parsource")
+			JButton button = new JButton();
+		}
 
-		@Test
-		void main() throws Exception {
-			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(
-					field.getAnnotation(OnActionPerformed.class), field);
-
-			io.github.swingboot.control.parameter.ParameterSource source = mock(
-					io.github.swingboot.control.parameter.ParameterSource.class);
-			doReturn(Integer.class).when(source).getValueReturnType();
-			doReturn("A MISMATCHED ID").when(source).getId();
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> declaration.setParameterSource(source));
+		@OnActionPerformed(value = IntControl.class, id = "the_id", parameterSource = "parsource")
+		@SuppressWarnings("serial")
+		class HasAnnotationOnClass extends JButton {
 		}
 	}
 
@@ -192,8 +103,7 @@ class ControlDeclarationTests {
 			ControlDeclaration declaration = new ControlDeclaration(
 					field.getAnnotation(OnActionPerformed.class), field);
 
-			io.github.swingboot.control.parameter.ParameterSource source = mock(
-					io.github.swingboot.control.parameter.ParameterSource.class);
+			ParameterSource source = mock(ParameterSource.class);
 			doReturn(Integer.class).when(source).getValueReturnType();
 			doReturn("parsource").when(source).getId();
 
@@ -220,9 +130,4 @@ class ControlDeclarationTests {
 		}
 	}
 
-	private static class IntNullableControl implements Control<Integer> {
-		@Override
-		public void perform(@Nullable Integer parameter) {
-		}
-	}
 }

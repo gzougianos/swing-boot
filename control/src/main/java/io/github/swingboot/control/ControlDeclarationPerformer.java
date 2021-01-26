@@ -2,32 +2,35 @@ package io.github.swingboot.control;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.EventObject;
-import java.util.Optional;
 
 import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 class ControlDeclarationPerformer {
 	private Controls controls;
-	private ObjectOwnedControlDeclaration controlDeclaration;
+	private Class<? extends Control<?>> controlType;
+	private ParameterSource parameterSource;
+	private Object owner;
 
-	ControlDeclarationPerformer(Controls controls, ObjectOwnedControlDeclaration controlDeclaration) {
+	ControlDeclarationPerformer(Controls controls, Class<? extends Control<?>> controlType,
+			ParameterSource parameterSource, Object owner) {
+		super();
 		this.controls = controls;
-		this.controlDeclaration = controlDeclaration;
+		this.controlType = controlType;
+		this.parameterSource = parameterSource;
+		this.owner = owner;
 	}
 
 	public void perform(EventObject event) {
-		Optional<ParameterSource> possibleParameterSource = controlDeclaration.getParameterSource();
-		if (possibleParameterSource.isPresent()) {
-			executeInvokingSource(possibleParameterSource.get(), event);
+		if (parameterSource != null) {
+			executeInvokingSource(event);
 		} else {
-			controls.perform(controlDeclaration.getControlType());
+			controls.perform(controlType);
 		}
 	}
 
-	private void executeInvokingSource(ParameterSource parameterSource, EventObject event) {
-		Object parameterSourceValue = parameterSource.getValue(controlDeclaration.getOwner(), event);
-		Class<? extends Control<?>> controlType = controlDeclaration.getControlType();
+	private void executeInvokingSource(EventObject event) {
+		Object parameterSourceValue = parameterSource.getValue(owner, event);
 
 		try {
 			controls.getClass().getMethod("perform", Class.class, Object.class).invoke(controls, controlType,
