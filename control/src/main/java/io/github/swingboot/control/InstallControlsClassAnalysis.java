@@ -38,7 +38,7 @@ class InstallControlsClassAnalysis {
 		nestedInstallControlsFields = getNestedInstallControlFields(nonStaticFieldsWithAtLeastOneAnnotation);
 		nestedInstallControlsFields = Collections.unmodifiableSet(nestedInstallControlsFields);
 
-		fieldAndMethodParameterSourceScan = new FieldAndMethodParameterSourceScan(clazz);
+		fieldAndMethodParameterSourceScan = FieldAndMethodParameterSourceScan.of(clazz);
 
 		if (clazz.isAnnotationPresent(InstallControls.class))
 			inheritControlDeclarationsFromParents();

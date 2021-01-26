@@ -1,5 +1,7 @@
 package io.github.swingboot.control.parameter;
 
+import static io.github.swingboot.control.parameter.FieldAndMethodParameterSourceScan.of;
+import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -19,8 +21,15 @@ import io.github.swingboot.control.annotation.ParameterSource;
 class FieldAndMethodParameterSourceScanTests {
 
 	@Test
+	void cache() throws Exception {
+		FieldAndMethodParameterSourceScan scan = of(StaticField.class);
+		FieldAndMethodParameterSourceScan scan2 = of(StaticField.class);
+		assertSame(scan, scan2);
+	}
+
+	@Test
 	void staticField() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(StaticField.class);
+		FieldAndMethodParameterSourceScan scan = of(StaticField.class);
 		assertEquals(1, scan.getParameterSources().size());
 
 		FieldParameterSource expected = new FieldParameterSource("id",
@@ -30,7 +39,7 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void staticMethod() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(StaticMethod.class);
+		FieldAndMethodParameterSourceScan scan = of(StaticMethod.class);
 		assertEquals(1, scan.getParameterSources().size());
 
 		MethodParameterSource expected = new MethodParameterSource("id",
@@ -40,7 +49,7 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void scansFieldsAndMethods() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(MethodAndField.class);
+		FieldAndMethodParameterSourceScan scan = of(MethodAndField.class);
 		assertEquals(2, scan.getParameterSources().size());
 
 		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod",
@@ -54,32 +63,27 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void exceptionWhenMultipleSourcesSameId() throws Exception {
-		assertThrows(InvalidParameterSourceException.class,
-				() -> new FieldAndMethodParameterSourceScan(MultipleSourcesSameId.class));
+		assertThrows(InvalidParameterSourceException.class, () -> of(MultipleSourcesSameId.class));
 	}
 
 	@Test
 	void methodHasNoAwtEventParameter() throws Exception {
-		assertThrows(InvalidParameterSourceException.class,
-				() -> new FieldAndMethodParameterSourceScan(MethodWithNoAwtEventParameter.class));
+		assertThrows(InvalidParameterSourceException.class, () -> of(MethodWithNoAwtEventParameter.class));
 	}
 
 	@Test
 	void methodHasMoreThanOneParameter() throws Exception {
-		assertThrows(InvalidParameterSourceException.class,
-				() -> new FieldAndMethodParameterSourceScan(MethodWithMoreThanOneParameter.class));
+		assertThrows(InvalidParameterSourceException.class, () -> of(MethodWithMoreThanOneParameter.class));
 	}
 
 	@Test
 	void emptyStringId() throws Exception {
-		assertThrows(InvalidParameterSourceException.class,
-				() -> new FieldAndMethodParameterSourceScan(EmptyStringAsId.class));
+		assertThrows(InvalidParameterSourceException.class, () -> of(EmptyStringAsId.class));
 	}
 
 	@Test
 	void methodWithOneAwtParameter() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(
-				MethodWithOneAwtEventParameter.class);
+		FieldAndMethodParameterSourceScan scan = of(MethodWithOneAwtEventParameter.class);
 		assertEquals(1, scan.getParameterSources().size());
 
 		MethodParameterSource expectedMethod = new MethodParameterSource("id",
@@ -89,7 +93,7 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void inheritAll() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(ChildWithAll.class);
+		FieldAndMethodParameterSourceScan scan = of(ChildWithAll.class);
 		assertEquals(3, scan.getParameterSources().size());
 
 		MethodParameterSource expectedMethod = new MethodParameterSource("idmethod",
@@ -107,8 +111,7 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void inheritButIgnoreOne() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(
-				ChildIgnoringOne.class);
+		FieldAndMethodParameterSourceScan scan = of(ChildIgnoringOne.class);
 		assertEquals(1, scan.getParameterSources().size());
 
 		FieldParameterSource expected = new FieldParameterSource("idfield",
@@ -118,13 +121,13 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void inheritButIgnoreAll() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(ChildIgnoreAll.class);
+		FieldAndMethodParameterSourceScan scan = of(ChildIgnoreAll.class);
 		assertEquals(0, scan.getParameterSources().size());
 	}
 
 	@Test
 	void methodOverride() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(MethodOverride.class);
+		FieldAndMethodParameterSourceScan scan = of(MethodOverride.class);
 		assertEquals(2, scan.getParameterSources().size());
 
 		FieldParameterSource expectedMethodParent = new FieldParameterSource("idfield",
@@ -138,7 +141,7 @@ class FieldAndMethodParameterSourceScanTests {
 
 	@Test
 	void fieldOverride() throws Exception {
-		FieldAndMethodParameterSourceScan scan = new FieldAndMethodParameterSourceScan(FieldOverride.class);
+		FieldAndMethodParameterSourceScan scan = of(FieldOverride.class);
 		assertEquals(2, scan.getParameterSources().size());
 
 		MethodParameterSource expectedMethodParent = new MethodParameterSource("idmethod",
