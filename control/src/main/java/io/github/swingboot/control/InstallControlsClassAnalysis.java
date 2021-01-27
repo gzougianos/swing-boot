@@ -55,7 +55,8 @@ class InstallControlsClassAnalysis {
 
 	private void initializeInitializedByDeclaration() {
 		if (clazz.isAnnotationPresent(InitializedBy.class)) {
-			initializedByDeclaration = new InitializedByDeclaration(clazz.getAnnotation(InitializedBy.class));
+			initializedByDeclaration = new InitializedByDeclaration(clazz,
+					clazz.getAnnotation(InitializedBy.class));
 			if (initializedByDeclaration.expectsParameterSource())
 				bindParameterSourceTo(initializedByDeclaration);
 		}
@@ -90,7 +91,8 @@ class InstallControlsClassAnalysis {
 	private void putControlDeclarationsOfElement(AnnotatedElement element) {
 		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(element);
 		for (Annotation annotation : declaresControlAnnotations) {
-			ControlInstallationDeclaration controlDeclaration = new ControlInstallationDeclaration(annotation, element);
+			ControlInstallationDeclaration controlDeclaration = new ControlInstallationDeclaration(annotation,
+					element);
 
 			checkIfNotAlreadyExists(controlDeclaration.getId());
 			controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);

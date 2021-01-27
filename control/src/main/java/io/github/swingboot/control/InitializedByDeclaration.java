@@ -7,13 +7,13 @@ import io.github.swingboot.control.parameter.ParameterSource;
 
 class InitializedByDeclaration implements ControlDeclaration {
 
-	private ParameterSourceContext parameterSourceContext;
-	private ControlTypeInfo controlTypeInfo;
+	private final ParameterSourceContext parameterSourceContext;
+	private final ControlTypeInfo controlTypeInfo;
 
-	public InitializedByDeclaration(InitializedBy annotation) {
+	public InitializedByDeclaration(Class<?> annotatedClass, InitializedBy annotation) {
 		controlTypeInfo = ControlTypeInfo.of(annotation.value());
 		parameterSourceContext = new ParameterSourceContext(controlTypeInfo, annotation.parameterSource(),
-				this);
+				"@InitializedBy annotation in " + annotatedClass);
 		parameterSourceContext.checkIfParameterSourceGivenWhenNonNullableParameter();
 	}
 
