@@ -5,9 +5,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.InstallControlsClassAnalysisTests.findsMultipleControlDeclaration.VoidControl;
+import io.github.swingboot.control.annotation.InitializedBy;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.annotation.KeyBinding;
 import io.github.swingboot.control.annotation.OnActionPerformed;
@@ -40,6 +43,40 @@ class InstallControlsClassAnalysisTests {
 			private JButton button;
 			@OnActionPerformed(value = VoidControl.class, id = "someid")
 			private JButton button1;
+		}
+	}
+
+	@Nested
+	class findsInitializedBy {
+		@Test
+		void withParameterSource() throws Exception {
+			InstallControlsClassAnalysis classAnalysis = of(InitializedWithParameterSource.class);
+
+			Optional<InitializedByDeclaration> declaration = classAnalysis.getInitializedByDeclaration();
+			assertTrue(declaration.get().getParameterSource().isPresent());
+		}
+
+		@Test
+		void withoutParameterSource() throws Exception {
+			InstallControlsClassAnalysis classAnalysis = of(InitializedWithoutParameterSource.class);
+
+			Optional<InitializedByDeclaration> declaration = classAnalysis.getInitializedByDeclaration();
+			assertFalse(declaration.get().getParameterSource().isPresent());
+		}
+
+		@InstallControls
+		@InitializedBy(value = TestControl.class, parameterSource = "someParameter")
+		private class InitializedWithParameterSource {
+
+			@ParameterSource("someParameter")
+			String parameter() {
+				return "";
+			}
+		}
+
+		@InitializedBy(value = VoidControl.class)
+		private class InitializedWithoutParameterSource {
+
 		}
 	}
 

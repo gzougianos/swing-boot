@@ -11,9 +11,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import io.github.swingboot.control.annotation.InitializedBy;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.parameter.FieldAndMethodParameterSourceScan;
 import io.github.swingboot.control.parameter.ParameterSource;
@@ -25,6 +27,7 @@ class InstallControlsClassAnalysis {
 	private Map<String, ControlDeclaration> controlDeclarations;
 	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
 	private Set<Field> nestedInstallControlsFields;
+	private InitializedByDeclaration initializedByDeclaration;
 
 	private InstallControlsClassAnalysis(Class<?> clazz) {
 		this.clazz = clazz;
@@ -45,7 +48,21 @@ class InstallControlsClassAnalysis {
 
 		bindParameterSourcesToControlDeclarations();
 
+		initializeInitializedByDeclaration();
+
 		controlDeclarations = Collections.unmodifiableMap(controlDeclarations);
+	}
+
+	private void initializeInitializedByDeclaration() {
+		if (clazz.isAnnotationPresent(InitializedBy.class)) {
+			initializedByDeclaration = new InitializedByDeclaration(clazz.getAnnotation(InitializedBy.class));
+			if (initializedByDeclaration.expectsParameterSource())
+				bindParameterSourceTo(initializedByDeclaration);
+		}
+	}
+
+	public Optional<InitializedByDeclaration> getInitializedByDeclaration() {
+		return Optional.ofNullable(initializedByDeclaration);
 	}
 
 	private Set<Field> getNestedInstallControlFields(Set<Field> nonStaticFieldsWithAtLeastOneAnnotation) {
@@ -97,21 +114,23 @@ class InstallControlsClassAnalysis {
 
 	private void bindParameterSourcesToControlDeclarations() {
 		controlDeclarations.values().stream().filter(ControlDeclaration::expectsParameterSource)
-				.forEach(declaration -> {
-					String expectedParameterSourceId = declaration.getParameterSourceId();
-					if (expectedParameterSourceId.equals(THIS)) {
-						declaration.setParameterSource(new SourceOwnerParameterSource(clazz));
-					} else {
-						ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
-								.get(expectedParameterSourceId);
-						if (parSource == null) {
-							throw new InvalidControlDeclarationException(
-									"No @ParameterSource(" + expectedParameterSourceId + ") found in class "
-											+ clazz.getSimpleName() + " for " + declaration + ".");
-						}
-						declaration.setParameterSource(parSource);
-					}
-				});
+				.forEach(this::bindParameterSourceTo);
+	}
+
+	private void bindParameterSourceTo(IControlDeclaration declaration) {
+		String expectedParameterSourceId = declaration.getParameterSourceId();
+		if (expectedParameterSourceId.equals(THIS)) {
+			declaration.setParameterSource(new SourceOwnerParameterSource(clazz));
+		} else {
+			ParameterSource parSource = fieldAndMethodParameterSourceScan.getParameterSources()
+					.get(expectedParameterSourceId);
+			if (parSource == null) {
+				throw new InvalidControlDeclarationException(
+						"No @ParameterSource(" + expectedParameterSourceId + ") found in class "
+								+ clazz.getSimpleName() + " for " + declaration + ".");
+			}
+			declaration.setParameterSource(parSource);
+		}
 	}
 
 	private void inheritControlDeclarationsFromParents() {

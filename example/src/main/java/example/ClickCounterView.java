@@ -1,21 +1,22 @@
 package example;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import io.github.swingboot.control.annotation.InitializedBy;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.annotation.KeyBinding;
 import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.annotation.OnComponentResized;
 import io.github.swingboot.control.annotation.ParameterSource;
 import io.github.swingboot.control.annotation.WithoutControls;
 import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
 
 @InstallControls
-@OnComponentResized(PrintResizeControl.class)
+@InitializedBy(value = InitializeClickCounterView.class, parameterSource = ParameterSource.THIS)
 public class ClickCounterView extends JPanel {
 	private static final long serialVersionUID = 4816090097824292469L;
 
@@ -36,6 +37,7 @@ public class ClickCounterView extends JPanel {
 
 	public ClickCounterView() {
 		super(new FlowLayout());
+		setOpaque(true);
 
 		increaseCounterButton = new JButton("Increase");
 		decreaseCounterButton = new JButton("Decrease");
@@ -65,6 +67,13 @@ public class ClickCounterView extends JPanel {
 
 	private void updateLabel() {
 		clickCountLabel.setText("Click count: " + clickCount);
+	}
+
+	@WithoutControls
+	@Override
+	public void setBackground(Color bg) {
+		// TODO Auto-generated method stub
+		super.setBackground(bg);
 	}
 
 }

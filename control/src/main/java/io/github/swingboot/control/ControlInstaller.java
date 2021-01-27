@@ -41,11 +41,16 @@ public class ControlInstaller {
 
 		Class<?> objectType = object.getClass();
 
+		InstallControlsClassAnalysis classAnalysis = InstallControlsClassAnalysis.of(objectType);
+
+		classAnalysis.getInitializedByDeclaration().ifPresent(declaration -> {
+			new ControlDeclarationPerformer(controls, declaration, object).perform(null);
+		});
+
 		if (object instanceof AdditionalControlInstallation) {
 			((AdditionalControlInstallation) object).beforeAnyControlInstalled(controls);
 		}
 
-		InstallControlsClassAnalysis classAnalysis = InstallControlsClassAnalysis.of(objectType);
 		createInstallationsAndInstall(object, classAnalysis);
 
 		if (object instanceof AdditionalControlInstallation) {
@@ -101,9 +106,8 @@ public class ControlInstaller {
 	private ControlInstallation createInstallation(Object owner, ControlDeclaration declaration) {
 		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
 
-		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls,
-				declaration.getControlTypeInfo().getControlType(),
-				declaration.getParameterSource().orElse(null), owner);
+		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
+				owner);
 
 		Object target = declaration.getInstallationTargetFor(owner);
 

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.swingboot.control.ControlInstaller.ControlsWereNeverInstalledException;
+import io.github.swingboot.control.annotation.InitializedBy;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.annotation.OnActionPerformed;
 import io.github.swingboot.testutils.UiAll;
@@ -35,6 +36,23 @@ class ControlInstallerTests {
 
 		verify(controls).perform(TestControl.class);
 		verifyNoMoreInteractions(controls);
+	}
+
+	@Nested
+	@UiAll
+	class PerformsInitialization {
+		@Test
+		void main() {
+			Target t = new Target();
+			new ControlInstaller(controls).installControls(t);
+			verify(controls).perform(TestControl.class);
+			verifyNoMoreInteractions(controls);
+		}
+
+		@InitializedBy(TestControl.class)
+		class Target {
+
+		}
 	}
 
 	@Test

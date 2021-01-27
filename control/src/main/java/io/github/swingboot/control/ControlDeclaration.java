@@ -14,7 +14,7 @@ import io.github.swingboot.control.annotation.installer.AnnotationInstaller;
 import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
-class ControlDeclaration {
+class ControlDeclaration implements IControlDeclaration {
 
 	private String id;
 	private final Annotation annotation;
@@ -89,18 +89,22 @@ class ControlDeclaration {
 		return false;
 	}
 
+	@Override
 	public Optional<ParameterSource> getParameterSource() {
 		return parameterSourceContext.getParameterSource();
 	}
 
+	@Override
 	public boolean expectsParameterSource() {
 		return parameterSourceContext.expectsParameterSource();
 	}
 
+	@Override
 	public void setParameterSource(ParameterSource parameterSource) {
 		parameterSourceContext.setParameterSource(parameterSource);
 	}
 
+	@Override
 	public String getParameterSourceId() {
 		return parameterSourceContext.getId();
 	}
@@ -109,10 +113,12 @@ class ControlDeclaration {
 		return installerType;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public ControlTypeInfo getControlTypeInfo() {
 		return controlTypeInfo;
 	}

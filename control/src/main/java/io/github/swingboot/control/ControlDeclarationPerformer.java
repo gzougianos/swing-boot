@@ -7,17 +7,16 @@ import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 class ControlDeclarationPerformer {
-	private Controls controls;
-	private Class<? extends Control<?>> controlType;
-	private ParameterSource parameterSource;
-	private Object owner;
+	private final Controls controls;
+	private final Class<? extends Control<?>> controlType;
+	private final ParameterSource parameterSource;
+	private final Object owner;
 
-	ControlDeclarationPerformer(Controls controls, Class<? extends Control<?>> controlType,
-			ParameterSource parameterSource, Object owner) {
+	ControlDeclarationPerformer(Controls controls, IControlDeclaration declaration, Object owner) {
 		super();
 		this.controls = controls;
-		this.controlType = controlType;
-		this.parameterSource = parameterSource;
+		this.controlType = declaration.getControlTypeInfo().getControlType();
+		this.parameterSource = declaration.getParameterSource().orElse(null);
 		this.owner = owner;
 	}
 
