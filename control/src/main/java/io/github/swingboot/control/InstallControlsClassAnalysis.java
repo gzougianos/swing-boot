@@ -24,7 +24,7 @@ import io.github.swingboot.control.parameter.SourceOwnerParameterSource;
 class InstallControlsClassAnalysis {
 	private static final Map<Class<?>, InstallControlsClassAnalysis> cache = new HashMap<>();
 	private final Class<?> clazz;
-	private Map<String, ControlDeclaration> controlDeclarations;
+	private Map<String, ControlInstallationDeclaration> controlDeclarations;
 	private FieldAndMethodParameterSourceScan fieldAndMethodParameterSourceScan;
 	private Set<Field> nestedInstallControlsFields;
 	private InitializedByDeclaration initializedByDeclaration;
@@ -90,7 +90,7 @@ class InstallControlsClassAnalysis {
 	private void putControlDeclarationsOfElement(AnnotatedElement element) {
 		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(element);
 		for (Annotation annotation : declaresControlAnnotations) {
-			ControlDeclaration controlDeclaration = new ControlDeclaration(annotation, element);
+			ControlInstallationDeclaration controlDeclaration = new ControlInstallationDeclaration(annotation, element);
 
 			checkIfNotAlreadyExists(controlDeclaration.getId());
 			controlDeclarations.put(controlDeclaration.getId(), controlDeclaration);
@@ -104,7 +104,7 @@ class InstallControlsClassAnalysis {
 		}
 	}
 
-	public Map<String, ControlDeclaration> getControlDeclarations() {
+	public Map<String, ControlInstallationDeclaration> getControlDeclarations() {
 		return controlDeclarations;
 	}
 
@@ -113,11 +113,11 @@ class InstallControlsClassAnalysis {
 	}
 
 	private void bindParameterSourcesToControlDeclarations() {
-		controlDeclarations.values().stream().filter(ControlDeclaration::expectsParameterSource)
+		controlDeclarations.values().stream().filter(ControlInstallationDeclaration::expectsParameterSource)
 				.forEach(this::bindParameterSourceTo);
 	}
 
-	private void bindParameterSourceTo(IControlDeclaration declaration) {
+	private void bindParameterSourceTo(ControlDeclaration declaration) {
 		String expectedParameterSourceId = declaration.getParameterSourceId();
 		if (expectedParameterSourceId.equals(THIS)) {
 			declaration.setParameterSource(new SourceOwnerParameterSource(clazz));

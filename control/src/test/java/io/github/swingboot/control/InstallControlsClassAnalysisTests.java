@@ -135,7 +135,7 @@ class InstallControlsClassAnalysisTests {
 			InstallControlsClassAnalysis analysis = of(clazz);
 			assertEquals(1, analysis.getControlDeclarations().size());
 
-			ControlDeclaration declaration = analysis.getControlDeclarations().get("id");
+			ControlInstallationDeclaration declaration = analysis.getControlDeclarations().get("id");
 			assertNotNull(declaration);
 			assertEquals(clazz, declaration.getTargetElement());
 			assertEquals("id", declaration.getId());
@@ -193,7 +193,7 @@ class InstallControlsClassAnalysisTests {
 			InstallControlsClassAnalysis analysis = of(NormalCaseWithAnnotatedField.class);
 			assertEquals(1, analysis.getControlDeclarations().size());
 
-			ControlDeclaration declaration = analysis.getControlDeclarations().get("someid");
+			ControlInstallationDeclaration declaration = analysis.getControlDeclarations().get("someid");
 			assertEquals(NormalCaseWithAnnotatedField.class.getDeclaredField("button"),
 					declaration.getTargetElement());
 			assertEquals("someid", declaration.getId());
@@ -265,7 +265,7 @@ class InstallControlsClassAnalysisTests {
 		InstallControlsClassAnalysis analysis = of(ThisParameterSource.class);
 		assertEquals(1, analysis.getControlDeclarations().size());
 
-		ControlDeclaration declaration = analysis.getControlDeclarations().get("someId");
+		ControlInstallationDeclaration declaration = analysis.getControlDeclarations().get("someId");
 		assertTrue(declaration.getParameterSource().isPresent());
 
 		ThisParameterSource thisParameterSource = new ThisParameterSource();

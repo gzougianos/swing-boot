@@ -21,7 +21,7 @@ import io.github.swingboot.control.annotation.installer.OnActionPerformedInstall
 import io.github.swingboot.control.parameter.ParameterSource;
 
 @SuppressWarnings("unused")
-class ControlDeclarationTests {
+class ControlInstallationDeclarationTests {
 
 	@Nested
 	class NotADeclaresControlAnnotation {
@@ -33,7 +33,7 @@ class ControlDeclarationTests {
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("x");
 			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(field.getAnnotation(Inject.class), field));
+					() -> new ControlInstallationDeclaration(field.getAnnotation(Inject.class), field));
 		}
 	}
 
@@ -48,10 +48,10 @@ class ControlDeclarationTests {
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("panel");
 			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+					() -> new ControlInstallationDeclaration(field.getAnnotation(OnActionPerformed.class), field));
 
 			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlDeclaration(this.getClass().getAnnotation(OnActionPerformed.class),
+					() -> new ControlInstallationDeclaration(this.getClass().getAnnotation(OnActionPerformed.class),
 							getClass()));
 		}
 	}
@@ -61,7 +61,7 @@ class ControlDeclarationTests {
 		@Test
 		void fieldTarget() throws Exception {
 			Field field = HasAnnotationOnField.class.getDeclaredField("button");
-			ControlDeclaration declaration = new ControlDeclaration(
+			ControlInstallationDeclaration declaration = new ControlInstallationDeclaration(
 					field.getAnnotation(OnActionPerformed.class), field);
 
 			HasAnnotationOnField fieldOwner = new HasAnnotationOnField();
@@ -73,7 +73,7 @@ class ControlDeclarationTests {
 
 		@Test
 		void classTarget() throws Exception {
-			ControlDeclaration declaration = new ControlDeclaration(
+			ControlInstallationDeclaration declaration = new ControlInstallationDeclaration(
 					HasAnnotationOnClass.class.getAnnotation(OnActionPerformed.class),
 					HasAnnotationOnClass.class);
 
@@ -100,7 +100,7 @@ class ControlDeclarationTests {
 		@Test
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("field");
-			ControlDeclaration declaration = new ControlDeclaration(
+			ControlInstallationDeclaration declaration = new ControlInstallationDeclaration(
 					field.getAnnotation(OnActionPerformed.class), field);
 
 			ParameterSource source = mock(ParameterSource.class);

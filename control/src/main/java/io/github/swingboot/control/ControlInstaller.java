@@ -103,7 +103,7 @@ public class ControlInstaller {
 		reinstallTo(owner); //actually the first installation
 	}
 
-	private ControlInstallation createInstallation(Object owner, ControlDeclaration declaration) {
+	private ControlInstallation createInstallation(Object owner, ControlInstallationDeclaration declaration) {
 		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
 
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,

@@ -5,7 +5,7 @@ import java.util.Optional;
 import io.github.swingboot.control.annotation.InitializedBy;
 import io.github.swingboot.control.parameter.ParameterSource;
 
-class InitializedByDeclaration implements IControlDeclaration {
+class InitializedByDeclaration implements ControlDeclaration {
 
 	private ParameterSourceContext parameterSourceContext;
 	private ControlTypeInfo controlTypeInfo;

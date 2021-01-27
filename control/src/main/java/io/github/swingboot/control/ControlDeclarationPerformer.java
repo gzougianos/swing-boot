@@ -12,7 +12,7 @@ class ControlDeclarationPerformer {
 	private final ParameterSource parameterSource;
 	private final Object owner;
 
-	ControlDeclarationPerformer(Controls controls, IControlDeclaration declaration, Object owner) {
+	ControlDeclarationPerformer(Controls controls, ControlDeclaration declaration, Object owner) {
 		super();
 		this.controls = controls;
 		this.controlType = declaration.getControlTypeInfo().getControlType();
