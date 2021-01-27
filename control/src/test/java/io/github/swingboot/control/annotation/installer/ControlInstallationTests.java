@@ -1,5 +1,7 @@
 package io.github.swingboot.control.annotation.installer;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -14,6 +16,7 @@ class ControlInstallationTests {
 		Runnable uninstall = mock(Runnable.class);
 		ControlInstallation installation = new ControlInstallation(install, uninstall);
 		installation.install();
+		assertTrue(installation.isInstalled());
 
 		verify(install).run();
 		verifyNoMoreInteractions(uninstall, install);
@@ -22,6 +25,7 @@ class ControlInstallationTests {
 		verifyNoMoreInteractions(uninstall, install);
 
 		installation.uninstall();
+		assertFalse(installation.isInstalled());
 		verifyNoMoreInteractions(install);
 		verify(uninstall).run();
 

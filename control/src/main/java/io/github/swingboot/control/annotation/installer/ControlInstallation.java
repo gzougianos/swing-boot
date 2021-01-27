@@ -27,4 +27,7 @@ public class ControlInstallation {
 		installed = true;
 	}
 
+	public boolean isInstalled() {
+		return installed;
+	}
 }

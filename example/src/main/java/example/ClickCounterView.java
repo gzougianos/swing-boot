@@ -57,7 +57,7 @@ public class ClickCounterView extends JPanel {
 	@WithoutControls
 	public void clickButtonsPassively() {
 		increaseCounterButton.doClick();
-		decreaseCounterButton.doClick();
+		increaseCounterButton.doClick();
 	}
 
 	public void decreaseClickCount() {
@@ -69,7 +69,6 @@ public class ClickCounterView extends JPanel {
 		clickCountLabel.setText("Click count: " + clickCount);
 	}
 
-	@WithoutControls
 	@Override
 	public void setBackground(Color bg) {
 		// TODO Auto-generated method stub

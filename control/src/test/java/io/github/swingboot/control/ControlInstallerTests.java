@@ -1,6 +1,7 @@
 package io.github.swingboot.control;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -44,7 +45,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			Target t = new Target();
-			new ControlInstaller(controls).installControls(t);
+			installer.installControls(t);
 			verify(controls).perform(TestControl.class);
 			verifyNoMoreInteractions(controls);
 		}
@@ -52,6 +53,28 @@ class ControlInstallerTests {
 		@InitializedBy(TestControl.class)
 		class Target {
 
+		}
+	}
+
+	@Nested
+	@UiAll
+	class InstalledState {
+		@Test
+		void main() {
+			Target t = new Target();
+			installer.installControls(t);
+			assertTrue(installer.areAllInstalledTo(t));
+			assertFalse(installer.areAllUninstalledFrom(t));
+
+			installer.uninstallFrom(t);
+			assertTrue(installer.areAllUninstalledFrom(t));
+			assertFalse(installer.areAllInstalledTo(t));
+		}
+
+		@InstallControls
+		class Target {
+			@OnActionPerformed(TestControl.class)
+			private JButton button = new JButton();
 		}
 	}
 

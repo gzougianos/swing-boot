@@ -33,7 +33,7 @@ public class ControlInstaller {
 	public void installControls(Object object) {
 		requireNonNull(object, "Cannot install controls to null object.");
 
-		if (alreadyInstalled(object)) {
+		if (installedTo(object)) {
 			return;
 		}
 
@@ -66,6 +66,18 @@ public class ControlInstaller {
 
 	public void reinstallTo(Object obj) {
 		getInstallationsOrThrow(obj).forEach(ControlInstallation::install);
+	}
+
+	public boolean installedTo(Object obj) {
+		return installationsByObject.containsKey(obj);
+	}
+
+	public boolean areAllInstalledTo(Object obj) {
+		return getInstallationsOrThrow(obj).stream().allMatch(ControlInstallation::isInstalled);
+	}
+
+	public boolean areAllUninstalledFrom(Object obj) {
+		return getInstallationsOrThrow(obj).stream().allMatch(t -> !t.isInstalled());
 	}
 
 	private List<ControlInstallation> getInstallationsOrThrow(Object obj) {
@@ -127,10 +139,6 @@ public class ControlInstaller {
 			log.warn("Installing controls to " + object
 					+ " outside the event dispatch thread. All controls should be installed in the event dispatch thread.");
 		}
-	}
-
-	private boolean alreadyInstalled(Object object) {
-		return installationsByObject.containsKey(object);
 	}
 
 	public static class ControlsWereNeverInstalledException extends RuntimeException {

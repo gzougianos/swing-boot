@@ -11,9 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import io.github.swingboot.control.annotation.WithoutControls;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.annotation.OnActionPerformed;
+import io.github.swingboot.control.annotation.WithoutControls;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
 
@@ -90,6 +90,51 @@ class WithoutControlsMethodInterceptorTests {
 
 		void activeClicks() {
 			button.doClick();
+			button2.doClick();
+		}
+	}
+
+	@Test
+	void onNestedCallsReinstallOnlyOneTimeAtTheEnd() {
+		Injector injector = Guice.createInjector(new ControlModule(ButtonControl.class));
+		ButtonControl buttonControl = injector.getInstance(ButtonControl.class);
+		ButtonControl2 buttonControl2 = injector.getInstance(ButtonControl2.class);
+		WithNestedCall view = injector.getInstance(WithNestedCall.class);
+
+		view.passiveClicks();
+		assertEquals(0, buttonControl.timesFired);
+		assertEquals(0, buttonControl2.timesFired);
+
+		view.activeClick();
+
+		assertEquals(2, buttonControl.timesFired);
+		assertEquals(0, buttonControl2.timesFired);
+	}
+
+	@InstallControls
+	@Singleton
+	static class WithNestedCall {
+		@OnActionPerformed(ButtonControl.class)
+		private JButton button = new JButton();
+
+		@OnActionPerformed(ButtonControl2.class)
+		private JButton button2 = new JButton();
+
+		@WithoutControls
+		void passiveClicks() {
+			button.doClick();
+			nestedCall();
+			button.doClick();
+		}
+
+		void activeClick() {
+			button.doClick();
+			nestedCall();
+			button.doClick();
+		}
+
+		@WithoutControls
+		void nestedCall() {
 			button2.doClick();
 		}
 	}

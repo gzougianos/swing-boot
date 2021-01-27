@@ -21,9 +21,17 @@ class WithoutControlsMethodInterceptor implements MethodInterceptor {
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		Object obj = invocation.getThis();
 
+		ControlInstaller controlInstaller = installerProvider.get();
+		if (!controlInstaller.installedTo(obj)) {
+			return invocation.proceed();
+		}
+
+		if (controlInstaller.areAllUninstalledFrom(obj)) {
+			return invocation.proceed();
+		}
+
 		waitUntilAllEventsAreDispatched();
 
-		ControlInstaller controlInstaller = installerProvider.get();
 		controlInstaller.uninstallFrom(obj);
 
 		Object invocationResult;
