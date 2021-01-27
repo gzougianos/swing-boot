@@ -15,9 +15,9 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.swingboot.control.annotation.installer.AnnotationInstaller;
-import io.github.swingboot.control.annotation.installer.AnnotationInstallerFactory;
-import io.github.swingboot.control.annotation.installer.ControlInstallation;
+import io.github.swingboot.control.annotation.installation.ControlInstallationFactory;
+import io.github.swingboot.control.annotation.installation.ControlInstallationFactories;
+import io.github.swingboot.control.annotation.installation.ControlInstallation;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
@@ -116,7 +116,7 @@ public class ControlInstaller {
 	}
 
 	private ControlInstallation createInstallation(Object owner, ControlInstallationDeclaration declaration) {
-		AnnotationInstaller installer = AnnotationInstallerFactory.get(declaration.getInstallerType());
+		ControlInstallationFactory installer = ControlInstallationFactories.get(declaration.getInstallerType());
 
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
 				owner);

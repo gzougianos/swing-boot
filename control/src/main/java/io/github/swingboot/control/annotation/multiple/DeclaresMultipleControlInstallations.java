@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(ANNOTATION_TYPE)
-public @interface DeclaresMultipleControls {
+public @interface DeclaresMultipleControlInstallations {
 }

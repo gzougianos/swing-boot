@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +13,9 @@ import javax.swing.JTextField;
 
 import io.github.swingboot.control.annotation.OnActionPerformed;
 
-public class OnActionPerformedInstaller implements AnnotationInstaller {
+public class OnActionPerformedInstallationFactory implements ControlInstallationFactory {
+	OnActionPerformedInstallationFactory() {
+	}
 
 	@Override
 	public ControlInstallation createInstallation(Annotation annotation, Object target,

@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 public class ControlInstallation {
 

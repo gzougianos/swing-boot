@@ -10,12 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.annotation.installer.OnComponentResizedInstaller;
+import io.github.swingboot.control.annotation.installation.OnComponentResizedInstallationFactory;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(installer = OnComponentResizedInstaller.class, targetTypes = Component.class)
+@DeclaresControlInstallation(factory = OnComponentResizedInstallationFactory.class, targetTypes = Component.class)
 public @interface OnComponentResized {
 	Class<? extends Control<?>> value();
 

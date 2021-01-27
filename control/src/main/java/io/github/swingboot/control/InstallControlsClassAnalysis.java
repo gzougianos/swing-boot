@@ -89,7 +89,7 @@ class InstallControlsClassAnalysis {
 	}
 
 	private void putControlDeclarationsOfElement(AnnotatedElement element) {
-		Set<Annotation> declaresControlAnnotations = DeclaresControlAnnotations.ofElement(element);
+		Set<Annotation> declaresControlAnnotations = DeclaresControlInstallationAnnotations.ofElement(element);
 		for (Annotation annotation : declaresControlAnnotations) {
 			ControlInstallationDeclaration controlDeclaration = new ControlInstallationDeclaration(annotation,
 					element);

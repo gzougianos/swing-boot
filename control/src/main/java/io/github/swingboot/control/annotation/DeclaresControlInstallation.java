@@ -6,12 +6,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import io.github.swingboot.control.annotation.installer.AnnotationInstaller;
+import io.github.swingboot.control.annotation.installation.ControlInstallationFactory;
 
 @Retention(RUNTIME)
 @Target(ANNOTATION_TYPE)
-public @interface DeclaresControl {
+public @interface DeclaresControlInstallation {
 	Class<?>[] targetTypes();
 
-	Class<? extends AnnotationInstaller> installer();
+	Class<? extends ControlInstallationFactory> factory();
 }

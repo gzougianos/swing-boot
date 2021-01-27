@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -13,12 +13,12 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.annotation.installer.OnSelectionChangedInstaller;
+import io.github.swingboot.control.annotation.installation.OnSelectionChangedInstallationFactory;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(installer = OnSelectionChangedInstaller.class, targetTypes = { JTable.class, JList.class,
+@DeclaresControlInstallation(factory = OnSelectionChangedInstallationFactory.class, targetTypes = { JTable.class, JList.class,
 		ListSelectionModel.class })
 public @interface OnSelectionChanged {
 	Class<? extends Control<?>> value();

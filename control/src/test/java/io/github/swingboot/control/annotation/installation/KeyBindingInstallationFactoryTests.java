@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,19 +29,19 @@ import io.github.swingboot.testutils.UiExtension;
 
 @ExtendWith(UiExtension.class)
 @UiAll
-class KeyBindingInstallerTests {
+class KeyBindingInstallationFactoryTests {
 
 	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
 	private int annotationHolder;
 
-	private AnnotationInstaller installer;
+	private ControlInstallationFactory factory;
 	private Consumer<EventObject> eventConsumer;
 	private KeyBinding annotation;
 
 	@Test
 	void toJComponent() {
 		JPanel panel = new JPanel();
-		ControlInstallation installation = installer.createInstallation(annotation, panel, eventConsumer);
+		ControlInstallation installation = factory.createInstallation(annotation, panel, eventConsumer);
 		installation.install();
 
 		Object binding = panel.getInputMap(annotation.when())
@@ -60,7 +60,7 @@ class KeyBindingInstallerTests {
 	@Test
 	void toContentPaneContainer() {
 		JFrame frame = new JFrame();
-		ControlInstallation installation = installer.createInstallation(annotation, frame, eventConsumer);
+		ControlInstallation installation = factory.createInstallation(annotation, frame, eventConsumer);
 		installation.install();
 
 		JComponent panel = (JComponent) frame.getContentPane();
@@ -84,19 +84,19 @@ class KeyBindingInstallerTests {
 		frame.setContentPane(new Container());
 
 		assertThrows(RuntimeException.class,
-				() -> installer.createInstallation(annotation, frame, eventConsumer));
+				() -> factory.createInstallation(annotation, frame, eventConsumer));
 	}
 
 	@Test
 	void notSupportedComponent() {
 		assertThrows(RuntimeException.class,
-				() -> installer.createInstallation(annotation, new Button(), eventConsumer));
+				() -> factory.createInstallation(annotation, new Button(), eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void init() throws Exception {
-		installer = new KeyBindingInstaller();
+		factory = new KeyBindingInstallationFactory();
 		eventConsumer = mock(Consumer.class);
 		annotation = getClass().getDeclaredField("annotationHolder").getAnnotation(KeyBinding.class);
 	}

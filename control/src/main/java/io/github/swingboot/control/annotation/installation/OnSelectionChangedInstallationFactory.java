@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import java.lang.annotation.Annotation;
 import java.util.EventObject;
@@ -13,7 +13,9 @@ import javax.swing.event.ListSelectionListener;
 
 import io.github.swingboot.control.annotation.OnSelectionChanged;
 
-public class OnSelectionChangedInstaller implements AnnotationInstaller {
+public class OnSelectionChangedInstallationFactory implements ControlInstallationFactory {
+	OnSelectionChangedInstallationFactory() {
+	}
 
 	@Override
 	public ControlInstallation createInstallation(Annotation annotation, Object target,

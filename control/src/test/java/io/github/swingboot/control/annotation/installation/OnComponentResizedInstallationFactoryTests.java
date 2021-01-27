@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.eq;
@@ -28,17 +28,17 @@ import io.github.swingboot.testutils.UiExtension;
 @ExtendWith(UiExtension.class)
 @SuppressWarnings("unchecked")
 @UiAll
-class OnComponentResizedInstallerTests {
+class OnComponentResizedInstallationFactoryTests {
 	@OnComponentResized(TestControl.class)
 	private int field;
 
 	@Test
 	void main() throws Exception {
-		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
+		OnComponentResizedInstallationFactory factory = new OnComponentResizedInstallationFactory();
 		JButton button = new JButton();
 		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 
-		ControlInstallation installation = installer.createInstallation(annotationOfField("field"), button,
+		ControlInstallation installation = factory.createInstallation(annotationOfField("field"), button,
 				eventConsumer);
 		installation.install();
 
@@ -56,10 +56,10 @@ class OnComponentResizedInstallerTests {
 
 	@Test
 	void wrongTarget() throws Exception {
-		OnComponentResizedInstaller installer = new OnComponentResizedInstaller();
+		OnComponentResizedInstallationFactory factory = new OnComponentResizedInstallationFactory();
 		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 		assertThrows(RuntimeException.class,
-				() -> installer.createInstallation(annotationOfField("field"), new String(), eventConsumer));
+				() -> factory.createInstallation(annotationOfField("field"), new String(), eventConsumer));
 	}
 
 	private <T extends EventListener> void fireListeners(Component c, Class<T> type,

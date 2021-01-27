@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Matchers.any;
@@ -29,7 +29,7 @@ import io.github.swingboot.testutils.UiExtension;
 
 @ExtendWith(UiExtension.class)
 @UiAll
-class OnActionPerformedInstallerTests {
+class OnActionPerformedInstallationFactoryTests {
 
 	@OnActionPerformed(TestControl.class)
 	private int anyModifierField;
@@ -39,11 +39,11 @@ class OnActionPerformedInstallerTests {
 
 	private Consumer<EventObject> eventConsumer;
 	private JButton button;
-	private OnActionPerformedInstaller installer;
+	private OnActionPerformedInstallationFactory factory;
 
 	@Test
 	void anyModifier() throws Exception {
-		ControlInstallation installation = installer.createInstallation(annotationOfField("anyModifierField"),
+		ControlInstallation installation = factory.createInstallation(annotationOfField("anyModifierField"),
 				button, eventConsumer);
 		installation.install();
 
@@ -61,7 +61,7 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void specificModifier() throws Exception {
-		ControlInstallation installation = installer
+		ControlInstallation installation = factory
 				.createInstallation(annotationOfField("specificModifierField"), button, eventConsumer);
 		installation.install();
 
@@ -79,7 +79,7 @@ class OnActionPerformedInstallerTests {
 
 	@Test
 	void wrongComponent() throws Exception {
-		assertThrows(RuntimeException.class, () -> installer
+		assertThrows(RuntimeException.class, () -> factory
 				.createInstallation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
 	}
 
@@ -90,7 +90,7 @@ class OnActionPerformedInstallerTests {
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	private void extracted() {
-		installer = new OnActionPerformedInstaller();
+		factory = new OnActionPerformedInstallationFactory();
 		button = new JButton();
 		eventConsumer = mock(Consumer.class);
 	}

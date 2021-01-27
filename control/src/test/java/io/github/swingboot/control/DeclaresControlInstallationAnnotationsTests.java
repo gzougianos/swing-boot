@@ -1,6 +1,6 @@
 package io.github.swingboot.control;
 
-import static io.github.swingboot.control.DeclaresControlAnnotations.ofElement;
+import static io.github.swingboot.control.DeclaresControlInstallationAnnotations.ofElement;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ import io.github.swingboot.control.annotation.OnActionPerformed;
 import io.github.swingboot.control.annotation.OnComponentResized;
 import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
 
-class DeclaresControlAnnotationsTests {
+class DeclaresControlInstallationAnnotationsTests {
 
 	@Nested
 	class FlattensAnnotation {

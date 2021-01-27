@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -14,7 +14,9 @@ import javax.swing.RootPaneContainer;
 
 import io.github.swingboot.control.annotation.KeyBinding;
 
-public class KeyBindingInstaller implements AnnotationInstaller {
+public class KeyBindingInstallationFactory implements ControlInstallationFactory {
+	KeyBindingInstallationFactory() {
+	}
 
 	@Override
 	public ControlInstallation createInstallation(Annotation annotation, Object target,

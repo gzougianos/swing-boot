@@ -13,12 +13,12 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.annotation.installer.OnActionPerformedInstaller;
+import io.github.swingboot.control.annotation.installation.OnActionPerformedInstallationFactory;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControl(installer = OnActionPerformedInstaller.class, targetTypes = { AbstractButton.class,
+@DeclaresControlInstallation(factory = OnActionPerformedInstallationFactory.class, targetTypes = { AbstractButton.class,
 		JTextField.class, JComboBox.class })
 public @interface OnActionPerformed {
 	public static final int ANY_MODIFIER = -500;

@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.github.swingboot.control.annotation.DeclaresControl;
-import io.github.swingboot.control.annotation.multiple.DeclaresMultipleControls;
+import io.github.swingboot.control.annotation.DeclaresControlInstallation;
+import io.github.swingboot.control.annotation.multiple.DeclaresMultipleControlInstallations;
 import io.github.swingboot.control.reflect.ReflectionException;
 
-final class DeclaresControlAnnotations {
-	private DeclaresControlAnnotations() {
+final class DeclaresControlInstallationAnnotations {
+	private DeclaresControlInstallationAnnotations() {
 	}
 
 	static Set<Annotation> ofElement(AnnotatedElement annotatedElement) {
@@ -23,7 +23,7 @@ final class DeclaresControlAnnotations {
 			Class<? extends Annotation> annotationType = annotation.annotationType();
 			if (declaresMultipleControls(annotation)) {
 				addToResult(result, invokeValueMethodOf(annotation));
-			} else if (annotationType.isAnnotationPresent(DeclaresControl.class)) {
+			} else if (annotationType.isAnnotationPresent(DeclaresControlInstallation.class)) {
 				addToResult(result, annotation);
 			}
 		}
@@ -42,7 +42,7 @@ final class DeclaresControlAnnotations {
 
 	private static boolean declaresMultipleControls(Annotation annotation) {
 		Class<? extends Annotation> annotationType = annotation.annotationType();
-		return annotationType.isAnnotationPresent(DeclaresMultipleControls.class);
+		return annotationType.isAnnotationPresent(DeclaresMultipleControlInstallations.class);
 	}
 
 	private static void addToResult(Set<Annotation> result, Annotation... annotations) {

@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
@@ -24,7 +24,7 @@ import io.github.swingboot.testutils.UiExtension;
 @ExtendWith(UiExtension.class)
 @SuppressWarnings("unchecked")
 @UiAll
-class OnSelectionChangedInstallerTests {
+class OnSelectionChangedInstallationFactoryTests {
 	@OnSelectionChanged(value = TestControl.class, valueIsAdjusting = BooleanValue.TRUE)
 	private int field;
 
@@ -35,7 +35,7 @@ class OnSelectionChangedInstallerTests {
 		OnSelectionChanged annotation = getClass().getDeclaredField("field")
 				.getAnnotation(OnSelectionChanged.class);
 
-		ControlInstallation installation = new OnSelectionChangedInstaller().createInstallation(annotation,
+		ControlInstallation installation = new OnSelectionChangedInstallationFactory().createInstallation(annotation,
 				list, consumer);
 
 		installation.install();

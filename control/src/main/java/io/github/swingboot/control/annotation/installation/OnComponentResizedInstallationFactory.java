@@ -1,4 +1,4 @@
-package io.github.swingboot.control.annotation.installer;
+package io.github.swingboot.control.annotation.installation;
 
 import java.awt.Component;
 import java.awt.event.ComponentAdapter;
@@ -7,7 +7,9 @@ import java.lang.annotation.Annotation;
 import java.util.EventObject;
 import java.util.function.Consumer;
 
-public class OnComponentResizedInstaller implements AnnotationInstaller {
+public class OnComponentResizedInstallationFactory implements ControlInstallationFactory {
+	OnComponentResizedInstallationFactory() {
+	}
 
 	@Override
 	public ControlInstallation createInstallation(Annotation annotation, Object target,

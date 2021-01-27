@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.annotation.installer.OnActionPerformedInstaller;
+import io.github.swingboot.control.annotation.installation.OnActionPerformedInstallationFactory;
 import io.github.swingboot.control.parameter.ParameterSource;
 
 @SuppressWarnings("unused")
@@ -114,7 +114,7 @@ class ControlInstallationDeclarationTests {
 			assertEquals(IntControl.class, declaration.getControlTypeInfo().getControlType());
 			assertEquals(field, declaration.getTargetElement());
 			assertTrue(declaration.getParameterSource().isPresent());
-			assertEquals(OnActionPerformedInstaller.class, declaration.getInstallerType());
+			assertEquals(OnActionPerformedInstallationFactory.class, declaration.getInstallerType());
 		}
 	}
 

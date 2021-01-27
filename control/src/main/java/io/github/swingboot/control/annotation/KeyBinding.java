@@ -15,13 +15,13 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.annotation.installer.KeyBindingInstaller;
+import io.github.swingboot.control.annotation.installation.KeyBindingInstallationFactory;
 
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
 //@formatter:off
-@DeclaresControl(installer = KeyBindingInstaller.class, 
+@DeclaresControlInstallation(factory = KeyBindingInstallationFactory.class, 
 		targetTypes = { JComponent.class, JFrame.class, JWindow.class, JDialog.class })
 //@formatter:on
 public @interface KeyBinding {
