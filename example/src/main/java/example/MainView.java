@@ -14,9 +14,9 @@ import io.github.swingboot.control.annotation.WithoutControls;
 
 @SuppressWarnings("serial")
 @Singleton
-@InstallControls
 @KeyBinding(id = "bind", value = MoveMainViewRightControl.class, keyStroke = "F2", when = KeyBinding.WHEN_IN_FOCUSED_WINDOW)
-public final class MainView extends JFrame {
+@InstallControls
+public class MainView extends JFrame {
 
 	private ClickCounterView topCounterView;
 

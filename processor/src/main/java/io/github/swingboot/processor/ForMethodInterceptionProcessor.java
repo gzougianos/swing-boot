@@ -19,7 +19,7 @@ public class ForMethodInterceptionProcessor implements ProcessorDelegate {
 			"InUi", "InBackground", 
 			"AssertBackground", "AssertUi");
 	
-	private final Messager messager;
+	protected final Messager messager;
 	//@formatter:on
 	public ForMethodInterceptionProcessor(Messager messager) {
 		this.messager = messager;
@@ -74,7 +74,7 @@ public class ForMethodInterceptionProcessor implements ProcessorDelegate {
 		}
 	}
 
-	protected String simpleNameOf(TypeElement element) {
+	protected String simpleNameOf(Element element) {
 		return element.getSimpleName().toString();
 	}
 
