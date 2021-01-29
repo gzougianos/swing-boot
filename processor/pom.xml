@@ -8,7 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>processor</artifactId>
-	
+
 	<properties>
 		<auto-service.version>1.0-rc2</auto-service.version>
 	</properties>
@@ -20,6 +20,28 @@
 			<version>${auto-service.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>joor-java-8</artifactId>
+			<version>0.9.13</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.github.swingboot</groupId>
+			<artifactId>control</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.github.swingboot</groupId>
+			<artifactId>concurrency</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 </project>
