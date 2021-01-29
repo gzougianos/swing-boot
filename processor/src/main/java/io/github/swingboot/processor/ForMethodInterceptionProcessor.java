@@ -4,25 +4,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
 
-public class ForMethodInterceptionProcessor implements ProcessorDelegate {
+public class ForMethodInterceptionProcessor extends AbstractProcessorDelegate {
 	//@formatter:off
 	private static final List<String> SUPPORTED_ANNOTATIONS = Arrays.asList(
 			"InUi", "InBackground", 
 			"AssertBackground", "AssertUi");
 	
-	protected final Messager messager;
 	//@formatter:on
-	public ForMethodInterceptionProcessor(Messager messager) {
-		this.messager = messager;
+	public ForMethodInterceptionProcessor(ProcessingEnvironment environment) {
+		super(environment);
 	}
 
 	@Override
@@ -44,17 +41,6 @@ public class ForMethodInterceptionProcessor implements ProcessorDelegate {
 		validateAbsentClassModifier(annotation, methodElement, Modifier.ABSTRACT);
 	}
 
-	protected void validateAbsentClassModifier(TypeElement annotation, Element methodElement,
-			Modifier modifier) {
-		final Element classElement = methodElement.getEnclosingElement();
-		final boolean containsModifier = classElement.getModifiers().contains(modifier);
-		if (containsModifier) {
-			String error = "%s cannot be used on methods of a %s class.";
-			error = String.format(error, simpleNameOf(annotation), modifier.toString().toLowerCase());
-			printError(error, methodElement, annotation);
-		}
-	}
-
 	protected void validateEnclosingElementIsClass(TypeElement annotation, Element element) {
 		boolean isClass = element.getEnclosingElement().getKind() == ElementKind.CLASS;
 		if (!isClass) {
@@ -62,30 +48,6 @@ public class ForMethodInterceptionProcessor implements ProcessorDelegate {
 			error = String.format(error, simpleNameOf(annotation));
 			printError(error, element, annotation);
 		}
-	}
-
-	protected void validateAbsentMethodModifier(TypeElement annotation, Element methodElement,
-			Modifier modifier) {
-		final boolean containsModifier = methodElement.getModifiers().contains(modifier);
-		if (containsModifier) {
-			String error = "%s cannot be used on %s methods.";
-			error = String.format(error, simpleNameOf(annotation), modifier.toString().toLowerCase());
-			printError(error, methodElement, annotation);
-		}
-	}
-
-	protected String simpleNameOf(Element element) {
-		return element.getSimpleName().toString();
-	}
-
-	protected void printError(String msg, Element element, TypeElement annotation) {
-		for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
-			if (annotation.equals(mirror.getAnnotationType().asElement())) {
-				messager.printMessage(Kind.ERROR, msg, element, mirror);
-				return;
-			}
-		}
-		messager.printMessage(Kind.ERROR, msg, element);
 	}
 
 	@Override

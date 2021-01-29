@@ -20,7 +20,7 @@ class ForMethodInterceptionProcessorTests {
 	void onPrivateMethod() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -40,7 +40,7 @@ class ForMethodInterceptionProcessorTests {
 	void onStaticMethod() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -60,7 +60,7 @@ class ForMethodInterceptionProcessorTests {
 	void onFinalMethod() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -80,7 +80,7 @@ class ForMethodInterceptionProcessorTests {
 	void onAbstractMethod() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 	
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -100,7 +100,7 @@ class ForMethodInterceptionProcessorTests {
 	void inFinalClass() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -120,7 +120,7 @@ class ForMethodInterceptionProcessorTests {
 	void inPrivateClass() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -141,7 +141,7 @@ class ForMethodInterceptionProcessorTests {
 	void inAbstractClass() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -160,7 +160,7 @@ class ForMethodInterceptionProcessorTests {
 	void inInterface() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -177,7 +177,7 @@ class ForMethodInterceptionProcessorTests {
 	void inAnnotation() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -194,7 +194,7 @@ class ForMethodInterceptionProcessorTests {
 	void allGood() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package methodinterception;"
 
 				+ "import io.github.swingboot.concurrency.AssertUi;"
 				
@@ -211,6 +211,6 @@ class ForMethodInterceptionProcessorTests {
 	void compile(String className, String classContent) {
 		Processor processor = new BootProcessor();
 		CompileOptions options = new CompileOptions().processors(processor);
-		Reflect.compile("test." + className, classContent, options).type();
+		Reflect.compile("methodinterception." + className, classContent, options).type();
 	}
 }

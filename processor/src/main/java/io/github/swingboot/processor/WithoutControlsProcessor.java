@@ -1,6 +1,6 @@
 package io.github.swingboot.processor;
 
-import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -9,8 +9,8 @@ import javax.lang.model.type.DeclaredType;
 public class WithoutControlsProcessor extends ForMethodInterceptionProcessor {
 	private static final String ANNOTATION = "WithoutControls";
 
-	public WithoutControlsProcessor(Messager messager) {
-		super(messager);
+	public WithoutControlsProcessor(ProcessingEnvironment environment) {
+		super(environment);
 	}
 
 	@Override

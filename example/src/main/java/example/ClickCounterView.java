@@ -1,6 +1,5 @@
 package example;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -67,12 +66,6 @@ public class ClickCounterView extends JPanel {
 
 	private void updateLabel() {
 		clickCountLabel.setText("Click count: " + clickCount);
-	}
-
-	@Override
-	public void setBackground(Color bg) {
-		// TODO Auto-generated method stub
-		super.setBackground(bg);
 	}
 
 }

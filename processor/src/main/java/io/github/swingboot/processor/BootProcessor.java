@@ -28,8 +28,10 @@ public class BootProcessor extends AbstractProcessor {
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
 		super.init(processingEnv);
-		delegates.add(new ForMethodInterceptionProcessor(processingEnv.getMessager()));
-		delegates.add(new WithoutControlsProcessor(processingEnv.getMessager()));
+
+		delegates.add(new ForMethodInterceptionProcessor(processingEnv));
+		delegates.add(new WithoutControlsProcessor(processingEnv));
+		delegates.add(new ParameterSourceProcessor(processingEnv));
 	}
 
 	@Override

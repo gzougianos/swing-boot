@@ -17,7 +17,7 @@ class WithoutControlsProcessorTests {
 	void installControlsMissing() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package withoutcontrols;"
 
 				+ "import io.github.swingboot.control.annotation.*;"
 				
@@ -38,7 +38,7 @@ class WithoutControlsProcessorTests {
 	void allOk() {
 		String classContent =
 		//@formatter:off
-				"package test;"
+				"package withoutcontrols;"
 
 				+ "import io.github.swingboot.control.annotation.*;"
 				
@@ -58,6 +58,6 @@ class WithoutControlsProcessorTests {
 	void compile(String className, String classContent) {
 		Processor processor = new BootProcessor();
 		CompileOptions options = new CompileOptions().processors(processor);
-		Reflect.compile("test." + className, classContent, options).type();
+		Reflect.compile("withoutcontrols." + className, classContent, options).type();
 	}
 }
