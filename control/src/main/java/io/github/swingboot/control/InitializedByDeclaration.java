@@ -18,11 +18,6 @@ class InitializedByDeclaration implements ControlDeclaration {
 	}
 
 	@Override
-	public ControlTypeInfo getControlTypeInfo() {
-		return controlTypeInfo;
-	}
-
-	@Override
 	public boolean expectsParameterSource() {
 		return parameterSourceContext.expectsParameterSource();
 	}
@@ -45,6 +40,11 @@ class InitializedByDeclaration implements ControlDeclaration {
 	@Override
 	public String getParameterSourceId() {
 		return parameterSourceContext.getId();
+	}
+
+	@Override
+	public Class<? extends Control<?>> getControlType() {
+		return controlTypeInfo.getControlType();
 	}
 
 }

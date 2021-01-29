@@ -120,11 +120,6 @@ class ControlInstallationDeclaration implements ControlDeclaration {
 		return id;
 	}
 
-	@Override
-	public ControlTypeInfo getControlTypeInfo() {
-		return controlTypeInfo;
-	}
-
 	public Annotation getAnnotation() {
 		return annotation;
 	}
@@ -186,6 +181,11 @@ class ControlInstallationDeclaration implements ControlDeclaration {
 				controlTypeInfo.getControlType().getSimpleName(),
 				targetElement instanceof Field ? "field '"+ ((Field)targetElement).getName() + "' of class " + clazzName : clazzName );
 		//@formatter:on
+	}
+
+	@Override
+	public Class<? extends Control<?>> getControlType() {
+		return controlTypeInfo.getControlType();
 	}
 
 }

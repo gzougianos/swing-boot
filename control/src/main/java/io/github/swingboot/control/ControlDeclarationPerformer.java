@@ -15,7 +15,7 @@ class ControlDeclarationPerformer {
 	ControlDeclarationPerformer(Controls controls, ControlDeclaration declaration, Object owner) {
 		super();
 		this.controls = controls;
-		this.controlType = declaration.getControlTypeInfo().getControlType();
+		this.controlType = declaration.getControlType();
 		this.parameterSource = declaration.getParameterSource().orElse(null);
 		this.owner = owner;
 	}

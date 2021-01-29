@@ -48,11 +48,11 @@ class ControlInstallationDeclarationTests {
 		void main() throws Exception {
 			Field field = getClass().getDeclaredField("panel");
 			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlInstallationDeclaration(field.getAnnotation(OnActionPerformed.class), field));
+					() -> new ControlInstallationDeclaration(field.getAnnotation(OnActionPerformed.class),
+							field));
 
-			assertThrows(InvalidControlDeclarationException.class,
-					() -> new ControlInstallationDeclaration(this.getClass().getAnnotation(OnActionPerformed.class),
-							getClass()));
+			assertThrows(InvalidControlDeclarationException.class, () -> new ControlInstallationDeclaration(
+					this.getClass().getAnnotation(OnActionPerformed.class), getClass()));
 		}
 	}
 
@@ -110,8 +110,6 @@ class ControlInstallationDeclarationTests {
 			declaration.setParameterSource(source);
 			assertEquals("the_id", declaration.getId());
 			assertEquals("parsource", declaration.getParameterSourceId());
-			assertEquals(Integer.class, declaration.getControlTypeInfo().getParameterType());
-			assertEquals(IntControl.class, declaration.getControlTypeInfo().getControlType());
 			assertEquals(field, declaration.getTargetElement());
 			assertTrue(declaration.getParameterSource().isPresent());
 			assertEquals(OnActionPerformedInstallationFactory.class, declaration.getInstallerType());

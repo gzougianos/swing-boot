@@ -6,7 +6,7 @@ import io.github.swingboot.control.parameter.ParameterSource;
 
 public interface ControlDeclaration {
 
-	ControlTypeInfo getControlTypeInfo();
+	Class<? extends Control<?>> getControlType();
 
 	String getId();
 
