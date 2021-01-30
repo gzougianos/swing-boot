@@ -1,10 +1,15 @@
 package io.github.swingboot.processor;
 
+import java.util.Collections;
+import java.util.Map;
+
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
@@ -49,6 +54,10 @@ public abstract class AbstractProcessorDelegate implements ProcessorDelegate {
 		return element.getSimpleName().toString();
 	}
 
+	protected String simpleNameOf(AnnotationMirror mirror) {
+		return simpleNameOf(mirror.getAnnotationType().asElement());
+	}
+
 	protected void printError(String msg, Element element, TypeElement annotation) {
 		for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
 			if (annotation.equals(mirror.getAnnotationType().asElement())) {
@@ -57,5 +66,24 @@ public abstract class AbstractProcessorDelegate implements ProcessorDelegate {
 			}
 		}
 		messager.printMessage(Kind.ERROR, msg, element);
+	}
+
+	protected Map<? extends ExecutableElement, ? extends AnnotationValue> getAnnotationValues(
+			TypeElement annotationElement, Element element) {
+		for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
+			if (mirror.getAnnotationType().equals(annotationElement.asType())) {
+				return mirror.getElementValues();
+			}
+		}
+		return Collections.emptyMap();
+	}
+
+	protected AnnotationValue getAnnotationPropertyValue(String property,
+			Map<? extends ExecutableElement, ? extends AnnotationValue> values) {
+		for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : values.entrySet()) {
+			if (property.contentEquals(e.getKey().getSimpleName()))
+				return e.getValue();
+		}
+		return null;
 	}
 }

@@ -1,6 +1,5 @@
 package io.github.swingboot.processor;
 
-import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -90,7 +88,7 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 		Map<? extends ExecutableElement, ? extends AnnotationValue> values = getAnnotationValues(
 				annotationElement, methodElement);
 
-		String parameterSourceId = (String) getAnnotationPropertyValue("value", values);
+		String parameterSourceId = (String) getAnnotationPropertyValue("value", values).getValue();
 
 		for (Element otherElement : annotatedElements) {
 			if (otherElement == methodElement) {
@@ -100,32 +98,13 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 			Map<? extends ExecutableElement, ? extends AnnotationValue> otherValues = getAnnotationValues(
 					annotationElement, otherElement);
 
-			String parameterSourceId2 = (String) getAnnotationPropertyValue("value", otherValues);
+			String parameterSourceId2 = (String) getAnnotationPropertyValue("value", otherValues).getValue();
 			if (parameterSourceId.equals(parameterSourceId2)) {
 				String error = "Parameter Source with id %s already exists in class.";
 				error = String.format(error, parameterSourceId);
 				printError(error, otherElement, annotationElement);
 			}
 		}
-	}
-
-	private Object getAnnotationPropertyValue(String property,
-			Map<? extends ExecutableElement, ? extends AnnotationValue> values) {
-		for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : values.entrySet()) {
-			if (property.contentEquals(e.getKey().getSimpleName()))
-				return e.getValue().getValue();
-		}
-		return null;
-	}
-
-	private Map<? extends ExecutableElement, ? extends AnnotationValue> getAnnotationValues(
-			TypeElement annotationElement, Element methodElement) {
-		for (AnnotationMirror mirror : methodElement.getAnnotationMirrors()) {
-			if (mirror.getAnnotationType().equals(annotationElement.asType())) {
-				return mirror.getElementValues();
-			}
-		}
-		return Collections.emptyMap();
 	}
 
 	@Override
