@@ -41,6 +41,57 @@ class ParameterSourceProcessorTests {
 	}
 
 	@Test
+	void sameIdOnMethodAndField() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				
+				+ "public class GA {"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ " private int x=5;"
+				
+				+ "	public GA() {}"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ "	private int doSomething() {"
+				+ " 	return 5;"
+				+ " }"
+				
+				
+				+ "}";
+		//@formatter:on
+		ReflectException exception = assertThrows(ReflectException.class, () -> compile("GA", classContent));
+		assertExceptionWithMessage(exception, "already exists");
+	}
+
+	@Test
+	void sameIdOnFields() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				
+				+ "public class GR {"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ " private int x=5;"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ " private int y=5;"
+				
+				+ "	public GR() {}"	
+				
+				+ "}";
+		//@formatter:on
+		ReflectException exception = assertThrows(ReflectException.class, () -> compile("GR", classContent));
+		assertExceptionWithMessage(exception, "already exists");
+	}
+
+	@Test
 	void abstractMethod() {
 		String classContent =
 		//@formatter:off
@@ -207,6 +258,32 @@ class ParameterSourceProcessorTests {
 				+ "}";
 		//@formatter:on
 		assertDoesNotThrow(() -> compile("NA", classContent));
+	}
+
+	@Test
+	void allOkOneMethodAndOneField() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import java.awt.event.*;"
+				
+				+ "public class NR {"
+				+ "	public NR() {}"
+				
+				+ "	@ParameterSource(\"someid2\")"
+				+" private int y= 5;"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ "	private int doSomething(ComponentEvent obj) {"
+				+ " 	return 5;"
+				+ " }"
+				
+				
+				+ "}";
+		//@formatter:on
+		assertDoesNotThrow(() -> compile("NR", classContent));
 	}
 
 	void compile(String className, String classContent) {

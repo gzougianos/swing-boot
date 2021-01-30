@@ -25,16 +25,18 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 	@Override
 	public void process(TypeElement annotation, RoundEnvironment roundEnv) {
 		Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(annotation);
-		annotatedElements.forEach(t -> validateMethodElement(annotation, t, annotatedElements));
+		annotatedElements.forEach(element -> validateMethodElement(annotation, element, annotatedElements));
 	}
 
-	private void validateMethodElement(TypeElement annotationElement, Element methodElement,
+	private void validateMethodElement(TypeElement annotationElement, Element methodOrFieldElement,
 			Set<? extends Element> annotatedElements) {
 
-		validateUniqueParameterSourceId(annotationElement, methodElement, annotatedElements);
-		validateAbsentMethodModifier(annotationElement, methodElement, Modifier.ABSTRACT);
-		validateReturnTypeNotVoid(annotationElement, (ExecutableElement) methodElement);
-		validateZeroOrOneAwtEvent(annotationElement, (ExecutableElement) methodElement);
+		validateUniqueParameterSourceId(annotationElement, methodOrFieldElement, annotatedElements);
+		if (methodOrFieldElement instanceof ExecutableElement) {
+			validateAbsentMethodModifier(annotationElement, methodOrFieldElement, Modifier.ABSTRACT);
+			validateReturnTypeNotVoid(annotationElement, (ExecutableElement) methodOrFieldElement);
+			validateZeroOrOneAwtEvent(annotationElement, (ExecutableElement) methodOrFieldElement);
+		}
 	}
 
 	private void validateZeroOrOneAwtEvent(TypeElement annotationElement, ExecutableElement methodElement) {
