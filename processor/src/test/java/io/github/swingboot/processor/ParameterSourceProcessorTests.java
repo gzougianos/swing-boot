@@ -41,6 +41,36 @@ class ParameterSourceProcessorTests {
 	}
 
 	@Test
+	void sameIdInParent() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				
+				+ "public class GB {"
+				+ "	public GB() {}"
+				
+				+ "	@ParameterSource(\"someid\")"
+				+ "	private int doSomething() {"
+				+ " 	return 5;"
+				+ " }"
+				
+				+ " static class Child extends GB{ "
+				
+				+ "		@ParameterSource(\"someid\")"
+				+ "		private int doSomethingElse() {"
+				+ " 		return 5;"
+				+ " 	}"
+				+ " }"
+				
+				+ "}";
+		//@formatter:on
+		ReflectException exception = assertThrows(ReflectException.class, () -> compile("GB", classContent));
+		assertExceptionWithMessage(exception, "already exists");
+	}
+
+	@Test
 	void sameIdOnMethodAndField() {
 		String classContent =
 		//@formatter:off
