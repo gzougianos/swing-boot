@@ -1,6 +1,7 @@
 package io.github.swingboot.processor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -152,13 +153,14 @@ public class ControlInstallationProcessor extends AbstractProcessorDelegate {
 		if (parameterSourceId.isEmpty() || "this".equals(parameterSourceId))
 			return;
 
-		Element classElement = element.getKind() == ElementKind.CLASS ? element
+		final Element classElement = element.getKind() == ElementKind.CLASS ? element
 				: element.getEnclosingElement();
 
-		List<? extends Element> allMembers = environment.getElementUtils()
-				.getAllMembers((TypeElement) classElement);
+		final TypeElement classTypeElement = (TypeElement) classElement;
+		Set<Element> allInheritedElements = getAllMethodAndFieldElementsIncludingInherited(classTypeElement);
 
-		for (Element nestedElement : allMembers) {
+		for (Element nestedElement : allInheritedElements) {
+
 			AnnotationMirror parameterSourceMirror = getParameterSourceMirror(
 					nestedElement.getAnnotationMirrors());
 
@@ -173,9 +175,30 @@ public class ControlInstallationProcessor extends AbstractProcessorDelegate {
 				return;
 
 		}
-		String error = "Parameter source with id %s does not exist in class";
+
+		String error = "Parameter source with id %s does not exist in class (or in parent class)";
 		error = String.format(error, parameterSourceId);
 		printError(error, element, annotation, parameterSourceValue);
+	}
+
+	private Set<Element> getAllMethodAndFieldElementsIncludingInherited(TypeElement element) {
+		final TypeMirror classTypeMirror = element.asType();
+		Set<Element> result = new HashSet<>();
+		result.addAll(environment.getElementUtils().getAllMembers(element));
+
+		List<? extends TypeMirror> superTypes = environment.getTypeUtils().directSupertypes(classTypeMirror);
+
+		//@formatter:off
+		superTypes.stream()
+				.map(environment.getTypeUtils()::asElement)
+				.filter(TypeElement.class::isInstance)
+				.map(TypeElement.class::cast)
+				.forEach(superTypeElement -> {
+					result.addAll(environment.getElementUtils().getAllMembers(superTypeElement));
+				});
+		//@formatter:on
+
+		return result;
 	}
 
 	protected boolean isParameterSourceMirror(AnnotationMirror mirror) {

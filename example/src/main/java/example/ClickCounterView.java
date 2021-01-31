@@ -23,7 +23,7 @@ public class ClickCounterView extends JPanel {
 	private JLabel clickCountLabel;
 
 	@OnActionPerformed(value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS)
-	//@formatter:off
+	//@formatter:off 
 	@MultipleKeyBinding({ 
 			@KeyBinding(keyStroke = "F5", value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS),
 			@KeyBinding(keyStroke = "F6", value = IncreaseClickCounterControl.class, parameterSource = ParameterSource.THIS),

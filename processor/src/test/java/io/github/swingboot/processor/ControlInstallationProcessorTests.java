@@ -265,6 +265,42 @@ class ControlInstallationProcessorTests {
 		assertDoesNotThrow(() -> compile("LE", classContent));
 	}
 
+	@Test
+	void allOkParameterSourceExistsInSuperClass() {
+		String classContent =
+		//@formatter:off
+				"package controlinstall;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import javax.swing.*;"
+				+ "import controlinstall.Parent.*;"
+				
+				+ " public class Parent{"
+				
+				+ "	public Parent() {}"
+				
+				+ " @ParameterSource(\"parId\")"
+				+ " private int source() {"
+				+ " 	return 5;"
+				+ " }"
+				
+				+ " static class Child extends Parent {"
+				
+				+ " 	@OnActionPerformed(value = IntControl.class, parameterSource = \"parId\") "
+				+ "  	private JButton button;"
+				
+				+ " }"
+				
+				+ " static class IntControl implements Control<Integer> {"
+				+ "		public void perform(Integer v){} "
+				+ " }"
+				
+				+ "}";
+		//@formatter:on
+		assertDoesNotThrow(() -> compile("Parent", classContent));
+	}
+
 	void compile(String className, String classContent) {
 		Processor processor = new BootProcessor();
 		CompileOptions options = new CompileOptions().processors(processor);
