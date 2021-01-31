@@ -41,6 +41,50 @@ class ParameterSourceProcessorTests {
 	}
 
 	@Test
+	void emptyId() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				
+				+ "public class ER {"
+				+ "	public ER() {}"
+				
+				+ "	@ParameterSource(\"\")"
+				+ "	private int doSomething2() {"
+				+ " 	return 5;"
+				+ " }"
+				
+				+ "}";
+		//@formatter:on
+		ReflectException exception = assertThrows(ReflectException.class, () -> compile("ER", classContent));
+		assertExceptionWithMessage(exception, "empty id");
+	}
+
+	@Test
+	void thisId() {
+		String classContent =
+		//@formatter:off
+				"package parametersource;"
+
+				+ "import io.github.swingboot.control.annotation.*;"
+				
+				+ "public class ER {"
+				+ "	public ER() {}"
+				
+				+ "	@ParameterSource(\"this\")"
+				+ "	private int doSomething2() {"
+				+ " 	return 5;"
+				+ " }"
+				
+				+ "}";
+		//@formatter:on
+		ReflectException exception = assertThrows(ReflectException.class, () -> compile("ER", classContent));
+		assertExceptionWithMessage(exception, "'this' id");
+	}
+
+	@Test
 	void sameIdInParent() {
 		String classContent =
 		//@formatter:off

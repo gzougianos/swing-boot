@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -29,11 +30,30 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 	private void validateMethodElement(TypeElement annotationElement, Element methodOrFieldElement,
 			Set<? extends Element> annotatedElements) {
 
+		validateNotEmptyNotThisSourceId(annotationElement, methodOrFieldElement);
 		validateUniqueParameterSourceId(annotationElement, methodOrFieldElement, annotatedElements);
 		if (methodOrFieldElement instanceof ExecutableElement) {
 			validateAbsentMethodModifier(annotationElement, methodOrFieldElement, Modifier.ABSTRACT);
 			validateReturnTypeNotVoid(annotationElement, (ExecutableElement) methodOrFieldElement);
 			validateZeroOrOneAwtEvent(annotationElement, (ExecutableElement) methodOrFieldElement);
+		}
+	}
+
+	private void validateNotEmptyNotThisSourceId(TypeElement annotationElement,
+			Element methodOrFieldElement) {
+		AnnotationValue sourceIdValue = getAnnotationPropertyValue("value", annotationElement,
+				methodOrFieldElement);
+
+		String sourceId = (String) sourceIdValue.getValue();
+		if (sourceId.isEmpty()) {
+			printError("Parameter sources cannot have empty id", methodOrFieldElement, annotationElement,
+					sourceIdValue);
+			return;
+		}
+		if ("this".equals(sourceId)) {
+			printError("Parameter sources cannot have 'this' id", methodOrFieldElement, annotationElement,
+					sourceIdValue);
+			return;
 		}
 	}
 
