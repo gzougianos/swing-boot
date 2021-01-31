@@ -34,7 +34,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.github.swingboot</groupId>
 			<artifactId>concurrency</artifactId>
@@ -42,6 +42,15 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- For @Nullable annotation. During tests guava 18 instead of 27 will 
+			be used because auto-service has provided scope with guava 18. If guava 18 
+			gets excluded from auto-service, project cannot be built. -->
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 </project>

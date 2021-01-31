@@ -32,6 +32,8 @@ public class BootProcessor extends AbstractProcessor {
 		delegates.add(new ForMethodInterceptionProcessor(processingEnv));
 		delegates.add(new WithoutControlsProcessor(processingEnv));
 		delegates.add(new ParameterSourceProcessor(processingEnv));
+		delegates.add(new ControlInstallationProcessor(processingEnv));
+
 	}
 
 	@Override

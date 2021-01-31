@@ -2,12 +2,10 @@ package io.github.swingboot.processor;
 
 import java.util.EventObject;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -69,11 +67,6 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 		}
 	}
 
-	private boolean isVoid(TypeMirror mirror) {
-		String mirrorAsString = String.valueOf(mirror);
-		return "void".equals(mirrorAsString) || "java.lang.Void".equals(mirrorAsString);
-	}
-
 	@Override
 	protected void validateAbsentMethodModifier(TypeElement annotation, Element methodElement,
 			Modifier modifier) {
@@ -87,20 +80,17 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 
 	protected void validateUniqueParameterSourceId(TypeElement annotationElement, Element methodElement,
 			Set<? extends Element> annotatedElements) {
-		Map<? extends ExecutableElement, ? extends AnnotationValue> values = getAnnotationValues(
-				annotationElement, methodElement);
 
-		String parameterSourceId = (String) getAnnotationPropertyValue("value", values).getValue();
+		String parameterSourceId = (String) getAnnotationPropertyValue("value", annotationElement,
+				methodElement).getValue();
 
 		for (Element otherElement : annotatedElements) {
 			if (otherElement == methodElement) {
 				continue;
 			}
 
-			Map<? extends ExecutableElement, ? extends AnnotationValue> otherValues = getAnnotationValues(
-					annotationElement, otherElement);
-
-			String parameterSourceId2 = (String) getAnnotationPropertyValue("value", otherValues).getValue();
+			String parameterSourceId2 = (String) getAnnotationPropertyValue("value", annotationElement,
+					otherElement).getValue();
 			if (parameterSourceId.equals(parameterSourceId2)) {
 				String error = "Parameter Source with id %s already exists in class.";
 				error = String.format(error, parameterSourceId);

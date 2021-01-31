@@ -1,6 +1,5 @@
 package io.github.swingboot.processor;
 
-import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.processing.Messager;
@@ -12,6 +11,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
 public abstract class AbstractProcessorDelegate implements ProcessorDelegate {
@@ -54,6 +54,10 @@ public abstract class AbstractProcessorDelegate implements ProcessorDelegate {
 		return element.getSimpleName().toString();
 	}
 
+	protected String simpleNameOf(TypeMirror mirror) {
+		return simpleNameOf(environment.getTypeUtils().asElement(mirror));
+	}
+
 	protected String simpleNameOf(AnnotationMirror mirror) {
 		return simpleNameOf(mirror.getAnnotationType().asElement());
 	}
@@ -68,22 +72,63 @@ public abstract class AbstractProcessorDelegate implements ProcessorDelegate {
 		messager.printMessage(Kind.ERROR, msg, element);
 	}
 
-	protected Map<? extends ExecutableElement, ? extends AnnotationValue> getAnnotationValues(
-			TypeElement annotationElement, Element element) {
+	protected void printError(String msg, Element element, TypeElement annotation, AnnotationValue value) {
 		for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
-			if (mirror.getAnnotationType().equals(annotationElement.asType())) {
-				return mirror.getElementValues();
+			if (annotation.equals(mirror.getAnnotationType().asElement())) {
+				messager.printMessage(Kind.ERROR, msg, element, mirror, value);
+				return;
 			}
 		}
-		return Collections.emptyMap();
+		messager.printMessage(Kind.ERROR, msg, element);
 	}
 
-	protected AnnotationValue getAnnotationPropertyValue(String property,
-			Map<? extends ExecutableElement, ? extends AnnotationValue> values) {
+	protected boolean isVoid(TypeMirror mirror) {
+		String mirrorAsString = String.valueOf(mirror);
+		return "void".equals(mirrorAsString) || "java.lang.Void".equals(mirrorAsString);
+	}
+
+	protected Map<? extends ExecutableElement, ? extends AnnotationValue> getAnnotationValues(
+			TypeElement annotationElement, Element element) {
+
+		AnnotationMirror asMirror = asMirror(annotationElement, element);
+		return environment.getElementUtils().getElementValuesWithDefaults(asMirror);
+	}
+
+	protected AnnotationValue getAnnotationPropertyValue(String property, TypeElement annotationElement,
+			Element element) {
+
+		Map<? extends ExecutableElement, ? extends AnnotationValue> values = getAnnotationValues(
+				annotationElement, element);
+
 		for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : values.entrySet()) {
 			if (property.contentEquals(e.getKey().getSimpleName()))
 				return e.getValue();
 		}
-		return null;
+
+		throw new RuntimeException("Annotation " + annotationElement + " on element " + element
+				+ " does not contain a '" + property + "' property.");
+	}
+
+	protected AnnotationValue getAnnotationPropertyValue(String property, AnnotationMirror mirror) {
+
+		Map<? extends ExecutableElement, ? extends AnnotationValue> values = environment.getElementUtils()
+				.getElementValuesWithDefaults(mirror);
+
+		for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> e : values.entrySet()) {
+			if (property.contentEquals(e.getKey().getSimpleName()))
+				return e.getValue();
+		}
+
+		throw new RuntimeException(
+				"Annotation " + mirror + " does not contain a '" + property + "' property.");
+	}
+
+	protected AnnotationMirror asMirror(TypeElement annotation, Element element) {
+		for (AnnotationMirror mirror : element.getAnnotationMirrors()) {
+			if (mirror.getAnnotationType().equals(annotation.asType())) {
+				return mirror;
+			}
+		}
+		throw new RuntimeException("Element " + element + " is not annotated with " + annotation);
 	}
 }
