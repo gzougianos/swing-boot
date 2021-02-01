@@ -27,31 +27,29 @@ public class OnActionPerformedInstallationFactory implements ControlInstallation
 			int eventModifiers = event.getModifiers();
 			return anyModifier || eventModifiers == onActionPerformed.modifiers();
 		};
-		ControlInstallation installation;
 		Listener listener = new Listener(eventPredicate, eventConsumer);
 
 		if (target instanceof AbstractButton) {
 			AbstractButton button = (AbstractButton) target;
 
-			installation = new ControlInstallation(() -> button.addActionListener(listener),
+			return new ControlInstallation(() -> button.addActionListener(listener),
 					() -> button.removeActionListener(listener));
 
 		} else if (target instanceof JComboBox<?>) {
 			JComboBox<?> comboBox = (JComboBox<?>) target;
 
-			installation = new ControlInstallation(() -> comboBox.addActionListener(listener),
+			return new ControlInstallation(() -> comboBox.addActionListener(listener),
 					() -> comboBox.removeActionListener(listener));
 
 		} else if (target instanceof JTextField) {
 			JTextField field = (JTextField) target;
 
-			installation = new ControlInstallation(() -> field.addActionListener(listener),
+			return new ControlInstallation(() -> field.addActionListener(listener),
 					() -> field.removeActionListener(listener));
 		} else {
 			throw new UnsupportedOperationException(
 					"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
 		}
-		return installation;
 	}
 
 	private static class Listener implements ActionListener {
