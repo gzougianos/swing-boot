@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import io.github.swingboot.control.parameter.ParameterSource;
 
-public interface ControlDeclaration {
+interface ControlDeclaration {
 
 	Class<? extends Control<?>> getControlType();
 
