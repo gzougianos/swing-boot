@@ -7,7 +7,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 
-import io.github.swingboot.control.ControlModule;
+import io.github.swingboot.control.binding.ControlModule;
 
 public class CompleteExample {
 

@@ -1,4 +1,4 @@
-package io.github.swingboot.control;
+package io.github.swingboot.control.binding;
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
 
@@ -21,6 +21,9 @@ import com.google.inject.matcher.Matcher;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
+import io.github.swingboot.control.Control;
+import io.github.swingboot.control.ControlInstaller;
+import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.annotation.InstallControls;
 import io.github.swingboot.control.annotation.WithoutControls;
 
