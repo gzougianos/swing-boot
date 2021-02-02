@@ -1,4 +1,4 @@
-package io.github.swingboot.control.module.correctbinding;
+package io.github.swingboot.control.binding;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -16,10 +16,9 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.ControlModule;
 import io.github.swingboot.control.Controls;
-import io.github.swingboot.control.module.correctbinding.PublicControl.InnerNonStaticControl;
-import io.github.swingboot.control.module.correctbinding.sub.SubpackageControl;
+import io.github.swingboot.control.binding.PublicControl.InnerNonStaticControl;
+import io.github.swingboot.control.binding.testsubpackage.SubpackageControl;
 
 class ControlModuleBindingTests {
 

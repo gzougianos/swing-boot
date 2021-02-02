@@ -1,4 +1,4 @@
-package io.github.swingboot.control.module.correctbinding;
+package io.github.swingboot.control.binding;
 
 import io.github.swingboot.control.Control;
 

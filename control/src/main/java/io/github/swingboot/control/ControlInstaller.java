@@ -15,9 +15,9 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.swingboot.control.annotation.installation.ControlInstallationFactory;
-import io.github.swingboot.control.annotation.installation.ControlInstallationFactories;
 import io.github.swingboot.control.annotation.installation.ControlInstallation;
+import io.github.swingboot.control.annotation.installation.ControlInstallationFactories;
+import io.github.swingboot.control.annotation.installation.ControlInstallationFactory;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {

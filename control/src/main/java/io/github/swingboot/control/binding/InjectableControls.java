@@ -1,14 +1,17 @@
-package io.github.swingboot.control;
+package io.github.swingboot.control.binding;
 
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
 
-public class InjectableControls implements Controls {
+import io.github.swingboot.control.Control;
+import io.github.swingboot.control.Controls;
+
+class InjectableControls implements Controls {
 	private Injector injector;
 
 	@Inject
-	public InjectableControls(Injector injector) {
+	InjectableControls(Injector injector) {
 		this.injector = injector;
 	}
 

@@ -1,4 +1,4 @@
-package io.github.swingboot.control;
+package io.github.swingboot.control.binding;
 
 import java.awt.EventQueue;
 import java.awt.SecondaryLoop;
@@ -8,6 +8,8 @@ import javax.inject.Provider;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+
+import io.github.swingboot.control.ControlInstaller;
 
 class WithoutControlsMethodInterceptor implements MethodInterceptor {
 
