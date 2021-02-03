@@ -19,7 +19,8 @@ class WithoutControlsProcessorTests {
 		//@formatter:off
 				"package withoutcontrols;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class N {"
 				+ "	public N() {}"
@@ -40,7 +41,8 @@ class WithoutControlsProcessorTests {
 		//@formatter:off
 				"package withoutcontrols;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ " @InstallControls"
 				+ " public class G {"

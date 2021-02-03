@@ -16,7 +16,8 @@ import com.google.auto.service.AutoService;
 
 //@formatter:off
 @SupportedAnnotationTypes({ 
-	"io.github.swingboot.control.annotation.*", 
+	"io.github.swingboot.control.*", 
+	"io.github.swingboot.control.installation.annotation", 
 	"io.github.swingboot.concurrency.*" 
 	})
 //@formatter:on

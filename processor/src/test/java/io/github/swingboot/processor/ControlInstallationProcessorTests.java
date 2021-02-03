@@ -19,7 +19,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				
@@ -45,7 +45,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.H.*;"
@@ -71,7 +71,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				
@@ -98,7 +98,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.Y.*;"
@@ -125,7 +125,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.YE.*;"
@@ -158,7 +158,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.YEZ.*;"
@@ -186,7 +186,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.YEG.*;"
@@ -214,7 +214,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.L.*;"
@@ -241,7 +241,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.LE.*;"
@@ -271,7 +271,7 @@ class ControlInstallationProcessorTests {
 		//@formatter:off
 				"package controlinstall;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import io.github.swingboot.control.*;"
 				+ "import javax.swing.*;"
 				+ "import controlinstall.Parent.*;"

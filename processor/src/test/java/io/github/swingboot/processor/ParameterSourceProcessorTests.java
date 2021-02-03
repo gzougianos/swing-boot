@@ -19,7 +19,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class G {"
 				+ "	public G() {}"
@@ -46,7 +47,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class ER {"
 				+ "	public ER() {}"
@@ -68,7 +70,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class ER {"
 				+ "	public ER() {}"
@@ -90,7 +93,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class GB {"
 				+ "	public GB() {}"
@@ -120,7 +124,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class GA {"
 				
@@ -147,7 +152,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class GR {"
 				
@@ -171,7 +177,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public abstract class F {"
 				+ "	public F() {}"
@@ -196,7 +203,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class C {"
 				+ "	public C() {}"
@@ -221,7 +229,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class DE {"
 				+ "	public DE() {}"
@@ -245,7 +254,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class DS {"
 				+ "	public DS() {}"
@@ -268,7 +278,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				
 				+ "public class N {"
 				+ "	public N() {}"
@@ -294,7 +305,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import java.util.EventObject;"
 				
 				+ "public class NE {"
@@ -317,7 +329,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import java.awt.event.*;"
 				
 				+ "public class NA {"
@@ -340,7 +353,8 @@ class ParameterSourceProcessorTests {
 		//@formatter:off
 				"package parametersource;"
 
-				+ "import io.github.swingboot.control.annotation.*;"
+				+ "import io.github.swingboot.control.*;"
+				+ "import io.github.swingboot.control.installation.annotation.*;"
 				+ "import java.awt.event.*;"
 				
 				+ "public class NR {"
