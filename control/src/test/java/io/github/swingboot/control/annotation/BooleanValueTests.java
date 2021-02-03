@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.swingboot.control.installation.annotation.BooleanValue;
+
 class BooleanValueTests {
 
 	@Test

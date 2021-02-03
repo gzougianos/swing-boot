@@ -6,13 +6,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.github.swingboot.control.annotation.InitializedBy;
-import io.github.swingboot.control.annotation.InstallControls;
-import io.github.swingboot.control.annotation.KeyBinding;
-import io.github.swingboot.control.annotation.OnActionPerformed;
-import io.github.swingboot.control.annotation.ParameterSource;
-import io.github.swingboot.control.annotation.WithoutControls;
-import io.github.swingboot.control.annotation.multiple.MultipleKeyBinding;
+import io.github.swingboot.control.InitializedBy;
+import io.github.swingboot.control.InstallControls;
+import io.github.swingboot.control.ParameterSource;
+import io.github.swingboot.control.WithoutControls;
+import io.github.swingboot.control.installation.annotation.KeyBinding;
+import io.github.swingboot.control.installation.annotation.OnActionPerformed;
+import io.github.swingboot.control.installation.annotation.multiple.MultipleKeyBinding;
 
 @InstallControls
 @InitializedBy(value = InitializeClickCounterView.class, parameterSource = ParameterSource.THIS)

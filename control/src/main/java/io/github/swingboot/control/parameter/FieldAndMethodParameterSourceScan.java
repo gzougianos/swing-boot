@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import io.github.swingboot.control.annotation.InstallControls;
+import io.github.swingboot.control.InstallControls;
 
 public class FieldAndMethodParameterSourceScan {
 	private static final Map<Class<?>, FieldAndMethodParameterSourceScan> cache = new HashMap<>();
@@ -66,15 +66,15 @@ public class FieldAndMethodParameterSourceScan {
 			if (!hasAnyAnnotations(member) || member.isSynthetic())
 				continue;
 
-			if (member.isAnnotationPresent(io.github.swingboot.control.annotation.ParameterSource.class)) {
+			if (member.isAnnotationPresent(io.github.swingboot.control.ParameterSource.class)) {
 				addParameterSource(member);
 			}
 		}
 	}
 
 	private void addParameterSource(AnnotatedElement accessibleObject) {
-		io.github.swingboot.control.annotation.ParameterSource parameterSource = accessibleObject
-				.getAnnotation(io.github.swingboot.control.annotation.ParameterSource.class);
+		io.github.swingboot.control.ParameterSource parameterSource = accessibleObject
+				.getAnnotation(io.github.swingboot.control.ParameterSource.class);
 
 		String sourceId = parameterSource.value();
 

@@ -9,7 +9,7 @@ import javax.inject.Provider;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-import io.github.swingboot.control.ControlInstaller;
+import io.github.swingboot.control.installation.ControlInstaller;
 
 class WithoutControlsMethodInterceptor implements MethodInterceptor {
 
