@@ -1,6 +1,6 @@
 package io.github.swingboot.control.parameter;
 
-import static io.github.swingboot.control.annotation.ParameterSource.THIS;
+import static io.github.swingboot.control.ParameterSource.THIS;
 
 import java.lang.reflect.Field;
 import java.util.EventObject;

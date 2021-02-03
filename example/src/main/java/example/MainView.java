@@ -8,9 +8,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
-import io.github.swingboot.control.annotation.InstallControls;
-import io.github.swingboot.control.annotation.KeyBinding;
-import io.github.swingboot.control.annotation.WithoutControls;
+import io.github.swingboot.control.InstallControls;
+import io.github.swingboot.control.WithoutControls;
+import io.github.swingboot.control.installation.annotation.KeyBinding;
 
 @SuppressWarnings("serial")
 @Singleton

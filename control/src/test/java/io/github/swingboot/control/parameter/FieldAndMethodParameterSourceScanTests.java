@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import com.google.inject.Inject;
 
-import io.github.swingboot.control.annotation.InstallControls;
-import io.github.swingboot.control.annotation.ParameterSource;
+import io.github.swingboot.control.InstallControls;
+import io.github.swingboot.control.ParameterSource;
 
 @SuppressWarnings("all")
 class FieldAndMethodParameterSourceScanTests {

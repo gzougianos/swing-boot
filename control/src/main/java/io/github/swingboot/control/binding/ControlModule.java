@@ -22,10 +22,10 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.ControlInstaller;
 import io.github.swingboot.control.Controls;
-import io.github.swingboot.control.annotation.InstallControls;
-import io.github.swingboot.control.annotation.WithoutControls;
+import io.github.swingboot.control.InstallControls;
+import io.github.swingboot.control.WithoutControls;
+import io.github.swingboot.control.installation.ControlInstaller;
 
 public class ControlModule extends AbstractModule {
 	private static final Logger log = LoggerFactory.getLogger(ControlModule.class);

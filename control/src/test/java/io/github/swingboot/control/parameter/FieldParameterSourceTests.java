@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.swingboot.control.annotation.ParameterSource;
+import io.github.swingboot.control.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 @SuppressWarnings("all")
