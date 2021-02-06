@@ -1,10 +1,10 @@
 package io.github.swingboot.control.installation.factory;
 
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.EventObject;
 import java.util.function.Consumer;
@@ -35,12 +35,12 @@ class OnSelectionChangedInstallationFactoryTests {
 		OnSelectionChanged annotation = getClass().getDeclaredField("field")
 				.getAnnotation(OnSelectionChanged.class);
 
-		ControlInstallation installation = new OnSelectionChangedInstallationFactory().createInstallation(annotation,
-				list, consumer);
+		ControlInstallation installation = new OnSelectionChangedInstallationFactory()
+				.createInstallation(annotation, list, consumer);
 
 		installation.install();
 		list.setSelectedValue("world", false);
-		verifyZeroInteractions(consumer);
+		verifyNoInteractions(consumer);
 
 		list.setValueIsAdjusting(true);
 		list.setSelectedValue("hello", false);
@@ -51,7 +51,7 @@ class OnSelectionChangedInstallationFactoryTests {
 		installation.uninstall();
 		list.setSelectedValue("world", false);
 		list.setSelectedValue("hello", false);
-		verifyZeroInteractions(consumer);
+		verifyNoInteractions(consumer);
 	}
 
 	private static class TestControl implements Control<Integer> {
