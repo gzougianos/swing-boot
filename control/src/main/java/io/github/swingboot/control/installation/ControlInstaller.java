@@ -133,7 +133,7 @@ public class ControlInstaller {
 		InstallationContext context = new InstallationContext(owner, target, declaration.getAnnotation(),
 				controlPerformer::perform);
 
-		return installer.createInstallation(context);
+		return installer.create(context);
 	}
 
 	private void checkFieldValueNotNull(Object value, Field field) {

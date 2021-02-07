@@ -69,7 +69,7 @@ class OnComponentResizedInstallationFactoryTests {
 				.getAnnotation(OnActionPerformed.class);
 
 		InstallationContext context = new InstallationContext(this, target, annotation, eventConsumer);
-		return new OnComponentResizedInstallationFactory().createInstallation(context);
+		return new OnComponentResizedInstallationFactory().create(context);
 	}
 
 	@BeforeEach

@@ -85,7 +85,7 @@ class OnActionPerformedInstallationFactoryTests {
 				.getAnnotation(OnActionPerformed.class);
 
 		InstallationContext context = new InstallationContext(this, target, annotation, eventConsumer);
-		return new OnActionPerformedInstallationFactory().createInstallation(context);
+		return new OnActionPerformedInstallationFactory().create(context);
 	}
 
 	@SuppressWarnings("unchecked")

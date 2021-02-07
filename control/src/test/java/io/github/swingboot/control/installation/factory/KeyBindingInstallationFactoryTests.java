@@ -91,7 +91,7 @@ class KeyBindingInstallationFactoryTests {
 
 	ControlInstallation createInstallation(Object target) {
 		return new KeyBindingInstallationFactory()
-				.createInstallation(new InstallationContext(this, target, annotation, eventConsumer));
+				.create(new InstallationContext(this, target, annotation, eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")

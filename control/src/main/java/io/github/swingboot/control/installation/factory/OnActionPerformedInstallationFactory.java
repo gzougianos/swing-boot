@@ -13,7 +13,7 @@ public class OnActionPerformedInstallationFactory implements ControlInstallation
 	}
 
 	@Override
-	public ControlInstallation createInstallation(InstallationContext context) {
+	public ControlInstallation create(InstallationContext context) {
 		OnActionPerformed onActionPerformed = context.getAnnotationAs(OnActionPerformed.class);
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 

@@ -36,7 +36,7 @@ class OnSelectionChangedInstallationFactoryTests {
 				.getAnnotation(OnSelectionChanged.class);
 
 		ControlInstallation installation = new OnSelectionChangedInstallationFactory()
-				.createInstallation(new InstallationContext(this, list, annotation, consumer));
+				.create(new InstallationContext(this, list, annotation, consumer));
 
 		installation.install();
 		list.setSelectedValue("world", false);

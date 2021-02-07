@@ -18,7 +18,7 @@ public class KeyBindingInstallationFactory implements ControlInstallationFactory
 	}
 
 	@Override
-	public ControlInstallation createInstallation(InstallationContext context) {
+	public ControlInstallation create(InstallationContext context) {
 		final KeyBinding binding = context.getAnnotationAs(KeyBinding.class);
 
 		final Action action = new KeyBindingAction(context.getEventConsumer());

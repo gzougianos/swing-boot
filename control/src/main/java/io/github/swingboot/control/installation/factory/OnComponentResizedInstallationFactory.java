@@ -10,7 +10,7 @@ public class OnComponentResizedInstallationFactory implements ControlInstallatio
 	}
 
 	@Override
-	public ControlInstallation createInstallation(InstallationContext context) {
+	public ControlInstallation create(InstallationContext context) {
 		Object target = context.getTarget();
 		if (!(target instanceof Component)) {
 			throw new UnsupportedOperationException(

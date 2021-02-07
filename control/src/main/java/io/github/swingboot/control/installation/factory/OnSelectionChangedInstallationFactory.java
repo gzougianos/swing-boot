@@ -12,7 +12,7 @@ public class OnSelectionChangedInstallationFactory implements ControlInstallatio
 	}
 
 	@Override
-	public ControlInstallation createInstallation(InstallationContext context) {
+	public ControlInstallation create(InstallationContext context) {
 		OnSelectionChanged onSelectionChanged = context.getAnnotationAs(OnSelectionChanged.class);
 		final Object target = context.getTarget();
 		final ListSelectionModel selectionModel = getTargetSelectionModel(target);
