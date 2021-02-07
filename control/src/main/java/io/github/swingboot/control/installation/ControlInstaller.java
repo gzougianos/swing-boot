@@ -122,7 +122,7 @@ public class ControlInstaller {
 	}
 
 	private Installation createInstallation(Object owner, ControlInstallationDeclaration declaration) {
-		InstallationFactory installer = InstallationFactoryProvider
+		InstallationFactory installationFactory = InstallationFactoryProvider
 				.get(declaration.getInstallerType());
 
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
@@ -133,7 +133,7 @@ public class ControlInstaller {
 		InstallationContext context = new InstallationContext(owner, target, declaration.getAnnotation(),
 				controlPerformer::perform);
 
-		return installer.create(context);
+		return installationFactory.create(context);
 	}
 
 	private void checkFieldValueNotNull(Object value, Field field) {
