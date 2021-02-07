@@ -43,7 +43,7 @@ class OnActionPerformedInstallationFactoryTests {
 
 	@Test
 	void anyModifier() throws Exception {
-		ControlInstallation installation = createInstallation("anyModifierField", button);
+		Installation installation = createInstallation("anyModifierField", button);
 		installation.install();
 
 		fireActionListeners(button, 0);
@@ -60,7 +60,7 @@ class OnActionPerformedInstallationFactoryTests {
 
 	@Test
 	void specificModifier() throws Exception {
-		ControlInstallation installation = createInstallation("specificModifierField", button);
+		Installation installation = createInstallation("specificModifierField", button);
 		installation.install();
 
 		fireActionListeners(button, 0);
@@ -80,7 +80,7 @@ class OnActionPerformedInstallationFactoryTests {
 		assertThrows(RuntimeException.class, () -> createInstallation("specificModifierField", new JPanel()));
 	}
 
-	private ControlInstallation createInstallation(String fieldName, Object target) throws Exception {
+	private Installation createInstallation(String fieldName, Object target) throws Exception {
 		Annotation annotation = this.getClass().getDeclaredField(fieldName)
 				.getAnnotation(OnActionPerformed.class);
 

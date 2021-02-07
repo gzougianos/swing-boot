@@ -8,12 +8,12 @@ import javax.swing.JTextField;
 
 import io.github.swingboot.control.installation.annotation.OnActionPerformed;
 
-public class OnActionPerformedInstallationFactory implements ControlInstallationFactory {
+public class OnActionPerformedInstallationFactory implements InstallationFactory {
 	OnActionPerformedInstallationFactory() {
 	}
 
 	@Override
-	public ControlInstallation create(InstallationContext context) {
+	public Installation create(InstallationContext context) {
 		OnActionPerformed onActionPerformed = context.getAnnotationAs(OnActionPerformed.class);
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 
@@ -28,22 +28,22 @@ public class OnActionPerformedInstallationFactory implements ControlInstallation
 		return createInstallation(listener, target);
 	}
 
-	private ControlInstallation createInstallation(ActionListener listener, final Object target) {
+	private Installation createInstallation(ActionListener listener, final Object target) {
 		if (target instanceof AbstractButton) {
 			AbstractButton button = (AbstractButton) target;
-			return new ControlInstallation(() -> button.addActionListener(listener),
+			return new Installation(() -> button.addActionListener(listener),
 					() -> button.removeActionListener(listener));
 		}
 
 		if (target instanceof JComboBox<?>) {
 			JComboBox<?> comboBox = (JComboBox<?>) target;
-			return new ControlInstallation(() -> comboBox.addActionListener(listener),
+			return new Installation(() -> comboBox.addActionListener(listener),
 					() -> comboBox.removeActionListener(listener));
 		}
 
 		if (target instanceof JTextField) {
 			JTextField field = (JTextField) target;
-			return new ControlInstallation(() -> field.addActionListener(listener),
+			return new Installation(() -> field.addActionListener(listener),
 					() -> field.removeActionListener(listener));
 		}
 

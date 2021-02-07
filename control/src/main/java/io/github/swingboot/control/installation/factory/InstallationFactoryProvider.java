@@ -5,18 +5,18 @@ import java.util.Map;
 
 import io.github.swingboot.control.reflect.ReflectionException;
 
-public final class ControlInstallationFactories {
-	private static final Map<Class<? extends ControlInstallationFactory>, ControlInstallationFactory> instances = new HashMap<>();
+public final class InstallationFactoryProvider {
+	private static final Map<Class<? extends InstallationFactory>, InstallationFactory> instances = new HashMap<>();
 
-	private ControlInstallationFactories() {
+	private InstallationFactoryProvider() {
 	}
 
-	public static ControlInstallationFactory get(Class<? extends ControlInstallationFactory> factoryType) {
+	public static InstallationFactory get(Class<? extends InstallationFactory> factoryType) {
 		if (instances.containsKey(factoryType))
 			return instances.get(factoryType);
 
 		try {
-			ControlInstallationFactory newInstance = factoryType.newInstance();
+			InstallationFactory newInstance = factoryType.newInstance();
 			instances.put(factoryType, newInstance);
 			return newInstance;
 		} catch (InstantiationException | IllegalAccessException e) {

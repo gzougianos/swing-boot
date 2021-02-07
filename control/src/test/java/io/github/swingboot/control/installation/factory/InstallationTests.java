@@ -8,13 +8,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 
-class ControlInstallationTests {
+class InstallationTests {
 
 	@Test
 	void main() {
 		Runnable install = mock(Runnable.class);
 		Runnable uninstall = mock(Runnable.class);
-		ControlInstallation installation = new ControlInstallation(install, uninstall);
+		Installation installation = new Installation(install, uninstall);
 		installation.install();
 		assertTrue(installation.isInstalled());
 

@@ -7,12 +7,12 @@ import javax.swing.event.ListSelectionListener;
 
 import io.github.swingboot.control.installation.annotation.OnSelectionChanged;
 
-public class OnSelectionChangedInstallationFactory implements ControlInstallationFactory {
+public class OnSelectionChangedInstallationFactory implements InstallationFactory {
 	OnSelectionChangedInstallationFactory() {
 	}
 
 	@Override
-	public ControlInstallation create(InstallationContext context) {
+	public Installation create(InstallationContext context) {
 		OnSelectionChanged onSelectionChanged = context.getAnnotationAs(OnSelectionChanged.class);
 		final Object target = context.getTarget();
 		final ListSelectionModel selectionModel = getTargetSelectionModel(target);
@@ -23,7 +23,7 @@ public class OnSelectionChangedInstallationFactory implements ControlInstallatio
 			}
 		};
 
-		return new ControlInstallation(() -> {
+		return new Installation(() -> {
 			selectionModel.addListSelectionListener(listener);
 		}, () -> {
 			selectionModel.removeListSelectionListener(listener);

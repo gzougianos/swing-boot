@@ -38,7 +38,7 @@ class OnComponentResizedInstallationFactoryTests {
 	void main() throws Exception {
 		JButton button = new JButton();
 
-		ControlInstallation installation = createInstallation("field", button);
+		Installation installation = createInstallation("field", button);
 		installation.install();
 
 		ComponentEvent event = new ComponentEvent(button, ComponentEvent.COMPONENT_RESIZED);
@@ -63,7 +63,7 @@ class OnComponentResizedInstallationFactoryTests {
 		Arrays.asList(c.getListeners(type)).forEach(listenerConsumer);
 	}
 
-	private ControlInstallation createInstallation(String fieldName, Object target)
+	private Installation createInstallation(String fieldName, Object target)
 			throws NoSuchFieldException {
 		OnActionPerformed annotation = getClass().getDeclaredField(fieldName)
 				.getAnnotation(OnActionPerformed.class);

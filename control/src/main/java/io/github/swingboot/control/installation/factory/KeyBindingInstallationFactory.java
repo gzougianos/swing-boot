@@ -13,12 +13,12 @@ import javax.swing.RootPaneContainer;
 
 import io.github.swingboot.control.installation.annotation.KeyBinding;
 
-public class KeyBindingInstallationFactory implements ControlInstallationFactory {
+public class KeyBindingInstallationFactory implements InstallationFactory {
 	KeyBindingInstallationFactory() {
 	}
 
 	@Override
-	public ControlInstallation create(InstallationContext context) {
+	public Installation create(InstallationContext context) {
 		final KeyBinding binding = context.getAnnotationAs(KeyBinding.class);
 
 		final Action action = new KeyBindingAction(context.getEventConsumer());
@@ -28,7 +28,7 @@ public class KeyBindingInstallationFactory implements ControlInstallationFactory
 		final KeyStroke keyStroke = KeyStroke.getKeyStroke(binding.keyStroke());
 		final String id = binding.id();
 
-		return new ControlInstallation(() -> {
+		return new Installation(() -> {
 			jComponent.getInputMap(condition).put(keyStroke, id);
 			jComponent.getActionMap().put(id, action);
 		}, () -> {

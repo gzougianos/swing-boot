@@ -39,7 +39,7 @@ class KeyBindingInstallationFactoryTests {
 	@Test
 	void toJComponent() {
 		JPanel panel = new JPanel();
-		ControlInstallation installation = createInstallation(panel);
+		Installation installation = createInstallation(panel);
 		installation.install();
 
 		Object binding = panel.getInputMap(annotation.when())
@@ -58,7 +58,7 @@ class KeyBindingInstallationFactoryTests {
 	@Test
 	void toContentPaneContainer() {
 		JFrame frame = new JFrame();
-		ControlInstallation installation = createInstallation(frame);
+		Installation installation = createInstallation(frame);
 		installation.install();
 
 		JComponent panel = (JComponent) frame.getContentPane();
@@ -89,7 +89,7 @@ class KeyBindingInstallationFactoryTests {
 		assertThrows(RuntimeException.class, () -> createInstallation(new java.awt.Button()));
 	}
 
-	ControlInstallation createInstallation(Object target) {
+	Installation createInstallation(Object target) {
 		return new KeyBindingInstallationFactory()
 				.create(new InstallationContext(this, target, annotation, eventConsumer));
 	}

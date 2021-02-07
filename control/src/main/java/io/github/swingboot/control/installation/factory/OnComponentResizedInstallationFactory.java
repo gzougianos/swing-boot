@@ -5,12 +5,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-public class OnComponentResizedInstallationFactory implements ControlInstallationFactory {
+public class OnComponentResizedInstallationFactory implements InstallationFactory {
 	OnComponentResizedInstallationFactory() {
 	}
 
 	@Override
-	public ControlInstallation create(InstallationContext context) {
+	public Installation create(InstallationContext context) {
 		Object target = context.getTarget();
 		if (!(target instanceof Component)) {
 			throw new UnsupportedOperationException(
@@ -20,7 +20,7 @@ public class OnComponentResizedInstallationFactory implements ControlInstallatio
 		final Component component = (Component) target;
 		final ComponentListener listener = createListener(context);
 
-		return new ControlInstallation(() -> {
+		return new Installation(() -> {
 			component.addComponentListener(listener);
 		}, () -> {
 			component.removeComponentListener(listener);

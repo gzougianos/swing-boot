@@ -5,12 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-class ControlInstallationFactoriesTests {
+class InstallationFactoryProviderTests {
 
 	@Test
 	void main() {
-		ControlInstallationFactory factory = ControlInstallationFactories.get(OnActionPerformedInstallationFactory.class);
-		assertSame(factory, ControlInstallationFactories.get(OnActionPerformedInstallationFactory.class));
+		InstallationFactory factory = InstallationFactoryProvider.get(OnActionPerformedInstallationFactory.class);
+		assertSame(factory, InstallationFactoryProvider.get(OnActionPerformedInstallationFactory.class));
 		assertTrue(factory instanceof OnActionPerformedInstallationFactory);
 	}
 

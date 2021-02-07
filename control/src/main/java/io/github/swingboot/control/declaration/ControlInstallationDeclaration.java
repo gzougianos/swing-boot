@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.installation.annotation.DeclaresControlInstallation;
-import io.github.swingboot.control.installation.factory.ControlInstallationFactory;
+import io.github.swingboot.control.installation.factory.InstallationFactory;
 import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
@@ -20,7 +20,7 @@ public class ControlInstallationDeclaration implements ControlDeclaration {
 	private String id;
 	private final Annotation annotation;
 	private final AnnotatedElement targetElement;
-	private final Class<? extends ControlInstallationFactory> installerType;
+	private final Class<? extends InstallationFactory> installerType;
 	private final ParameterSourceContext parameterSourceContext;
 	private final ControlTypeInfo controlTypeInfo;
 
@@ -112,7 +112,7 @@ public class ControlInstallationDeclaration implements ControlDeclaration {
 		return parameterSourceContext.getId();
 	}
 
-	public Class<? extends ControlInstallationFactory> getInstallerType() {
+	public Class<? extends InstallationFactory> getInstallerType() {
 		return installerType;
 	}
 

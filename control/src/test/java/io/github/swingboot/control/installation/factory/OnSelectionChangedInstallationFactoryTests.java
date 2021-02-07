@@ -35,7 +35,7 @@ class OnSelectionChangedInstallationFactoryTests {
 		OnSelectionChanged annotation = getClass().getDeclaredField("field")
 				.getAnnotation(OnSelectionChanged.class);
 
-		ControlInstallation installation = new OnSelectionChangedInstallationFactory()
+		Installation installation = new OnSelectionChangedInstallationFactory()
 				.create(new InstallationContext(this, list, annotation, consumer));
 
 		installation.install();

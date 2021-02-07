@@ -20,15 +20,15 @@ import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.declaration.ControlDeclarationPerformer;
 import io.github.swingboot.control.declaration.ControlInstallationDeclaration;
 import io.github.swingboot.control.declaration.InstallControlsClassAnalysis;
-import io.github.swingboot.control.installation.factory.ControlInstallation;
-import io.github.swingboot.control.installation.factory.ControlInstallationFactories;
-import io.github.swingboot.control.installation.factory.ControlInstallationFactory;
+import io.github.swingboot.control.installation.factory.Installation;
+import io.github.swingboot.control.installation.factory.InstallationFactoryProvider;
+import io.github.swingboot.control.installation.factory.InstallationFactory;
 import io.github.swingboot.control.installation.factory.InstallationContext;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
 	private static final Logger log = LoggerFactory.getLogger(ControlInstaller.class);
-	private Map<Object, List<ControlInstallation>> installationsByObject = new WeakHashMap<>();
+	private Map<Object, List<Installation>> installationsByObject = new WeakHashMap<>();
 	private final Controls controls;
 
 	@Inject
@@ -67,11 +67,11 @@ public class ControlInstaller {
 	}
 
 	public void uninstallFrom(Object obj) {
-		getInstallationsOrThrow(obj).forEach(ControlInstallation::uninstall);
+		getInstallationsOrThrow(obj).forEach(Installation::uninstall);
 	}
 
 	public void reinstallTo(Object obj) {
-		getInstallationsOrThrow(obj).forEach(ControlInstallation::install);
+		getInstallationsOrThrow(obj).forEach(Installation::install);
 	}
 
 	public boolean installedTo(Object obj) {
@@ -79,15 +79,15 @@ public class ControlInstaller {
 	}
 
 	public boolean areAllInstalledTo(Object obj) {
-		return getInstallationsOrThrow(obj).stream().allMatch(ControlInstallation::isInstalled);
+		return getInstallationsOrThrow(obj).stream().allMatch(Installation::isInstalled);
 	}
 
 	public boolean areAllUninstalledFrom(Object obj) {
 		return getInstallationsOrThrow(obj).stream().allMatch(t -> !t.isInstalled());
 	}
 
-	private List<ControlInstallation> getInstallationsOrThrow(Object obj) {
-		List<ControlInstallation> list = installationsByObject.get(obj);
+	private List<Installation> getInstallationsOrThrow(Object obj) {
+		List<Installation> list = installationsByObject.get(obj);
 		if (list == null)
 			throw new ControlsWereNeverInstalledException("Controls were never installed to object: " + obj);
 
@@ -111,7 +111,7 @@ public class ControlInstaller {
 
 	private void createInstallationsAndInstall(Object owner, InstallControlsClassAnalysis classAnalysis) {
 		//@formatter:off
-		List<ControlInstallation> installations = classAnalysis.getControlDeclarations()
+		List<Installation> installations = classAnalysis.getControlDeclarations()
 				.values().stream()
 				.map(declaration->createInstallation(owner, declaration))
 				.collect(Collectors.toList());
@@ -121,8 +121,8 @@ public class ControlInstaller {
 		reinstallTo(owner); //actually the first installation
 	}
 
-	private ControlInstallation createInstallation(Object owner, ControlInstallationDeclaration declaration) {
-		ControlInstallationFactory installer = ControlInstallationFactories
+	private Installation createInstallation(Object owner, ControlInstallationDeclaration declaration) {
+		InstallationFactory installer = InstallationFactoryProvider
 				.get(declaration.getInstallerType());
 
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
