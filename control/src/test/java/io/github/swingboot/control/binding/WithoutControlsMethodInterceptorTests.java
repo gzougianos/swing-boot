@@ -1,4 +1,4 @@
-package io.github.swingboot.control.declaration;
+package io.github.swingboot.control.binding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
