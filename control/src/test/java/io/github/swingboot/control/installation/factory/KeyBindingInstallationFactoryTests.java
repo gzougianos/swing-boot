@@ -3,11 +3,10 @@ package io.github.swingboot.control.installation.factory;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.awt.Button;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.util.EventObject;
@@ -34,14 +33,13 @@ class KeyBindingInstallationFactoryTests {
 	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
 	private int annotationHolder;
 
-	private ControlInstallationFactory factory;
 	private Consumer<EventObject> eventConsumer;
 	private KeyBinding annotation;
 
 	@Test
 	void toJComponent() {
 		JPanel panel = new JPanel();
-		ControlInstallation installation = factory.createInstallation(annotation, panel, eventConsumer);
+		ControlInstallation installation = createInstallation(panel);
 		installation.install();
 
 		Object binding = panel.getInputMap(annotation.when())
@@ -60,7 +58,7 @@ class KeyBindingInstallationFactoryTests {
 	@Test
 	void toContentPaneContainer() {
 		JFrame frame = new JFrame();
-		ControlInstallation installation = factory.createInstallation(annotation, frame, eventConsumer);
+		ControlInstallation installation = createInstallation(frame);
 		installation.install();
 
 		JComponent panel = (JComponent) frame.getContentPane();
@@ -83,20 +81,22 @@ class KeyBindingInstallationFactoryTests {
 		JFrame frame = new JFrame();
 		frame.setContentPane(new Container());
 
-		assertThrows(RuntimeException.class,
-				() -> factory.createInstallation(annotation, frame, eventConsumer));
+		assertThrows(RuntimeException.class, () -> createInstallation(frame));
 	}
 
 	@Test
 	void notSupportedComponent() {
-		assertThrows(RuntimeException.class,
-				() -> factory.createInstallation(annotation, new Button(), eventConsumer));
+		assertThrows(RuntimeException.class, () -> createInstallation(new java.awt.Button()));
+	}
+
+	ControlInstallation createInstallation(Object target) {
+		return new KeyBindingInstallationFactory()
+				.createInstallation(new InstallationContext(this, target, annotation, eventConsumer));
 	}
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void init() throws Exception {
-		factory = new KeyBindingInstallationFactory();
 		eventConsumer = mock(Consumer.class);
 		annotation = getClass().getDeclaredField("annotationHolder").getAnnotation(KeyBinding.class);
 	}

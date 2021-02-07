@@ -23,6 +23,7 @@ import io.github.swingboot.control.declaration.InstallControlsClassAnalysis;
 import io.github.swingboot.control.installation.factory.ControlInstallation;
 import io.github.swingboot.control.installation.factory.ControlInstallationFactories;
 import io.github.swingboot.control.installation.factory.ControlInstallationFactory;
+import io.github.swingboot.control.installation.factory.InstallationContext;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
@@ -127,9 +128,12 @@ public class ControlInstaller {
 		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
 				owner);
 
-		Object target = declaration.getInstallationTargetFor(owner);
+		final Object target = declaration.getInstallationTargetFor(owner);
 
-		return installer.createInstallation(declaration.getAnnotation(), target, controlPerformer::perform);
+		InstallationContext context = new InstallationContext(owner, target, declaration.getAnnotation(),
+				controlPerformer::perform);
+
+		return installer.createInstallation(context);
 	}
 
 	private void checkFieldValueNotNull(Object value, Field field) {

@@ -1,7 +1,7 @@
 package io.github.swingboot.control.installation.factory;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 
 import javax.swing.JButton;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -31,15 +32,13 @@ import io.github.swingboot.testutils.UiExtension;
 class OnComponentResizedInstallationFactoryTests {
 	@OnComponentResized(TestControl.class)
 	private int field;
+	private Consumer<EventObject> eventConsumer;
 
 	@Test
 	void main() throws Exception {
-		OnComponentResizedInstallationFactory factory = new OnComponentResizedInstallationFactory();
 		JButton button = new JButton();
-		Consumer<EventObject> eventConsumer = mock(Consumer.class);
 
-		ControlInstallation installation = factory.createInstallation(annotationOfField("field"), button,
-				eventConsumer);
+		ControlInstallation installation = createInstallation("field", button);
 		installation.install();
 
 		ComponentEvent event = new ComponentEvent(button, ComponentEvent.COMPONENT_RESIZED);
@@ -56,10 +55,7 @@ class OnComponentResizedInstallationFactoryTests {
 
 	@Test
 	void wrongTarget() throws Exception {
-		OnComponentResizedInstallationFactory factory = new OnComponentResizedInstallationFactory();
-		Consumer<EventObject> eventConsumer = mock(Consumer.class);
-		assertThrows(RuntimeException.class,
-				() -> factory.createInstallation(annotationOfField("field"), new String(), eventConsumer));
+		assertThrows(RuntimeException.class, () -> createInstallation("field", new String()));
 	}
 
 	private <T extends EventListener> void fireListeners(Component c, Class<T> type,
@@ -67,8 +63,18 @@ class OnComponentResizedInstallationFactoryTests {
 		Arrays.asList(c.getListeners(type)).forEach(listenerConsumer);
 	}
 
-	private OnActionPerformed annotationOfField(String name) throws NoSuchFieldException {
-		return this.getClass().getDeclaredField(name).getAnnotation(OnActionPerformed.class);
+	private ControlInstallation createInstallation(String fieldName, Object target)
+			throws NoSuchFieldException {
+		OnActionPerformed annotation = getClass().getDeclaredField(fieldName)
+				.getAnnotation(OnActionPerformed.class);
+
+		InstallationContext context = new InstallationContext(this, target, annotation, eventConsumer);
+		return new OnComponentResizedInstallationFactory().createInstallation(context);
+	}
+
+	@BeforeEach
+	void init() {
+		eventConsumer = mock(Consumer.class);
 	}
 
 	private static class TestControl implements Control<Integer> {

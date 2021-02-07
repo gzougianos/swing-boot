@@ -1,11 +1,6 @@
 package io.github.swingboot.control.installation.factory;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.annotation.Annotation;
-import java.util.EventObject;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import javax.swing.AbstractButton;
 import javax.swing.JComboBox;
@@ -18,55 +13,42 @@ public class OnActionPerformedInstallationFactory implements ControlInstallation
 	}
 
 	@Override
-	public ControlInstallation createInstallation(Annotation annotation, Object target,
-			Consumer<EventObject> eventConsumer) {
-		OnActionPerformed onActionPerformed = (OnActionPerformed) annotation;
+	public ControlInstallation createInstallation(InstallationContext context) {
+		OnActionPerformed onActionPerformed = context.getAnnotationAs(OnActionPerformed.class);
 		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
 
-		Predicate<ActionEvent> eventPredicate = event -> {
-			int eventModifiers = event.getModifiers();
-			return anyModifier || eventModifiers == onActionPerformed.modifiers();
+		ActionListener listener = e -> {
+			int eventModifiers = e.getModifiers();
+			if (anyModifier || eventModifiers == onActionPerformed.modifiers())
+				context.getEventConsumer().accept(e);
 		};
-		Listener listener = new Listener(eventPredicate, eventConsumer);
 
-		if (target instanceof AbstractButton) {
-			AbstractButton button = (AbstractButton) target;
+		final Object target = context.getTarget();
 
-			return new ControlInstallation(() -> button.addActionListener(listener),
-					() -> button.removeActionListener(listener));
-
-		} else if (target instanceof JComboBox<?>) {
-			JComboBox<?> comboBox = (JComboBox<?>) target;
-
-			return new ControlInstallation(() -> comboBox.addActionListener(listener),
-					() -> comboBox.removeActionListener(listener));
-
-		} else if (target instanceof JTextField) {
-			JTextField field = (JTextField) target;
-
-			return new ControlInstallation(() -> field.addActionListener(listener),
-					() -> field.removeActionListener(listener));
-		} else {
-			throw new UnsupportedOperationException(
-					"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
-		}
+		return createInstallation(listener, target);
 	}
 
-	private static class Listener implements ActionListener {
-		private Consumer<EventObject> eventConsumer;
-		private Predicate<ActionEvent> controlFirePredicate;
-
-		public Listener(Predicate<ActionEvent> eventPredicate, Consumer<EventObject> eventConsumer) {
-			this.controlFirePredicate = eventPredicate;
-			this.eventConsumer = eventConsumer;
+	private ControlInstallation createInstallation(ActionListener listener, final Object target) {
+		if (target instanceof AbstractButton) {
+			AbstractButton button = (AbstractButton) target;
+			return new ControlInstallation(() -> button.addActionListener(listener),
+					() -> button.removeActionListener(listener));
 		}
 
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			if (controlFirePredicate.test(event))
-				eventConsumer.accept(event);
+		if (target instanceof JComboBox<?>) {
+			JComboBox<?> comboBox = (JComboBox<?>) target;
+			return new ControlInstallation(() -> comboBox.addActionListener(listener),
+					() -> comboBox.removeActionListener(listener));
 		}
 
+		if (target instanceof JTextField) {
+			JTextField field = (JTextField) target;
+			return new ControlInstallation(() -> field.addActionListener(listener),
+					() -> field.removeActionListener(listener));
+		}
+
+		throw new UnsupportedOperationException(
+				"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
 	}
 
 }

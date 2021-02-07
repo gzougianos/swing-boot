@@ -1,14 +1,8 @@
 package io.github.swingboot.control.installation.factory;
 
-import java.lang.annotation.Annotation;
-import java.util.EventObject;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import io.github.swingboot.control.installation.annotation.OnSelectionChanged;
@@ -18,24 +12,17 @@ public class OnSelectionChangedInstallationFactory implements ControlInstallatio
 	}
 
 	@Override
-	public ControlInstallation createInstallation(Annotation annotation, Object target,
-			Consumer<EventObject> eventConsumer) {
-		OnSelectionChanged onSelectionChanged = (OnSelectionChanged) annotation;
-		ListSelectionModel selectionModel;
-		if (target instanceof JList<?>)
-			selectionModel = ((JList<?>) target).getSelectionModel();
-		else if (target instanceof JTable)
-			selectionModel = ((JTable) target).getSelectionModel();
-		else if (target instanceof ListSelectionModel)
-			selectionModel = (ListSelectionModel) target;
-		else
-			throw new UnsupportedOperationException(
-					"@OnSelectionChanged cannot be installed to target of type " + target.getClass());
+	public ControlInstallation createInstallation(InstallationContext context) {
+		OnSelectionChanged onSelectionChanged = context.getAnnotationAs(OnSelectionChanged.class);
+		final Object target = context.getTarget();
+		final ListSelectionModel selectionModel = getTargetSelectionModel(target);
 
-		Predicate<ListSelectionEvent> predicate = event -> onSelectionChanged.valueIsAdjusting()
-				.matches(event.getValueIsAdjusting());
+		ListSelectionListener listener = event -> {
+			if (onSelectionChanged.valueIsAdjusting().matches(event.getValueIsAdjusting())) {
+				context.getEventConsumer().accept(event);
+			}
+		};
 
-		Listener listener = new Listener(eventConsumer, predicate);
 		return new ControlInstallation(() -> {
 			selectionModel.addListSelectionListener(listener);
 		}, () -> {
@@ -43,19 +30,17 @@ public class OnSelectionChangedInstallationFactory implements ControlInstallatio
 		});
 	}
 
-	private static class Listener implements ListSelectionListener {
-		private Consumer<EventObject> eventConsumer;
-		private Predicate<ListSelectionEvent> predicate;
+	private ListSelectionModel getTargetSelectionModel(final Object target) {
+		if (target instanceof JList<?>)
+			return ((JList<?>) target).getSelectionModel();
 
-		public Listener(Consumer<EventObject> eventConsumer, Predicate<ListSelectionEvent> predicate) {
-			this.eventConsumer = eventConsumer;
-			this.predicate = predicate;
-		}
+		if (target instanceof JTable)
+			return ((JTable) target).getSelectionModel();
 
-		@Override
-		public void valueChanged(ListSelectionEvent e) {
-			if (predicate.test(e))
-				eventConsumer.accept(e);
-		}
+		if (target instanceof ListSelectionModel)
+			return (ListSelectionModel) target;
+
+		throw new UnsupportedOperationException(
+				"@OnSelectionChanged cannot be installed to target of type " + target.getClass());
 	}
 }

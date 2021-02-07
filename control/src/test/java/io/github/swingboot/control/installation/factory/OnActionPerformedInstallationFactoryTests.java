@@ -1,8 +1,8 @@
 package io.github.swingboot.control.installation.factory;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.awt.event.ActionEvent;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.EventObject;
 import java.util.function.Consumer;
@@ -39,12 +40,10 @@ class OnActionPerformedInstallationFactoryTests {
 
 	private Consumer<EventObject> eventConsumer;
 	private JButton button;
-	private OnActionPerformedInstallationFactory factory;
 
 	@Test
 	void anyModifier() throws Exception {
-		ControlInstallation installation = factory.createInstallation(annotationOfField("anyModifierField"),
-				button, eventConsumer);
+		ControlInstallation installation = createInstallation("anyModifierField", button);
 		installation.install();
 
 		fireActionListeners(button, 0);
@@ -61,8 +60,7 @@ class OnActionPerformedInstallationFactoryTests {
 
 	@Test
 	void specificModifier() throws Exception {
-		ControlInstallation installation = factory
-				.createInstallation(annotationOfField("specificModifierField"), button, eventConsumer);
+		ControlInstallation installation = createInstallation("specificModifierField", button);
 		installation.install();
 
 		fireActionListeners(button, 0);
@@ -79,18 +77,20 @@ class OnActionPerformedInstallationFactoryTests {
 
 	@Test
 	void wrongComponent() throws Exception {
-		assertThrows(RuntimeException.class, () -> factory
-				.createInstallation(annotationOfField("specificModifierField"), new JPanel(), eventConsumer));
+		assertThrows(RuntimeException.class, () -> createInstallation("specificModifierField", new JPanel()));
 	}
 
-	private OnActionPerformed annotationOfField(String name) throws NoSuchFieldException {
-		return this.getClass().getDeclaredField(name).getAnnotation(OnActionPerformed.class);
+	private ControlInstallation createInstallation(String fieldName, Object target) throws Exception {
+		Annotation annotation = this.getClass().getDeclaredField(fieldName)
+				.getAnnotation(OnActionPerformed.class);
+
+		InstallationContext context = new InstallationContext(this, target, annotation, eventConsumer);
+		return new OnActionPerformedInstallationFactory().createInstallation(context);
 	}
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	private void extracted() {
-		factory = new OnActionPerformedInstallationFactory();
 		button = new JButton();
 		eventConsumer = mock(Consumer.class);
 	}

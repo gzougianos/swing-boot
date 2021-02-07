@@ -3,25 +3,22 @@ package io.github.swingboot.control.installation.factory;
 import java.awt.Component;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.lang.annotation.Annotation;
-import java.util.EventObject;
-import java.util.function.Consumer;
+import java.awt.event.ComponentListener;
 
 public class OnComponentResizedInstallationFactory implements ControlInstallationFactory {
 	OnComponentResizedInstallationFactory() {
 	}
 
 	@Override
-	public ControlInstallation createInstallation(Annotation annotation, Object target,
-			Consumer<EventObject> eventConsumer) {
-		final Component component;
-		if (target instanceof Component) {
-			component = (Component) target;
-		} else
+	public ControlInstallation createInstallation(InstallationContext context) {
+		Object target = context.getTarget();
+		if (!(target instanceof Component)) {
 			throw new UnsupportedOperationException(
 					"@OnComponentResized cannot be installed to target of type " + target.getClass());
+		}
 
-		final Listener listener = new Listener(eventConsumer);
+		final Component component = (Component) target;
+		final ComponentListener listener = createListener(context);
 
 		return new ControlInstallation(() -> {
 			component.addComponentListener(listener);
@@ -30,16 +27,14 @@ public class OnComponentResizedInstallationFactory implements ControlInstallatio
 		});
 	}
 
-	private static class Listener extends ComponentAdapter {
-		private Consumer<EventObject> eventConsumer;
-
-		public Listener(Consumer<EventObject> eventConsumer) {
-			this.eventConsumer = eventConsumer;
-		}
-
-		@Override
-		public void componentResized(ComponentEvent e) {
-			eventConsumer.accept(e);
-		}
+	private ComponentListener createListener(InstallationContext context) {
+		final ComponentListener listener = new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				context.getEventConsumer().accept(e);
+			}
+		};
+		return listener;
 	}
+
 }
