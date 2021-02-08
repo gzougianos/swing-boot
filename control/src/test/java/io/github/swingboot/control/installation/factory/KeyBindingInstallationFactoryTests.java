@@ -9,8 +9,6 @@ import static org.mockito.Mockito.verify;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
-import java.util.EventObject;
-import java.util.function.Consumer;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -18,10 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.github.swingboot.control.Control;
+import io.github.swingboot.control.Controls;
+import io.github.swingboot.control.installation.ControlInstaller;
 import io.github.swingboot.control.installation.annotation.KeyBinding;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
@@ -30,80 +31,101 @@ import io.github.swingboot.testutils.UiExtension;
 @UiAll
 class KeyBindingInstallationFactoryTests {
 
-	@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
-	private int annotationHolder;
+	private Controls controls;
 
-	private Consumer<EventObject> eventConsumer;
-	private KeyBinding annotation;
+	@Nested
+	@UiAll
+	class ToJComponentDirectly {
+		@Test
+		void main() {
+			View view = new View();
+			ControlInstaller installer = new ControlInstaller(controls);
+			installer.installControls(view);
 
-	@Test
-	void toJComponent() {
-		JPanel panel = new JPanel();
-		Installation installation = createInstallation(panel);
-		installation.install();
+			JPanel panel = view.panel;
+			Object binding = panel.getInputMap(JComponent.WHEN_FOCUSED)
+					.get(KeyStroke.getKeyStroke("released F2"));
+			assertNotNull(binding);
 
-		Object binding = panel.getInputMap(annotation.when())
-				.get(KeyStroke.getKeyStroke(annotation.keyStroke()));
-		assertNotNull(binding);
+			ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
+			panel.getActionMap().get("id").actionPerformed(event);
 
-		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
-		panel.getActionMap().get("id").actionPerformed(event);
-		verify(eventConsumer).accept(eq(event));
+			verify(controls).perform(eq(TestControl.class));
 
-		installation.uninstall();
-		binding = panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke()));
-		assertNull(binding);
+			installer.uninstallFrom(view);
+
+			binding = panel.getInputMap(JComponent.WHEN_FOCUSED).get(KeyStroke.getKeyStroke("released F2"));
+			assertNull(binding);
+		}
+
+		class View {
+			@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
+			JPanel panel = new JPanel();
+		}
 	}
 
-	@Test
-	void toContentPaneContainer() {
-		JFrame frame = new JFrame();
-		Installation installation = createInstallation(frame);
-		installation.install();
+	@UiAll
+	@Nested
+	class ToContentPaneContainer {
+		@Test
+		void main() {
+			View view = new View();
+			ControlInstaller installer = new ControlInstaller(controls);
+			installer.installControls(view);
 
-		JComponent panel = (JComponent) frame.getContentPane();
+			JFrame frame = view.frame;
+			JPanel panel = (JPanel) frame.getContentPane();
+			Object binding = panel.getInputMap(JComponent.WHEN_FOCUSED)
+					.get(KeyStroke.getKeyStroke("released F2"));
+			assertNotNull(binding);
 
-		Object binding = panel.getInputMap(annotation.when())
-				.get(KeyStroke.getKeyStroke(annotation.keyStroke()));
-		assertNotNull(binding);
+			ActionEvent event = new ActionEvent(frame, ActionEvent.ACTION_PERFORMED, "cmd");
+			panel.getActionMap().get("id").actionPerformed(event);
 
-		ActionEvent event = new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "cmd");
-		panel.getActionMap().get("id").actionPerformed(event);
-		verify(eventConsumer).accept(eq(event));
+			verify(controls).perform(eq(TestControl.class));
 
-		installation.uninstall();
-		binding = panel.getInputMap(annotation.when()).get(KeyStroke.getKeyStroke(annotation.keyStroke()));
-		assertNull(binding);
+			installer.uninstallFrom(view);
+
+			binding = panel.getInputMap(JComponent.WHEN_FOCUSED).get(KeyStroke.getKeyStroke("released F2"));
+			assertNull(binding);
+		}
+
+		class View {
+			@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
+			JFrame frame = new JFrame();
+		}
 	}
 
-	@Test
-	void toRootContainerWithoutJComponentContainer() {
-		JFrame frame = new JFrame();
-		frame.setContentPane(new Container());
+	@UiAll
+	@Nested
+	class ExceptionWhenContentPaneContainerIsNotJComponent {
+		@Test
+		void main() {
+			View view = new View();
+			ControlInstaller installer = new ControlInstaller(controls);
+			assertThrows(RuntimeException.class, () -> installer.installControls(view));
+		}
 
-		assertThrows(RuntimeException.class, () -> createInstallation(frame));
+		class View {
+			@KeyBinding(value = TestControl.class, id = "id", keyStroke = "released F2")
+			JFrame frame = new JFrame();
+
+			View() {
+				frame.setContentPane(new Container());
+			}
+		}
 	}
 
-	@Test
-	void notSupportedComponent() {
-		assertThrows(RuntimeException.class, () -> createInstallation(new java.awt.Button()));
-	}
-
-	Installation createInstallation(Object target) {
-		return new KeyBindingInstallationFactory()
-				.create(new InstallationContext(this, target, annotation, eventConsumer));
-	}
-
-	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void init() throws Exception {
-		eventConsumer = mock(Consumer.class);
-		annotation = getClass().getDeclaredField("annotationHolder").getAnnotation(KeyBinding.class);
+		controls = mock(Controls.class);
 	}
 
-	private static class TestControl implements Control<Integer> {
+	private static class TestControl implements Control<Void> {
+
 		@Override
-		public void perform(Integer parameter) {
+		public void perform(Void parameter) {
 		}
+
 	}
 }
