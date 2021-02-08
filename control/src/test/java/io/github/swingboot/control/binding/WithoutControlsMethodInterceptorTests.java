@@ -14,7 +14,6 @@ import com.google.inject.Injector;
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.InstallControls;
 import io.github.swingboot.control.WithoutControls;
-import io.github.swingboot.control.binding.ControlModule;
 import io.github.swingboot.control.installation.annotation.OnActionPerformed;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;

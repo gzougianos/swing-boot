@@ -21,9 +21,9 @@ import io.github.swingboot.control.declaration.ControlDeclarationPerformer;
 import io.github.swingboot.control.declaration.ControlInstallationDeclaration;
 import io.github.swingboot.control.declaration.InstallControlsClassAnalysis;
 import io.github.swingboot.control.installation.factory.Installation;
-import io.github.swingboot.control.installation.factory.InstallationFactoryProvider;
-import io.github.swingboot.control.installation.factory.InstallationFactory;
 import io.github.swingboot.control.installation.factory.InstallationContext;
+import io.github.swingboot.control.installation.factory.InstallationFactory;
+import io.github.swingboot.control.installation.factory.InstallationFactoryProvider;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstaller {
