@@ -87,17 +87,6 @@ public class ParameterSourceProcessor extends AbstractProcessorDelegate {
 		}
 	}
 
-	@Override
-	protected void validateAbsentMethodModifier(TypeElement annotation, Element methodElement,
-			Modifier modifier) {
-		final boolean containsModifier = methodElement.getModifiers().contains(modifier);
-		if (containsModifier) {
-			String error = "%s cannot be used on %s methods.";
-			error = String.format(error, simpleNameOf(annotation), modifier.toString().toLowerCase());
-			printError(error, methodElement, annotation);
-		}
-	}
-
 	protected void validateUniqueParameterSourceId(TypeElement annotationElement, Element methodElement,
 			Set<? extends Element> annotatedElements) {
 
