@@ -28,7 +28,7 @@ class MethodParameterSource implements ParameterSource {
 	private void checkNotVoid() {
 		if (method.getReturnType().equals(Void.TYPE)) {
 			throw new InvalidParameterSourceException("ParameterSource method " + method.getName()
-					+ " in class" + method.getDeclaringClass().getSimpleName()
+					+ " in class " + method.getDeclaringClass().getSimpleName()
 					+ " is void. Method parameter sources cannot be void.");
 		}
 	}
