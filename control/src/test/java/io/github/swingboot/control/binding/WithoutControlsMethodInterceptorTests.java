@@ -71,6 +71,37 @@ class WithoutControlsMethodInterceptorTests {
 		assertEquals(2, buttonControl2.timesFired);
 	}
 
+	/*
+	 * Must know if OnActionPerformed annotation on proxy class is kept
+	 */
+	class UninstallsControlWhenAnnotationIsOnClass {
+		@Test
+		void main() {
+			Injector injector = Guice.createInjector(new ControlModule(ButtonControl.class));
+			ButtonControl buttonControl = injector.getInstance(ButtonControl.class);
+			OnClass view = injector.getInstance(OnClass.class);
+			assertEquals(0, buttonControl.timesFired);
+
+			view.doPassiveClick();
+
+			assertEquals(0, buttonControl.timesFired);
+
+			view.doClick();
+			assertEquals(1, buttonControl.timesFired);
+		}
+
+		@SuppressWarnings("serial")
+		@InstallControls
+		@OnActionPerformed(ButtonControl.class)
+		class OnClass extends JButton {
+
+			@WithoutControls
+			void doPassiveClick() {
+				doClick();
+			}
+		}
+	}
+
 	@InstallControls
 	@Singleton
 	static class OnMethod {
