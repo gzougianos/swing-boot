@@ -1,6 +1,7 @@
 package io.github.swingboot.control.declaration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.EventObject;
 
 import io.github.swingboot.control.Control;
@@ -34,8 +35,9 @@ public class ControlDeclarationPerformer {
 		Object parameterSourceValue = parameterSource.getValue(owner, event);
 
 		try {
-			controls.getClass().getMethod("perform", Class.class, Object.class).invoke(controls, controlType,
-					parameterSourceValue);
+			Method method = controls.getClass().getMethod("perform", Class.class, Object.class);
+			method.setAccessible(true);
+			method.invoke(controls, controlType, parameterSourceValue);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw new ReflectionException("Error performing control type " + controlType
