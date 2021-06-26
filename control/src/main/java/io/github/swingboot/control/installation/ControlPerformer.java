@@ -1,4 +1,4 @@
-package io.github.swingboot.control.declaration;
+package io.github.swingboot.control.installation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,16 +6,17 @@ import java.util.EventObject;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
+import io.github.swingboot.control.declaration.ControlDeclaration;
 import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
-public class ControlDeclarationPerformer {
+class ControlPerformer {
 	private final Controls controls;
 	private final Class<? extends Control<?>> controlType;
 	private final ParameterSource parameterSource;
 	private final Object owner;
 
-	public ControlDeclarationPerformer(Controls controls, ControlDeclaration declaration, Object owner) {
+	ControlPerformer(Controls controls, ControlDeclaration declaration, Object owner) {
 		super();
 		this.controls = controls;
 		this.controlType = declaration.getControlType();

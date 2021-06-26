@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import io.github.swingboot.control.AdditionalControlInstallation;
 import io.github.swingboot.control.Controls;
-import io.github.swingboot.control.declaration.ControlDeclarationPerformer;
 import io.github.swingboot.control.declaration.ControlInstallationDeclaration;
 import io.github.swingboot.control.declaration.InstallControlsClassAnalysis;
 import io.github.swingboot.control.installation.factory.Installation;
@@ -50,7 +49,7 @@ public class ControlInstaller {
 		InstallControlsClassAnalysis classAnalysis = InstallControlsClassAnalysis.of(objectType);
 
 		classAnalysis.getInitializedByDeclaration().ifPresent(declaration -> {
-			new ControlDeclarationPerformer(controls, declaration, object).perform(null);
+			new ControlPerformer(controls, declaration, object).perform(null);
 		});
 
 		if (object instanceof AdditionalControlInstallation) {
@@ -125,7 +124,7 @@ public class ControlInstaller {
 		InstallationFactory installationFactory = InstallationFactoryProvider
 				.get(declaration.getInstallerType());
 
-		ControlDeclarationPerformer controlPerformer = new ControlDeclarationPerformer(controls, declaration,
+		ControlPerformer controlPerformer = new ControlPerformer(controls, declaration,
 				owner);
 
 		final Object target = declaration.getInstallationTargetFor(owner);

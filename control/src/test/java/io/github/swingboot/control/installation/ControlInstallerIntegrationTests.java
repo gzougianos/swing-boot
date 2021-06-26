@@ -1,11 +1,9 @@
-package io.github.swingboot.control.declaration;
+package io.github.swingboot.control.installation;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
@@ -19,13 +17,12 @@ import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.InstallControls;
 import io.github.swingboot.control.ParameterSource;
-import io.github.swingboot.control.installation.ControlInstaller;
 import io.github.swingboot.control.installation.annotation.OnActionPerformed;
 import io.github.swingboot.testutils.UiExtension;
 import io.github.swingboot.testutils.UiTest;
 
 @ExtendWith(UiExtension.class)
-public class ControlDeclarationPerformerIntegrationTests {
+public class ControlInstallerIntegrationTests {
 
 	@Nested
 	@InstallControls
