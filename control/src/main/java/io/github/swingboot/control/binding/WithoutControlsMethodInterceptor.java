@@ -3,16 +3,19 @@ package io.github.swingboot.control.binding;
 import java.awt.EventQueue;
 import java.awt.SecondaryLoop;
 import java.awt.Toolkit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Provider;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import io.github.swingboot.control.WithoutControls;
 import io.github.swingboot.control.installation.ControlInstaller;
 
 class WithoutControlsMethodInterceptor implements MethodInterceptor {
-
+	private static final ExecutorService backgroundWorker = Executors.newFixedThreadPool(1);
 	private Provider<ControlInstaller> installerProvider;
 
 	WithoutControlsMethodInterceptor(Provider<ControlInstaller> installerProvider) {
@@ -32,7 +35,9 @@ class WithoutControlsMethodInterceptor implements MethodInterceptor {
 			return invocation.proceed();
 		}
 
-		waitUntilAllEventsAreDispatched();
+		WithoutControls withoutControls = invocation.getMethod().getAnnotation(WithoutControls.class);
+		if (withoutControls.waitUntillAllEventsDispatched())
+			waitUntilAllEventsAreDispatched();
 
 		controlInstaller.uninstallFrom(obj);
 
@@ -40,7 +45,8 @@ class WithoutControlsMethodInterceptor implements MethodInterceptor {
 		try {
 			invocationResult = invocation.proceed();
 		} finally {
-			waitUntilAllEventsAreDispatched();
+			if (withoutControls.waitUntillAllEventsDispatched())
+				waitUntilAllEventsAreDispatched();
 
 			controlInstaller.reinstallTo(obj);
 		}
@@ -55,11 +61,11 @@ class WithoutControlsMethodInterceptor implements MethodInterceptor {
 	private void waitUntilAllEventsAreDispatched() {
 		final EventQueue eventQueue = eventQueue();
 		SecondaryLoop secondaryLoop = eventQueue.createSecondaryLoop();
-		new Thread(() -> {
+		backgroundWorker.submit(() -> {
 			while (eventQueue.peekEvent() != null)
 				;
 			secondaryLoop.exit();
-		}).start();
+		});
 		secondaryLoop.enter();
 	}
 
