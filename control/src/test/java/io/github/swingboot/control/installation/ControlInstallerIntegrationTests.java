@@ -33,7 +33,7 @@ public class ControlInstallerIntegrationTests {
 		@UiTest
 		void main() {
 			Controls controls = mock(Controls.class);
-			new ControlInstaller(controls).installControls(this);
+			new ControlInstaller(controls).installTo(this);
 			button.doClick();
 			verify(controls).perform(eq(VoidControl.class));
 			verifyNoMoreInteractions(controls);
@@ -49,7 +49,7 @@ public class ControlInstallerIntegrationTests {
 		@UiTest
 		void main() {
 			Controls controls = mock(Controls.class);
-			new ControlInstaller(controls).installControls(this);
+			new ControlInstaller(controls).installTo(this);
 			button.doClick();
 			verify(controls).perform(eq(IntControl.class), eq(5));
 			verifyNoMoreInteractions(controls);
@@ -70,7 +70,7 @@ public class ControlInstallerIntegrationTests {
 		@UiTest
 		void main() {
 			Controls controls = mock(Controls.class);
-			new ControlInstaller(controls).installControls(this);
+			new ControlInstaller(controls).installTo(this);
 			button.doClick();
 			verify(controls).perform(eq(IntControl.class), eq(7));
 			verifyNoMoreInteractions(controls);
@@ -92,7 +92,7 @@ public class ControlInstallerIntegrationTests {
 		@UiTest
 		void main() {
 			Controls controls = mock(Controls.class);
-			new ControlInstaller(controls).installControls(this);
+			new ControlInstaller(controls).installTo(this);
 			button.doClick();
 			verify(controls).perform(eq(IntControl.class), eq(10));
 			verifyNoMoreInteractions(controls);

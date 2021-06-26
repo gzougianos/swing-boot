@@ -35,7 +35,7 @@ public class ControlInstaller {
 		this.controls = controls;
 	}
 
-	public void installControls(Object object) {
+	public void installTo(Object object) {
 		requireNonNull(object, "Cannot install controls to null object.");
 
 		if (installedTo(object)) {
@@ -100,7 +100,7 @@ public class ControlInstaller {
 
 			checkFieldValueNotNull(target, field);
 
-			installControls(target);
+			installTo(target);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			String msg = "Error accessing nested @InstallControls field %s of %s.";
 			msg = String.format(msg, field.getName(), field.getDeclaringClass());

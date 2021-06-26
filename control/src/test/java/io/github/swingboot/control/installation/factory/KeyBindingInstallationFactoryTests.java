@@ -40,7 +40,7 @@ class KeyBindingInstallationFactoryTests {
 		void main() {
 			View view = new View();
 			ControlInstaller installer = new ControlInstaller(controls);
-			installer.installControls(view);
+			installer.installTo(view);
 
 			JPanel panel = view.panel;
 			Object binding = panel.getInputMap(JComponent.WHEN_FOCUSED)
@@ -71,7 +71,7 @@ class KeyBindingInstallationFactoryTests {
 		void main() {
 			View view = new View();
 			ControlInstaller installer = new ControlInstaller(controls);
-			installer.installControls(view);
+			installer.installTo(view);
 
 			JFrame frame = view.frame;
 			JPanel panel = (JPanel) frame.getContentPane();
@@ -103,7 +103,7 @@ class KeyBindingInstallationFactoryTests {
 		void main() {
 			View view = new View();
 			ControlInstaller installer = new ControlInstaller(controls);
-			assertThrows(RuntimeException.class, () -> installer.installControls(view));
+			assertThrows(RuntimeException.class, () -> installer.installTo(view));
 		}
 
 		class View {

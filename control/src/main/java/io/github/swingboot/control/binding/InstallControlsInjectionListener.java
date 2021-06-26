@@ -16,7 +16,7 @@ class InstallControlsInjectionListener implements InjectionListener<Object> {
 		if (notInitiatedYet)
 			return;
 
-		controlInstaller.installControls(injectee);
+		controlInstaller.installTo(injectee);
 	}
 
 	public void setControlInstaller(ControlInstaller controlInstaller) {

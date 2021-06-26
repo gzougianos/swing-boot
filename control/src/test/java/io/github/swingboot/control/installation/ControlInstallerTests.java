@@ -34,8 +34,8 @@ class ControlInstallerTests {
 	@Test
 	void main() {
 		EverythingOk obj = new EverythingOk();
-		installer.installControls(obj);
-		installer.installControls(obj); //try to install again
+		installer.installTo(obj);
+		installer.installTo(obj); //try to install again
 		obj.button.doClick();
 
 		verify(controls).perform(TestControl.class);
@@ -48,7 +48,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			Target t = new Target();
-			installer.installControls(t);
+			installer.installTo(t);
 			verify(controls).perform(TestControl.class);
 			verifyNoMoreInteractions(controls);
 		}
@@ -65,7 +65,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			Target t = new Target();
-			installer.installControls(t);
+			installer.installTo(t);
 			assertTrue(installer.areAllInstalledTo(t));
 			assertFalse(installer.areAllUninstalledFrom(t));
 
@@ -96,7 +96,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			NestedFieldOnwer nestedFieldOnwer = new NestedFieldOnwer();
-			installer.installControls(nestedFieldOnwer);
+			installer.installTo(nestedFieldOnwer);
 
 			nestedFieldOnwer.button.doClick();
 			verify(controls, times(1)).perform(TestControl.class);
@@ -126,7 +126,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			NullNestedFieldOnwer nestedFieldOnwer = new NullNestedFieldOnwer();
-			assertThrows(NullPointerException.class, () -> installer.installControls(nestedFieldOnwer));
+			assertThrows(NullPointerException.class, () -> installer.installTo(nestedFieldOnwer));
 		}
 
 		class NullNestedFieldOnwer {
@@ -149,7 +149,7 @@ class ControlInstallerTests {
 		@Test
 		void main() {
 			NestedFieldOnwer nestedFieldOnwer = new NestedFieldOnwer();
-			installer.installControls(nestedFieldOnwer);
+			installer.installTo(nestedFieldOnwer);
 
 			nestedFieldOnwer.button.doClick();
 			verify(controls, times(1)).perform(TestControl.class);
@@ -186,7 +186,7 @@ class ControlInstallerTests {
 	@Test
 	void callsAdditionalInstallation() {
 		AdditionalControlInstallationImpl obj = new AdditionalControlInstallationImpl();
-		installer.installControls(obj);
+		installer.installTo(obj);
 
 		assertTrue(obj.beforeCalled);
 		assertTrue(obj.afterCalled);
@@ -194,13 +194,13 @@ class ControlInstallerTests {
 
 	@Test
 	void nullTarget() {
-		assertThrows(NullPointerException.class, () -> installer.installControls(null));
+		assertThrows(NullPointerException.class, () -> installer.installTo(null));
 	}
 
 	@Test
 	void nullComponentToField() {
 		NullComponent nullComponent = new NullComponent();
-		assertThrows(NullPointerException.class, () -> installer.installControls(nullComponent));
+		assertThrows(NullPointerException.class, () -> installer.installTo(nullComponent));
 	}
 
 	@BeforeEach

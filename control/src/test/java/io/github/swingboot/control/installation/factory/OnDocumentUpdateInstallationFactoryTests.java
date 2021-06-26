@@ -31,7 +31,7 @@ class OnDocumentUpdateInstallationFactoryTests {
 	void test() throws BadLocationException {
 		Controls mock = mock(Controls.class);
 		ControlInstaller installer = new ControlInstaller(mock);
-		installer.installControls(this);
+		installer.installTo(this);
 
 		field.setText("helo");
 		verify(mock).perform(eq(TestControl.class), eq(0));
