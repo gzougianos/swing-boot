@@ -14,12 +14,15 @@ public class OnActionPerformedInstallationFactory implements InstallationFactory
 
 	@Override
 	public Installation create(InstallationContext context) {
-		OnActionPerformed onActionPerformed = context.getAnnotationAs(OnActionPerformed.class);
-		final boolean anyModifier = onActionPerformed.modifiers() == OnActionPerformed.ANY_MODIFIER;
+		final OnActionPerformed onActionPerformed = context.getAnnotationAs(OnActionPerformed.class);
+		final int declaredModifiers = onActionPerformed.modifiers();
+		final boolean anyModifier = declaredModifiers == OnActionPerformed.ANY_MODIFIER;
 
 		ActionListener listener = e -> {
 			int eventModifiers = e.getModifiers();
-			if (anyModifier || eventModifiers == onActionPerformed.modifiers())
+			boolean modifiersMatch = (eventModifiers & declaredModifiers) == declaredModifiers;
+
+			if (anyModifier || modifiersMatch)
 				context.getEventConsumer().accept(e);
 		};
 
@@ -47,6 +50,7 @@ public class OnActionPerformedInstallationFactory implements InstallationFactory
 					() -> field.removeActionListener(listener));
 		}
 
+		//Should never happen
 		throw new UnsupportedOperationException(
 				"@OnActionPerformed cannot be installed to target of type: " + target.getClass());
 	}
