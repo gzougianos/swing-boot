@@ -7,11 +7,11 @@ import com.google.inject.Injector;
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
 
-class InjectableControls implements Controls {
+class GuiceInjectableControls implements Controls {
 	private Injector injector;
 
 	@Inject
-	InjectableControls(Injector injector) {
+	GuiceInjectableControls(Injector injector) {
 		this.injector = injector;
 	}
 

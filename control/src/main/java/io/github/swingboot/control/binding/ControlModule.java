@@ -65,7 +65,7 @@ public class ControlModule extends AbstractModule {
 			}
 		});
 
-		bind(Controls.class).to(InjectableControls.class).asEagerSingleton();
+		bind(Controls.class).to(GuiceInjectableControls.class).asEagerSingleton();
 		bind(ControlInstaller.class).asEagerSingleton();
 
 		bindControls();
