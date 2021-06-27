@@ -3,7 +3,7 @@ package io.github.swingboot.control.declaration;
 import java.util.Optional;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 
 public interface ControlDeclaration {
 

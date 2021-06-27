@@ -14,8 +14,8 @@ import javax.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.Control;
-import io.github.swingboot.control.parameter.InvalidParameterSourceException;
-import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.InvalidParameterSourceException;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 
 class ParameterSourceContextTests {
 

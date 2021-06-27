@@ -1,4 +1,4 @@
-package io.github.swingboot.control.parameter;
+package io.github.swingboot.control.declaration.parameter;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -15,6 +15,8 @@ import javax.swing.JButton;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.InvalidParameterSourceException;
+import io.github.swingboot.control.declaration.parameter.MethodParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 @SuppressWarnings("all")

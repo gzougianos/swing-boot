@@ -1,4 +1,4 @@
-package io.github.swingboot.control.parameter;
+package io.github.swingboot.control.declaration.parameter;
 
 import java.util.EventObject;
 

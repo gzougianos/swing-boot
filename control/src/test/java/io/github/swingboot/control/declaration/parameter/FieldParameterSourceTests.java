@@ -1,4 +1,4 @@
-package io.github.swingboot.control.parameter;
+package io.github.swingboot.control.declaration.parameter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.FieldParameterSource;
+import io.github.swingboot.control.declaration.parameter.InvalidParameterSourceException;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 @SuppressWarnings("all")

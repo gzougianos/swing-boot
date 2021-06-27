@@ -1,4 +1,4 @@
-package io.github.swingboot.control.parameter;
+package io.github.swingboot.control.declaration.parameter;
 
 import static io.github.swingboot.control.ParameterSource.THIS;
 import static io.github.swingboot.control.reflect.ReflectionUtils.equalsOrExtends;

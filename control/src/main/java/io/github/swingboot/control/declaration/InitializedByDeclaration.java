@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.InitializedBy;
-import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 
 public class InitializedByDeclaration implements ControlDeclaration {
 

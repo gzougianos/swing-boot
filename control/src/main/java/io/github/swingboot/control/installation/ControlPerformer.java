@@ -7,7 +7,7 @@ import java.util.EventObject;
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.declaration.ControlDeclaration;
-import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 class ControlPerformer {

@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import io.github.swingboot.control.Control;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 import io.github.swingboot.control.installation.annotation.OnActionPerformed;
 import io.github.swingboot.control.installation.factory.OnActionPerformedInstallationFactory;
-import io.github.swingboot.control.parameter.ParameterSource;
 
 @SuppressWarnings("unused")
 class ControlInstallationDeclarationTests {

@@ -1,6 +1,6 @@
-package io.github.swingboot.control.parameter;
+package io.github.swingboot.control.declaration.parameter;
 
-import static io.github.swingboot.control.parameter.FieldAndMethodParameterSourceScan.of;
+import static io.github.swingboot.control.declaration.parameter.FieldAndMethodParameterSourceScan.of;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,6 +16,10 @@ import com.google.inject.Inject;
 
 import io.github.swingboot.control.InstallControls;
 import io.github.swingboot.control.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.FieldAndMethodParameterSourceScan;
+import io.github.swingboot.control.declaration.parameter.FieldParameterSource;
+import io.github.swingboot.control.declaration.parameter.InvalidParameterSourceException;
+import io.github.swingboot.control.declaration.parameter.MethodParameterSource;
 
 @SuppressWarnings("all")
 class FieldAndMethodParameterSourceScanTests {

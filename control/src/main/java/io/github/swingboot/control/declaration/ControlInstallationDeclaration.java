@@ -10,9 +10,9 @@ import java.lang.reflect.Member;
 import java.util.Optional;
 
 import io.github.swingboot.control.Control;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 import io.github.swingboot.control.installation.annotation.DeclaresControlInstallation;
 import io.github.swingboot.control.installation.factory.InstallationFactory;
-import io.github.swingboot.control.parameter.ParameterSource;
 import io.github.swingboot.control.reflect.ReflectionException;
 
 public class ControlInstallationDeclaration implements ControlDeclaration {

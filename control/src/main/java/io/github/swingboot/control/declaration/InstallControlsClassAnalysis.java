@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 
 import io.github.swingboot.control.InitializedBy;
 import io.github.swingboot.control.InstallControls;
-import io.github.swingboot.control.parameter.FieldAndMethodParameterSourceScan;
-import io.github.swingboot.control.parameter.ParameterSource;
-import io.github.swingboot.control.parameter.SourceOwnerParameterSource;
+import io.github.swingboot.control.declaration.parameter.FieldAndMethodParameterSourceScan;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.SourceOwnerParameterSource;
 
 public class InstallControlsClassAnalysis {
 	private static final Map<Class<?>, InstallControlsClassAnalysis> cache = new HashMap<>();

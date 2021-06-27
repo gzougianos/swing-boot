@@ -4,8 +4,8 @@ import static io.github.swingboot.control.reflect.ReflectionUtils.equalsOrExtend
 
 import java.util.Optional;
 
-import io.github.swingboot.control.parameter.InvalidParameterSourceException;
-import io.github.swingboot.control.parameter.ParameterSource;
+import io.github.swingboot.control.declaration.parameter.InvalidParameterSourceException;
+import io.github.swingboot.control.declaration.parameter.ParameterSource;
 
 class ParameterSourceContext {
 
