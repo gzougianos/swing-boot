@@ -6,30 +6,30 @@ import java.awt.event.KeyListener;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-import io.github.swingboot.control.installation.annotation.OnKey.OnKeyReleased;
+import io.github.swingboot.control.installation.annotation.OnKey.OnKeyTyped;
 
-public class OnKeyReleasedInstallationFactory extends OnKeyInstallationFactory {
-	OnKeyReleasedInstallationFactory() {
+public class OnKeyTypedInstallationFactory extends OnKeyInstallationFactory {
+	OnKeyTypedInstallationFactory() {
 	}
 
 	@Override
 	protected KeyListener createListener(Consumer<KeyEvent> eventConsumer) {
 		return new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent event) {
-				eventConsumer.accept(event);
+			public void keyTyped(KeyEvent e) {
+				eventConsumer.accept(e);
 			}
 		};
 	}
 
 	@Override
 	protected int getAnnotationModifiers(Annotation onKeyAnnotation) {
-		return ((OnKeyReleased) onKeyAnnotation).modifiers();
+		return ((OnKeyTyped) onKeyAnnotation).modifiers();
 	}
 
 	@Override
 	protected int getAnnotationKeyCode(Annotation onKeyAnnotation) {
-		return ((OnKeyReleased) onKeyAnnotation).keyCode();
+		return ((OnKeyTyped) onKeyAnnotation).keyCode();
 	}
 
 }

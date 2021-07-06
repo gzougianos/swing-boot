@@ -31,6 +31,10 @@ public class InstallationContext {
 		return annotationType.cast(annotation);
 	}
 
+	public Annotation getAnnotation() {
+		return annotation;
+	}
+
 	public Consumer<EventObject> getEventConsumer() {
 		return eventConsumer;
 	}
