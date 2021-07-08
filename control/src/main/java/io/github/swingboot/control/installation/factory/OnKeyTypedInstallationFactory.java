@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-import io.github.swingboot.control.installation.annotation.OnKey.OnKeyTyped;
+import io.github.swingboot.control.installation.annotation.OnKeyTyped;
 
 public class OnKeyTypedInstallationFactory extends OnKeyInstallationFactory {
 	OnKeyTypedInstallationFactory() {

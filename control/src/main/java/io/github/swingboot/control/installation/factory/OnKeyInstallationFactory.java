@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-import io.github.swingboot.control.installation.annotation.OnKey;
+import io.github.swingboot.control.installation.annotation.OnKeyConstants;
 
 abstract class OnKeyInstallationFactory implements InstallationFactory {
 
@@ -16,8 +16,8 @@ abstract class OnKeyInstallationFactory implements InstallationFactory {
 		int modifiers = getAnnotationModifiers(context.getAnnotation());
 		int keyCode = getAnnotationKeyCode(context.getAnnotation());
 
-		final boolean anyKeyCode = keyCode == OnKey.ANY_KEY_CODE;
-		final boolean anyModifier = modifiers == OnKey.ANY_MODIFIER;
+		final boolean anyKeyCode = keyCode == OnKeyConstants.ANY_KEY_CODE;
+		final boolean anyModifier = modifiers == OnKeyConstants.ANY_MODIFIER;
 
 		Consumer<KeyEvent> keyEventConsumer = event -> {
 			boolean modifiersMatch = anyModifier || ((event.getModifiers() & modifiers) == modifiers);

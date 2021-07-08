@@ -20,9 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.installation.ControlInstaller;
-import io.github.swingboot.control.installation.annotation.OnKey.OnKeyPressed;
-import io.github.swingboot.control.installation.annotation.OnKey.OnKeyReleased;
-import io.github.swingboot.control.installation.annotation.OnKey.OnKeyTyped;
+import io.github.swingboot.control.installation.annotation.OnKeyPressed;
+import io.github.swingboot.control.installation.annotation.OnKeyReleased;
+import io.github.swingboot.control.installation.annotation.OnKeyTyped;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
 
