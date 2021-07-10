@@ -11,13 +11,7 @@ public class OnComponentResizedInstallationFactory implements InstallationFactor
 
 	@Override
 	public Installation create(InstallationContext context) {
-		Object target = context.getTarget();
-		if (!(target instanceof Component)) {
-			throw new UnsupportedOperationException(
-					"@OnComponentResized cannot be installed to target of type " + target.getClass());
-		}
-
-		final Component component = (Component) target;
+		final Component component = (Component) context.getTarget();
 		final ComponentListener listener = createListener(context);
 
 		return new Installation(() -> {
