@@ -43,6 +43,28 @@ Finally, go to project directory, open `.factorypath` file and paste these lines
 Save the `.factorypath` file, (restart eclipse might be required after this step) and 
 refrest the maven project (select the project and press <kbd>Alt</kbd><kbd>F5</kbd>).
 
+If you are running maven commands from Eclipse with `m2e`, add the following plugin to your `pom.xml`:
+```
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mysema.maven</groupId>
+        <artifactId>apt-maven-plugin</artifactId>
+        <version>1.1.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <configuration>
+              <processor>io.github.swingboot.processor.BootProcessor</processor>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+```
 
 ## **Intellij IDEA**
 
