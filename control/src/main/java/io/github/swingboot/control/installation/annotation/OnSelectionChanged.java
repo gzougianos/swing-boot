@@ -18,8 +18,8 @@ import io.github.swingboot.control.installation.factory.OnSelectionChangedInstal
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControlInstallation(factory = OnSelectionChangedInstallationFactory.class, targetTypes = { JTable.class, JList.class,
-		ListSelectionModel.class })
+@DeclaresControlInstallation(factory = OnSelectionChangedInstallationFactory.class, targetTypes = {
+		JTable.class, JList.class, ListSelectionModel.class })
 public @interface OnSelectionChanged {
 	Class<? extends Control<?>> value();
 

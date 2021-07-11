@@ -124,8 +124,7 @@ public class ControlInstaller {
 		InstallationFactory installationFactory = InstallationFactoryProvider
 				.get(declaration.getInstallerType());
 
-		ControlPerformer controlPerformer = new ControlPerformer(controls, declaration,
-				owner);
+		ControlPerformer controlPerformer = new ControlPerformer(controls, declaration, owner);
 
 		final Object target = declaration.getInstallationTargetFor(owner);
 

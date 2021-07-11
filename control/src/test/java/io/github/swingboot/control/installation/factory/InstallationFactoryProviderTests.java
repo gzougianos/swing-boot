@@ -9,7 +9,8 @@ class InstallationFactoryProviderTests {
 
 	@Test
 	void main() {
-		InstallationFactory factory = InstallationFactoryProvider.get(OnActionPerformedInstallationFactory.class);
+		InstallationFactory factory = InstallationFactoryProvider
+				.get(OnActionPerformedInstallationFactory.class);
 		assertSame(factory, InstallationFactoryProvider.get(OnActionPerformedInstallationFactory.class));
 		assertTrue(factory instanceof OnActionPerformedInstallationFactory);
 	}

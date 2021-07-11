@@ -18,8 +18,8 @@ import io.github.swingboot.control.installation.factory.OnActionPerformedInstall
 @Target({ FIELD, TYPE })
 @Retention(RUNTIME)
 @Documented
-@DeclaresControlInstallation(factory = OnActionPerformedInstallationFactory.class, targetTypes = { AbstractButton.class,
-		JTextField.class, JComboBox.class })
+@DeclaresControlInstallation(factory = OnActionPerformedInstallationFactory.class, targetTypes = {
+		AbstractButton.class, JTextField.class, JComboBox.class })
 public @interface OnActionPerformed {
 	public static final int ANY_MODIFIER = -500;
 

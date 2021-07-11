@@ -1,10 +1,7 @@
 package io.github.swingboot.control.installation.factory;
 
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
 
 import java.awt.Component;
 import java.awt.Event;
@@ -28,7 +25,7 @@ import io.github.swingboot.testutils.UiExtension;
 
 @ExtendWith(UiExtension.class)
 @UiAll
-public class OnKeyTests {
+class OnKeyTests {
 	private static final int EVENT_KEY_CODE = KeyEvent.VK_0;
 	private static final int EVENT_MODIFIERS = Event.ALT_MASK | Event.CTRL_MASK;
 
