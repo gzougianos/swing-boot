@@ -28,11 +28,7 @@ public class OnMouseMovedInstallationFactory implements InstallationFactory {
 			}
 		};
 
-		return new Installation(() -> {
-			target.addMouseMotionListener(listener);
-		}, () -> {
-			target.removeMouseMotionListener(listener);
-		});
+		return CommonInstallations.mouseMotion(target, listener);
 	}
 
 }

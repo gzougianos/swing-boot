@@ -14,11 +14,7 @@ public class OnComponentResizedInstallationFactory implements InstallationFactor
 		final Component component = (Component) context.getTarget();
 		final ComponentListener listener = createListener(context);
 
-		return new Installation(() -> {
-			component.addComponentListener(listener);
-		}, () -> {
-			component.removeComponentListener(listener);
-		});
+		return CommonInstallations.component(component, listener);
 	}
 
 	private ComponentListener createListener(InstallationContext context) {

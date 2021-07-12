@@ -28,11 +28,7 @@ public class OnMouseExitedInstallationFactory implements InstallationFactory {
 			}
 		};
 
-		return new Installation(() -> {
-			target.addMouseListener(listener);
-		}, () -> {
-			target.removeMouseListener(listener);
-		});
+		return CommonInstallations.mouse(target, listener);
 	}
 
 }

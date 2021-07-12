@@ -18,11 +18,7 @@ public class OnFocusGainedInstallationFactory implements InstallationFactory {
 			}
 		};
 
-		return new Installation(() -> {
-			target.addFocusListener(listener);
-		}, () -> {
-			target.removeFocusListener(listener);
-		});
+		return CommonInstallations.focus(target, listener);
 	}
 
 }

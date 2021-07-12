@@ -18,11 +18,7 @@ public class OnComponentHiddenInstallationFactory implements InstallationFactory
 			}
 		};
 
-		return new Installation(() -> {
-			target.addComponentListener(listener);
-		}, () -> {
-			target.removeComponentListener(listener);
-		});
+		return CommonInstallations.component(target, listener);
 	}
 
 }

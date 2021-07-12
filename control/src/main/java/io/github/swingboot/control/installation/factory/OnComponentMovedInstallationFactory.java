@@ -18,11 +18,7 @@ public class OnComponentMovedInstallationFactory implements InstallationFactory 
 			}
 		};
 
-		return new Installation(() -> {
-			target.addComponentListener(listener);
-		}, () -> {
-			target.removeComponentListener(listener);
-		});
+		return CommonInstallations.component(target, listener);
 	}
 
 }
