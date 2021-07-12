@@ -19,7 +19,7 @@ import io.github.swingboot.testutils.UiExtension;
 
 @ExtendWith(UiExtension.class)
 @UiAll
-public class OnPropertyChangeInstallationFactoryTets {
+class OnPropertyChangeInstallationFactoryTets {
 
 	//@formatter:off
 	@MultipleOnPropertyChange({ 
