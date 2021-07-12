@@ -12,20 +12,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import javax.swing.JDialog;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import io.github.swingboot.control.Control;
 import io.github.swingboot.control.Controls;
 import io.github.swingboot.control.installation.ControlInstaller;
 import io.github.swingboot.control.installation.annotation.OnWindowActivated;
 import io.github.swingboot.control.installation.annotation.OnWindowClosing;
+import io.github.swingboot.control.installation.annotation.OnWindowDeactivated;
 import io.github.swingboot.control.installation.annotation.WindowState;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
@@ -35,18 +36,20 @@ import io.github.swingboot.testutils.UiExtension;
 class OnWindowTests {
 	private static final Map<Integer, BiConsumer<WindowListener, WindowEvent>> IDS_TO_LISTENER_METHODS = new HashMap<>();
 	static {
-		IDS_TO_LISTENER_METHODS.put(WindowEvent.WINDOW_ACTIVATED, WindowListener::windowActivated);
-		IDS_TO_LISTENER_METHODS.put(WindowEvent.WINDOW_CLOSING, WindowListener::windowClosing);
+		IDS_TO_LISTENER_METHODS.put(WINDOW_ACTIVATED, WindowListener::windowActivated);
+		IDS_TO_LISTENER_METHODS.put(WINDOW_CLOSING, WindowListener::windowClosing);
+		IDS_TO_LISTENER_METHODS.put(WINDOW_DEACTIVATED, WindowListener::windowDeactivated);
 	}
 	private Controls controls = mock(Controls.class);
 	private ControlInstaller installer = new ControlInstaller(controls);
 
 	@OnWindowClosing(value = TestControl.class)
 	@OnWindowActivated(value = TestControl.class)
+	@OnWindowDeactivated(value = TestControl.class)
 	private JDialog anyState = new JDialog();
 
 	@ParameterizedTest
-	@ValueSource(ints = { WINDOW_CLOSING, WINDOW_ACTIVATED })
+	@MethodSource("provideIds")
 	void anyState(int id) {
 		dispatchTo(anyState, id, Frame.MAXIMIZED_BOTH, Frame.MAXIMIZED_BOTH);
 		verify(controls).perform(eq(TestControl.class));
@@ -54,10 +57,11 @@ class OnWindowTests {
 
 	@OnWindowClosing(value = TestControl.class, newState = WindowState.ICONIFIED)
 	@OnWindowActivated(value = TestControl.class, newState = WindowState.ICONIFIED)
+	@OnWindowDeactivated(value = TestControl.class, newState = WindowState.ICONIFIED)
 	private JDialog specificNewState = new JDialog();
 
 	@ParameterizedTest
-	@ValueSource(ints = { WINDOW_CLOSING, WINDOW_ACTIVATED })
+	@MethodSource("provideIds")
 	void specificNewState(int id) {
 		dispatchTo(specificNewState, id, Frame.MAXIMIZED_BOTH, Frame.MAXIMIZED_BOTH);
 		verifyNoInteractions(controls);
@@ -68,10 +72,11 @@ class OnWindowTests {
 
 	@OnWindowClosing(value = TestControl.class, oldState = WindowState.ICONIFIED)
 	@OnWindowActivated(value = TestControl.class, oldState = WindowState.ICONIFIED)
+	@OnWindowDeactivated(value = TestControl.class, oldState = WindowState.ICONIFIED)
 	private JDialog specificOldState = new JDialog();
 
 	@ParameterizedTest
-	@ValueSource(ints = { WINDOW_CLOSING, WINDOW_ACTIVATED })
+	@MethodSource("provideIds")
 	void specificOldState(int id) {
 		dispatchTo(specificOldState, id, Frame.MAXIMIZED_BOTH, Frame.ICONIFIED);
 		verifyNoInteractions(controls);
@@ -82,21 +87,23 @@ class OnWindowTests {
 
 	@OnWindowClosing(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
 	@OnWindowActivated(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
+	@OnWindowDeactivated(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
 	private JDialog specificBothStates = new JDialog();
 
-	@Test
-	void specificBothStates() {
-		dispatchTo(specificBothStates, WINDOW_CLOSING, Frame.MAXIMIZED_BOTH, Frame.ICONIFIED);
-		dispatchTo(specificBothStates, WINDOW_CLOSING, Frame.ICONIFIED, Frame.ICONIFIED);
-		dispatchTo(specificBothStates, WINDOW_CLOSING, Frame.MAXIMIZED_BOTH, Frame.MAXIMIZED_BOTH);
+	@ParameterizedTest()
+	@MethodSource("provideIds")
+	void specificBothStates(int id) {
+		dispatchTo(specificBothStates, id, Frame.MAXIMIZED_BOTH, Frame.ICONIFIED);
+		dispatchTo(specificBothStates, id, Frame.ICONIFIED, Frame.ICONIFIED);
+		dispatchTo(specificBothStates, id, Frame.MAXIMIZED_BOTH, Frame.MAXIMIZED_BOTH);
 		verifyNoInteractions(controls);
 
-		dispatchTo(specificBothStates, WINDOW_CLOSING, Frame.ICONIFIED, Frame.MAXIMIZED_BOTH);
+		dispatchTo(specificBothStates, id, Frame.ICONIFIED, Frame.MAXIMIZED_BOTH);
 		verify(controls).perform(eq(TestControl.class));
 	}
 
 	@ParameterizedTest
-	@ValueSource(ints = { WINDOW_CLOSING, WINDOW_ACTIVATED })
+	@MethodSource("provideIds")
 	void uninstall(int id) {
 		installer.uninstallFrom(this);
 		dispatchTo(anyState, id, Frame.MAXIMIZED_BOTH, Frame.MAXIMIZED_BOTH);
@@ -108,6 +115,10 @@ class OnWindowTests {
 		Arrays.asList(w.getWindowListeners()).forEach(listener -> {
 			IDS_TO_LISTENER_METHODS.get(id).accept(listener, event);
 		});
+	}
+
+	static Stream<Integer> provideIds() {
+		return IDS_TO_LISTENER_METHODS.keySet().stream();
 	}
 
 	@BeforeEach
