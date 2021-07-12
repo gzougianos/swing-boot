@@ -155,7 +155,8 @@ public class ControlInstallationDeclaration implements ControlDeclaration {
 	private Object fromField(Object owner) {
 		Field targetField = (Field) targetElement;
 		try {
-			targetField.setAccessible(true);
+			if (!targetField.isAccessible())
+				targetField.setAccessible(true);
 
 			Object target = targetField.get(owner);
 			if (target == null) {

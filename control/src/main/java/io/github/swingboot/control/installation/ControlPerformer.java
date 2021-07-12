@@ -37,7 +37,8 @@ class ControlPerformer {
 
 		try {
 			Method method = controls.getClass().getMethod("perform", Class.class, Object.class);
-			method.setAccessible(true);
+			if (!method.isAccessible())
+				method.setAccessible(true);
 			method.invoke(controls, controlType, parameterSourceValue);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

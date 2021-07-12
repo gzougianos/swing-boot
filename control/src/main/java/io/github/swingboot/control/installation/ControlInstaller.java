@@ -95,7 +95,8 @@ public class ControlInstaller {
 
 	private void installNestedControls(Object object, Field field) {
 		try {
-			field.setAccessible(true);
+			if (!field.isAccessible())
+				field.setAccessible(true);
 			Object target = field.get(object);
 
 			checkFieldValueNotNull(target, field);
