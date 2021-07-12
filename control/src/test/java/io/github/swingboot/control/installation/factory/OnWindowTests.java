@@ -28,6 +28,7 @@ import io.github.swingboot.control.installation.annotation.OnWindowActivated;
 import io.github.swingboot.control.installation.annotation.OnWindowClosed;
 import io.github.swingboot.control.installation.annotation.OnWindowClosing;
 import io.github.swingboot.control.installation.annotation.OnWindowDeactivated;
+import io.github.swingboot.control.installation.annotation.OnWindowDeiconified;
 import io.github.swingboot.control.installation.annotation.WindowState;
 import io.github.swingboot.testutils.UiAll;
 import io.github.swingboot.testutils.UiExtension;
@@ -41,6 +42,7 @@ class OnWindowTests {
 		IDS_TO_LISTENER_METHODS.put(WINDOW_CLOSING, WindowListener::windowClosing);
 		IDS_TO_LISTENER_METHODS.put(WINDOW_DEACTIVATED, WindowListener::windowDeactivated);
 		IDS_TO_LISTENER_METHODS.put(WINDOW_CLOSED, WindowListener::windowClosed);
+		IDS_TO_LISTENER_METHODS.put(WINDOW_DEICONIFIED, WindowListener::windowDeiconified);
 	}
 	private Controls controls = mock(Controls.class);
 	private ControlInstaller installer = new ControlInstaller(controls);
@@ -49,6 +51,7 @@ class OnWindowTests {
 	@OnWindowActivated(value = TestControl.class)
 	@OnWindowDeactivated(value = TestControl.class)
 	@OnWindowClosed(value = TestControl.class)
+	@OnWindowDeiconified(value = TestControl.class)
 	private JDialog anyState = new JDialog();
 
 	@ParameterizedTest
@@ -62,6 +65,7 @@ class OnWindowTests {
 	@OnWindowActivated(value = TestControl.class, newState = WindowState.ICONIFIED)
 	@OnWindowDeactivated(value = TestControl.class, newState = WindowState.ICONIFIED)
 	@OnWindowClosed(value = TestControl.class, newState = WindowState.ICONIFIED)
+	@OnWindowDeiconified(value = TestControl.class, newState = WindowState.ICONIFIED)
 	private JDialog specificNewState = new JDialog();
 
 	@ParameterizedTest
@@ -78,6 +82,7 @@ class OnWindowTests {
 	@OnWindowActivated(value = TestControl.class, oldState = WindowState.ICONIFIED)
 	@OnWindowDeactivated(value = TestControl.class, oldState = WindowState.ICONIFIED)
 	@OnWindowClosed(value = TestControl.class, oldState = WindowState.ICONIFIED)
+	@OnWindowDeiconified(value = TestControl.class, oldState = WindowState.ICONIFIED)
 	private JDialog specificOldState = new JDialog();
 
 	@ParameterizedTest
@@ -94,6 +99,7 @@ class OnWindowTests {
 	@OnWindowActivated(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
 	@OnWindowDeactivated(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
 	@OnWindowClosed(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
+	@OnWindowDeiconified(value = TestControl.class, oldState = WindowState.ICONIFIED, newState = WindowState.MAXIMIZED_BOTH)
 	private JDialog specificBothStates = new JDialog();
 
 	@ParameterizedTest()
