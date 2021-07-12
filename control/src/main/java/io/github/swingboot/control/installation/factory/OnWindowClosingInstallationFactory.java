@@ -14,20 +14,17 @@ public class OnWindowClosingInstallationFactory implements InstallationFactory {
 		OnWindowClosing onWindowClosing = context.getAnnotationAs(OnWindowClosing.class);
 		Window window = (Window) context.getTarget();
 
+		WindowEventPredicate predicate = new WindowEventPredicate(onWindowClosing.oldState(),
+				onWindowClosing.newState());
+
 		final WindowListener listener = new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				boolean validOldState = onWindowClosing.oldState().matches(e.getOldState());
-				boolean validNewState = onWindowClosing.newState().matches(e.getNewState());
-				if (validOldState && validNewState)
+				if (predicate.test(e))
 					context.getEventConsumer().accept(e);
 			};
 		};
 
-		return new Installation(() -> {
-			window.addWindowListener(listener);
-		}, () -> {
-			window.removeWindowListener(listener);
-		});
+		return CommonInstallations.window(window, listener);
 	}
 }

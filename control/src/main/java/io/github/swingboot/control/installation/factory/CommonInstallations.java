@@ -1,10 +1,12 @@
 package io.github.swingboot.control.installation.factory;
 
 import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowListener;
 
 class CommonInstallations {
 	private CommonInstallations() {
@@ -39,6 +41,14 @@ class CommonInstallations {
 			c.addFocusListener(listener);
 		}, () -> {
 			c.removeFocusListener(listener);
+		});
+	}
+
+	static Installation window(Window w, WindowListener listener) {
+		return new Installation(() -> {
+			w.addWindowListener(listener);
+		}, () -> {
+			w.removeWindowListener(listener);
 		});
 	}
 }
