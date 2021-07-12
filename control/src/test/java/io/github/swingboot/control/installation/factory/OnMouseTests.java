@@ -141,7 +141,7 @@ class OnMouseTests {
 	}
 
 	private MouseEvent createEvent(int modifiers, int button, int clickCount) {
-		return new MouseEvent(new JButton(), MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), modifiers,
+		return new MouseEvent(new JButton(), MouseEvent.MOUSE_ENTERED, System.currentTimeMillis(), modifiers,
 				12, 12, 13, 13, clickCount, false, button);
 	}
 
