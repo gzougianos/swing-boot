@@ -1,38 +1,38 @@
 package io.github.swingboot.control.installation.factory;
 
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.annotation.Annotation;
-import java.util.function.Consumer;
 
 import io.github.swingboot.control.installation.annotation.OnMouseClicked;
 
-public class OnMouseClickedInstallationFactory extends OnMouseInstallationFactory {
+public class OnMouseClickedInstallationFactory implements InstallationFactory {
 
 	@Override
-	protected int getAnnotationButton(Annotation annotation) {
-		return ((OnMouseClicked) annotation).button();
-	}
+	public Installation create(InstallationContext context) {
+		Component target = (Component) context.getTarget();
+		OnMouseClicked onMouseClicked = context.getAnnotationAs(OnMouseClicked.class);
 
-	@Override
-	protected MouseListener createListener(Consumer<MouseEvent> eventConsumer) {
-		return new MouseAdapter() {
+		final int modifiers = onMouseClicked.modifiers();
+		final int button = onMouseClicked.button();
+		final int clickCount = onMouseClicked.clickCount();
+
+		final MouseEventPredicate predicate = new MouseEventPredicate(button, clickCount, modifiers);
+
+		MouseListener listener = new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				eventConsumer.accept(e);
+				if (predicate.test(e))
+					context.getEventConsumer().accept(e);
 			}
 		};
-	}
 
-	@Override
-	protected int getAnnotationModifiers(Annotation onMouseAnnotation) {
-		return ((OnMouseClicked) onMouseAnnotation).modifiers();
-	}
-
-	@Override
-	protected int getAnnotationClickCount(Annotation onMouseAnnotation) {
-		return ((OnMouseClicked) onMouseAnnotation).clickCount();
+		return new Installation(() -> {
+			target.addMouseListener(listener);
+		}, () -> {
+			target.removeMouseListener(listener);
+		});
 	}
 
 }
