@@ -16,6 +16,21 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<developers>
+		<developer>
+			<name>George Zougianos</name>
+			<email>g.zougianos@gmail.com</email>
+			<url>https://github.com/gzougianos</url>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/gzougianos/swing-boot</url>
+		</repository>
+	</distributionManagement>
+
 	<modules>
 		<module>control</module>
 		<module>testutils</module>
@@ -44,7 +59,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -52,18 +67,25 @@
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
-						<phase>deploy</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>3.0.0-M1</version>
+
 				<executions>
 					<execution>
 						<id>deploy</id>
@@ -71,10 +93,13 @@
 						<goals>
 							<goal>deploy</goal>
 						</goals>
+						<configuration>
+							<deployAtEnd>true</deployAtEnd>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
