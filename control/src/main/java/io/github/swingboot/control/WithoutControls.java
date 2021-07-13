@@ -36,7 +36,7 @@ public @interface WithoutControls {
 	 * frame.addComponentListener(listener);
 	 * 
 	 * JButton changeSizeButton = new JButton("Resize Frame");
-	 * changeSizeButton.addActionListener(e -> {
+	 * changeSizeButton.addActionListener(e -&#62; {
 	 * 	frame.removeComponentListener(listener);
 	 * 	setSize(getSize().width + 15, getSize().height);
 	 * 	frame.addComponentListener(listener);
@@ -55,12 +55,12 @@ public @interface WithoutControls {
 	 * setSize(getSize().width + 15, getSize().height);
 	 * </pre>
 	 * 
-	 * Setting {@link #waitUntillAllEventsDispatched()} to true solves this "issue". Installing
-	 * the listener back to the component will wait until all events are fired and
-	 * the {@link EventQueue} is empty.
-	 * 
-	 * @see a related post in <a href=
-	 *      "https://stackoverflow.com/questions/65854489/is-it-possible-to-avoid-keeping-a-reference-to-the-listeners/65871006">StackOverflow</a>
+	 * Setting {@link #waitUntillAllEventsDispatched()} to true solves this "issue".
+	 * Installing the listener back to the component will wait until all events are
+	 * fired and the {@link EventQueue} is empty. <br>
+	 * <br>
+	 * See also a related post in <a href=
+	 * "https://stackoverflow.com/questions/65854489/is-it-possible-to-avoid-keeping-a-reference-to-the-listeners/65871006">StackOverflow</a>
 	 * 
 	 * 
 	 * @return true whether installing the listeners back to the components should
