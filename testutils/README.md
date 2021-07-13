@@ -1,5 +1,16 @@
 # A small extension for JUnit 5 to run tests in the [EDT](https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html)
 
+### Dependency:
+
+```
+<dependency>
+  <groupId>io.github.swingboot</groupId>
+  <artifactId>testutils</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <scope>test</scope>
+</dependency> 
+```
+
 ### @UiTest
 
 **Replaces** the ordinary `@Test` upon the test method and runs the test method in the EDT:
